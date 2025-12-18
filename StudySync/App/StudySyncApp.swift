@@ -10,9 +10,11 @@ import SwiftData
 
 @main
 struct StudySyncApp: App {
+    // Tady definujeme, jaké modely (tabulky) databáze obsahuje
+    // Zatím tam dáme jen hlavní StudyPackage, ostatní (Group, Card) se chytnou automaticky díky vazbám.
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            StudyPackage.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,8 +27,8 @@ struct StudySyncApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView() // Tady spouštíme tvůj nový TabBar
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(sharedModelContainer) // A tady posíláme databázi do celé appky
     }
 }
