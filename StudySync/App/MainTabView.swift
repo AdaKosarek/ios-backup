@@ -23,7 +23,7 @@ struct MainTabView: View {
                 }
             
             // 3. Stats
-            Text("Statistics")
+            StatisticsView()
                 .tabItem {
                     Label("Stats", systemImage: "chart.bar.xaxis")
                 }

@@ -8,7 +8,9 @@
 import SwiftUI
 import SwiftData
 
+
 struct SessionView: View {
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     // Data pro sezení
@@ -52,7 +54,8 @@ struct SessionView: View {
                     }
                     .padding()
                     
-                    Button("Zpět do knihovny") {
+                    Button("Uložit a zpět") {
+                        saveSession()
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)
@@ -147,5 +150,10 @@ struct SessionView: View {
                 isFinished = true
             }
         }
+    }
+    private func saveSession() {
+        let session = StudySession(correctCount: correctCount, incorrectCount: incorrectCount)
+        modelContext.insert(session)
+        // SwiftData si to automaticky uloží
     }
 }

@@ -15,6 +15,7 @@ struct StudySyncApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             StudyPackage.self,
+            StudySession.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

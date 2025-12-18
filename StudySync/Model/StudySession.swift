@@ -12,11 +12,23 @@ import SwiftData
 class StudySession {
     var id: UUID
     var date: Date
-    var score: Int
+    var correctCount: Int
+    var incorrectCount: Int
     
-    init(score: Int) {
+    // Počítaný atribut (není v DB, počítá se za běhu)
+    var totalCards: Int {
+        correctCount + incorrectCount
+    }
+    
+    var accuracy: Double {
+        guard totalCards > 0 else { return 0 }
+        return Double(correctCount) / Double(totalCards) * 100
+    }
+    
+    init(correctCount: Int, incorrectCount: Int) {
         self.id = UUID()
-        self.date = Date()
-        self.score = score
+        self.date = Date() // Uloží aktuální čas
+        self.correctCount = correctCount
+        self.incorrectCount = incorrectCount
     }
 }
