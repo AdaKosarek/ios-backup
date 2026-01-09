@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
-struct StudySync_Watch_Watch_AppApp: App {
+struct StudySync_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WatchContentView()
         }
+        // Nastavení databáze pro hodinky
+        .modelContainer(for: [
+            StudyPackage.self,
+            StudySession.self
+        ])
     }
 }

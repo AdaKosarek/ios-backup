@@ -40,6 +40,19 @@
 		C689D85F2EF42E11003DBE2A /* StudySync Watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StudySync Watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C685B7052F10DFBD007EC0D8 /* Exceptions for "StudySync" folder in "StudySync Watch Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Model/StudyCard.swift,
+				Model/StudyGroup.swift,
+				Model/StudyPackage.swift,
+				Model/StudySession.swift,
+			);
+			target = C689D85E2EF42E11003DBE2A /* StudySync Watch Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		C689D8632EF42E11003DBE2A /* StudySync Watch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -48,6 +61,9 @@
 		};
 		C689D8AC2EF42F95003DBE2A /* StudySync */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				C685B7052F10DFBD007EC0D8 /* Exceptions for "StudySync" folder in "StudySync Watch Watch App" target */,
+			);
 			path = StudySync;
 			sourceTree = "<group>";
 		};
