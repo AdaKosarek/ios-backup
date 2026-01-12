@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DailyGoalWidget: View {
     var cardsStudiedToday: Int
-    var dailyGoal: Int = 20 // Cíl je třeba 20 karet denně
+    var dailyGoal: Int = 20
     
     var progress: Double {
         guard dailyGoal > 0 else { return 0 }
@@ -18,9 +18,8 @@ struct DailyGoalWidget: View {
     
     var body: some View {
         ZStack {
-            // Pozadí widgetu
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.blue.gradient) // Použijeme systémovou modrou
+                .fill(Color.blue.gradient)
                 .shadow(radius: 5)
             
             HStack {
@@ -32,6 +31,7 @@ struct DailyGoalWidget: View {
                     Text("\(cardsStudiedToday) / \(dailyGoal)")
                         .font(.system(size: 30, weight: .bold))
                         .foregroundStyle(.white)
+                        .accessibilityIdentifier("dailyGoalRatioText") // ID pro poměr
                     
                     Text("karet naučeno")
                         .font(.caption)
@@ -39,46 +39,38 @@ struct DailyGoalWidget: View {
                     
                     Spacer()
                     
-                    Button("Start Session") {
-                        // Tady by mohlo být rychlé spuštění,
-                        // zatím to necháme jen jako vizuál
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.white)
-                    .controlSize(.small)
+                    Button("Start Session") { }
+                        .buttonStyle(.bordered)
+                        .tint(.white)
+                        .controlSize(.small)
+                        .accessibilityIdentifier("startSessionWidgetButton") // ID pro tlačítko
                 }
                 .padding()
                 
                 Spacer()
                 
-                // Kruhový graf
                 ZStack {
-                    // Podklad kruhu
                     Circle()
                         .stroke(Color.white.opacity(0.3), lineWidth: 10)
                     
-                    // Progress kruh
                     Circle()
                         .trim(from: 0, to: progress)
                         .stroke(Color.white, style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                        .rotationEffect(.degrees(-90)) // Aby začínal nahoře
+                        .rotationEffect(.degrees(-90))
                         .animation(.easeOut, value: progress)
                     
-                    // Procenta uprostřed
                     Text("\(Int(progress * 100))%")
                         .font(.headline)
                         .bold()
                         .foregroundStyle(.white)
+                        .accessibilityIdentifier("dailyGoalPercentageText") // ID pro procenta
                 }
                 .frame(width: 100, height: 100)
                 .padding()
             }
         }
         .frame(height: 160)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("dailyGoalWidget") // KLÍČOVÝ IDENTIFIKÁTOR
     }
-}
-
-#Preview {
-    DailyGoalWidget(cardsStudiedToday: 12)
-        .padding()
 }

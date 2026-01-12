@@ -1,10 +1,3 @@
-//
-//  PackageDetailView.swift
-//  StudySync
-//
-//  Created by Miroslav Musil on 18.12.2025.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -12,15 +5,12 @@ struct PackageDetailView: View {
     @Bindable var package: StudyPackage
     @Environment(\.modelContext) private var modelContext
     
-    // --- OPRAVA 1: Tady chyběla tato proměnná ---
     @State private var showingStudySession = false
-    
     @State private var showingAddGroupAlert = false
     @State private var newGroupName = ""
     
     var body: some View {
         List {
-            // Sekce 1: Informace a Tlačítko Play
             Section {
                 HStack {
                     VStack(alignment: .leading) {
@@ -30,12 +20,11 @@ struct PackageDetailView: View {
                         Text("\(package.groups.count)")
                             .font(.title2)
                             .bold()
+                            .accessibilityIdentifier("groupCountText") // PŘIDÁNO
                     }
                     Spacer()
                     
-                    // Tlačítko pro spuštění učení
                     Button(action: {
-                        // Spustíme jen pokud jsou nějaké karty
                         let hasCards = !package.groups.flatMap({ $0.cards }).isEmpty
                         if hasCards {
                             showingStudySession = true
@@ -43,20 +32,20 @@ struct PackageDetailView: View {
                     }) {
                         Image(systemName: "play.circle.fill")
                             .font(.system(size: 40))
-                            // --- OPRAVA 2: Teď už bude fungovat Color(hex:) díky rozšíření dole ---
                             .foregroundStyle(Color(hex: package.colorHex))
                     }
-                    .buttonStyle(.plain) // Aby to nebralo kliknutí celého řádku
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("playSessionButton") // PŘIDÁNO
                 }
                 .padding(.vertical, 8)
             }
             
-            // Sekce 2: Seznam skupin
             Section("Skupiny") {
                 if package.groups.isEmpty {
                     Text("Zatím žádné skupiny. Klikni na +")
                         .foregroundStyle(.secondary)
                         .italic()
+                        .accessibilityIdentifier("emptyGroupsText") // PŘIDÁNO
                 } else {
                     ForEach(package.groups) { group in
                         NavigationLink(destination: CardListView(group: group)) {
@@ -69,6 +58,7 @@ struct PackageDetailView: View {
                                     .font(.caption)
                             }
                         }
+                        .accessibilityIdentifier("groupRow_\(group.name)") // PŘIDÁNO
                     }
                     .onDelete(perform: deleteGroup)
                 }
@@ -80,16 +70,18 @@ struct PackageDetailView: View {
                 Button(action: { showingAddGroupAlert = true }) {
                     Image(systemName: "plus")
                 }
+                .accessibilityIdentifier("addGroupButton") // PŘIDÁNO
             }
         }
         .alert("Nová skupina", isPresented: $showingAddGroupAlert) {
             TextField("Název (např. Geometrie)", text: $newGroupName)
+                .accessibilityIdentifier("newGroupNameField") // PŘIDÁNO
             Button("Zrušit", role: .cancel) { }
             Button("Vytvořit") {
                 addGroup()
             }
+            .accessibilityIdentifier("confirmAddGroupButton") // PŘIDÁNO
         }
-        // Tady se otevírá obrazovka učení
         .fullScreenCover(isPresented: $showingStudySession) {
             let allCards = package.groups.flatMap { $0.cards }
             NavigationStack {
@@ -115,7 +107,7 @@ struct PackageDetailView: View {
     }
 }
 
-// --- OPRAVA 2: Toto rozšíření (Extension) musí být na konci souboru ---
+// Extension ponechána beze změny...
 extension Color {
     init(hex: String) {
         switch hex {

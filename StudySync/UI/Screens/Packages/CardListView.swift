@@ -10,7 +10,7 @@ import SwiftData
 
 struct CardListView: View {
     @Bindable var group: StudyGroup
-    @State private var showingAddCard = false // 1. Stav pro otevření okna
+    @State private var showingAddCard = false
     
     var body: some View {
         List {
@@ -20,6 +20,7 @@ struct CardListView: View {
                     systemImage: "rectangle.portrait.on.rectangle.portrait.fill",
                     description: Text("Tato skupina je prázdná. Klikni na + a přidej otázku.")
                 )
+                .accessibilityIdentifier("EmptyStateView") // 1. ID pro prázdný stav
             } else {
                 ForEach(group.cards) { card in
                     VStack(alignment: .leading) {
@@ -32,44 +33,33 @@ struct CardListView: View {
                             .lineLimit(1)
                     }
                     .padding(.vertical, 4)
+                    // Volitelné: ID pro konkrétní řádek, pokud bychom chtěli být precizní
+                    .accessibilityIdentifier("CardRow_\(card.question)")
                 }
-                .onDelete(perform: deleteCards) // Přidáme i mazání
+                .onDelete(perform: deleteCards)
             }
         }
         .navigationTitle(group.name)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                // 2. Tlačítko, které změní stav na true
                 Button(action: { showingAddCard = true }) {
                     Image(systemName: "plus")
                 }
+                .accessibilityIdentifier("AddCardButton") // 2. ID pro tlačítko plus
             }
         }
-        // 3. Zobrazení formuláře
         .sheet(isPresented: $showingAddCard) {
             AddCardView(group: group)
         }
     }
     
-    // Funkce pro mazání karet
     private func deleteCards(offsets: IndexSet) {
         withAnimation {
-            // Protože mažeme z pole relationshipu, musíme to udělat trochu jinak
-            // než jen modelContext.delete(). Musíme je vyhodit ze skupiny.
-            // Ale nejjednodušší ve SwiftData pro Cascade delete je:
-            
-            // Získání IDček karet, které chceme smazat
             let cardsToDelete = offsets.map { group.cards[$0] }
-            
-            // Odstranění z pole (SwiftData to pochopí a smaže je z DB,
-            // pokud máme nastaveno deleteRule: .cascade, jinak jen zruší vazbu.
-            // Pro jistotu mažeme přímo z kontextu:
             for card in cardsToDelete {
-                // Karta musí vědět o svém kontextu, pokud ne, fallback na odstranění z pole
                 if let context = card.modelContext {
                     context.delete(card)
                 } else {
-                    // Fallback
                     group.cards.removeAll(where: { $0.id == card.id })
                 }
             }

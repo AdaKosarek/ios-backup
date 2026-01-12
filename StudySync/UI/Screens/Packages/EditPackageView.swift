@@ -16,7 +16,7 @@ struct EditPackageView: View {
     @State private var name: String = ""
     @State private var selectedColorHex: String = "blue" // Výchozí barva
     
-    // Nabídka barev pro výběr (názvy barev, které pak převedeme)
+    // Nabídka barev
     let availableColors = ["blue", "red", "green", "orange", "purple", "pink", "yellow", "gray"]
     
     var body: some View {
@@ -25,6 +25,7 @@ struct EditPackageView: View {
                 // Sekce 1: Název
                 Section("Název balíčku") {
                     TextField("Např. Matematika", text: $name)
+                        .accessibilityIdentifier("packageNameField") // PŘIDÁNO PRO TESTY
                 }
                 
                 // Sekce 2: Výběr barvy
@@ -44,6 +45,8 @@ struct EditPackageView: View {
                                 .onTapGesture {
                                     selectedColorHex = colorName
                                 }
+                                // PŘIDÁNO PRO TESTY: Dynamické ID pro každou barvu
+                                .accessibilityIdentifier("color_\(colorName)")
                         }
                     }
                     .padding(.vertical, 5)
@@ -61,7 +64,8 @@ struct EditPackageView: View {
                     Button("Vytvořit") {
                         savePackage()
                     }
-                    .disabled(name.isEmpty) // Nepovolí uložit bez názvu
+                    .disabled(name.isEmpty)
+                    .accessibilityIdentifier("createPackageButton") // PŘIDÁNO PRO TESTY
                 }
             }
         }
@@ -72,17 +76,13 @@ struct EditPackageView: View {
         let newPackage = StudyPackage(
             name: name,
             colorHex: selectedColorHex,
-            icon: "book.closed.fill" // Ikonu zatím dáváme fixní
+            icon: "book.closed.fill"
         )
-        
-        // Vložení do databáze
         modelContext.insert(newPackage)
-        
-        // Zavření okna
         dismiss()
     }
     
-    // Pomocná funkce pro převod textu na barvu SwiftUI
+    // Pomocná funkce pro převod
     private func mapColor(_ name: String) -> Color {
         switch name {
         case "blue": return .blue

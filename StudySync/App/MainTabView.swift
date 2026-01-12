@@ -11,10 +11,11 @@ struct MainTabView: View {
     var body: some View {
         TabView {
             // 1. Home
-            HomeView() // Zatím tam dáme jen toto, hned to vytvoříme
+            HomeView().handleUITests() // Zatím tam dáme jen toto, hned to vytvoříme
                 .tabItem {
                     Label("Today", systemImage: "house.fill")
                 }
+                
             
             // 2. Packages
             PackagesListView()
