@@ -14,10 +14,12 @@ struct StudySync_Watch_AppApp: App {
         WindowGroup {
             WatchContentView()
         }
-        // Nastavení databáze pro hodinky
         .modelContainer(for: [
             StudyPackage.self,
-            StudySession.self
+            StudyGroup.self,  // Přidáno
+            StudyCard.self,   // Přidáno
+            StudySession.self,
+            
         ])
     }
 }
