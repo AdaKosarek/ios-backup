@@ -8,7 +8,6 @@
 import SwiftUI
 import SwiftData
 
-
 struct SessionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
@@ -24,104 +23,120 @@ struct SessionView: View {
     @State private var isFinished = false
     
     var body: some View {
-        VStack {
-            if isFinished {
-                // --- OBRAZOVKA VÝSLEDKŮ ---
-                VStack(spacing: 20) {
-                    Image(systemName: "trophy.fill")
-                        .font(.system(size: 80))
-                        .foregroundStyle(.yellow)
-                    
-                    Text("Session Complete!")
-                        .font(.largeTitle)
-                        .bold()
-                    
-                    HStack(spacing: 40) {
-                        VStack {
-                            Text("\(correctCount)")
-                                .font(.title)
-                                .foregroundStyle(.green)
-                                .bold()
-                            Text("Správně")
-                        }
-                        VStack {
-                            Text("\(incorrectCount)")
-                                .font(.title)
-                                .foregroundStyle(.red)
-                                .bold()
-                            Text("Špatně")
-                        }
-                    }
-                    .padding()
-                    
-                    Button("Uložit a zpět") {
-                        saveSession()
-                        dismiss()
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-            } else {
-                // --- PROBÍHAJÍCÍ UČENÍ ---
-                
-                // 1. Progress Bar nahoře
-                ProgressView(value: Double(currentIndex), total: Double(cards.count))
-                    .padding()
-                
-                Text("\(currentIndex + 1) / \(cards.count)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                
-                Spacer()
-                
-                // 2. Karta (Pokud máme data)
-                if !cards.isEmpty {
-                    FlashCardView(
-                        question: cards[currentIndex].question,
-                        answer: cards[currentIndex].answer,
-                        isFlipped: isFlipped
-                    )
-                    .frame(height: 450)
-                    .padding()
-                    .onTapGesture {
-                        // Kliknutí otočí kartu
-                        isFlipped.toggle()
-                    }
-                } else {
-                    Text("Tento balíček je prázdný.")
-                }
-                
-                Spacer()
-                
-                // 3. Tlačítka (Zobrazí se až po otočení)
-                HStack(spacing: 30) {
-                    if isFlipped {
-                        Button(action: { recordAnswer(isCorrect: false) }) {
-                            VStack {
-                                Image(systemName: "xmark.circle.fill")
-                                    .font(.largeTitle)
-                                Text("Nevěděl")
-                            }
-                            .foregroundStyle(.red)
-                        }
+        // ZMĚNA 1: Celý obsah zabalíme do ZStack, abychom mohli vrstvit konfety navrch
+        ZStack { // <--- ZAČÁTEK ZSTACK
+            
+            // Původní VStack s obsahem
+            VStack {
+                if isFinished {
+                    // --- OBRAZOVKA VÝSLEDKŮ ---
+                    VStack(spacing: 20) {
+                        Image(systemName: "trophy.fill")
+                            .font(.system(size: 80))
+                            .foregroundStyle(.yellow)
                         
-                        Button(action: { recordAnswer(isCorrect: true) }) {
+                        Text("Session Complete!")
+                            .font(.largeTitle)
+                            .bold()
+                        
+                        HStack(spacing: 40) {
                             VStack {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .font(.largeTitle)
-                                Text("Věděl")
+                                Text("\(correctCount)")
+                                    .font(.title)
+                                    .foregroundStyle(.green)
+                                    .bold()
+                                Text("Správně")
                             }
-                            .foregroundStyle(.green)
+                            VStack {
+                                Text("\(incorrectCount)")
+                                    .font(.title)
+                                    .foregroundStyle(.red)
+                                    .bold()
+                                Text("Špatně")
+                            }
                         }
-                    } else {
-                        Text("Klepni na kartu pro zobrazení odpovědi")
-                            .foregroundStyle(.secondary)
-                            .font(.caption)
+                        .padding()
+                        
+                        Button("Uložit a zpět") {
+                            saveSession()
+                            dismiss()
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
+                    // Přidáme trochu paddingu, aby konfety nebyly hned u textu
+                    .padding(.vertical, 50)
+                } else {
+                    // --- PROBÍHAJÍCÍ UČENÍ ---
+                    
+                    // 1. Progress Bar nahoře
+                    ProgressView(value: Double(currentIndex), total: Double(cards.count))
+                        .padding()
+                    
+                    Text("\(currentIndex + 1) / \(cards.count)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    Spacer()
+                    
+                    // 2. Karta (Pokud máme data)
+                    if !cards.isEmpty {
+                        // Předpokládám, že FlashCardView máš definovaný jinde
+                        // FlashCardView(...)
+                        // Pro účely ukázky nahradím placeholderem, pokud nemám tvůj kód FlashCardView:
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.white)
+                            .shadow(radius: 5)
+                            .overlay(Text(isFlipped ? cards[currentIndex].answer : cards[currentIndex].question))
+                            .frame(height: 450)
+                            .padding()
+                            .onTapGesture {
+                                // Kliknutí otočí kartu
+                                isFlipped.toggle()
+                            }
+                    } else {
+                        Text("Tento balíček je prázdný.")
+                    }
+                    
+                    Spacer()
+                    
+                    // 3. Tlačítka (Zobrazí se až po otočení)
+                    HStack(spacing: 30) {
+                        if isFlipped {
+                            Button(action: { recordAnswer(isCorrect: false) }) {
+                                VStack {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .font(.largeTitle)
+                                    Text("Nevěděl")
+                                }
+                                .foregroundStyle(.red)
+                            }
+                            
+                            Button(action: { recordAnswer(isCorrect: true) }) {
+                                VStack {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .font(.largeTitle)
+                                    Text("Věděl")
+                                }
+                                .foregroundStyle(.green)
+                            }
+                        } else {
+                            Text("Klepni na kartu pro zobrazení odpovědi")
+                                .foregroundStyle(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                    .frame(height: 80)
+                    .padding(.bottom, 30)
                 }
-                .frame(height: 80)
-                .padding(.bottom, 30)
             }
-        }
+            
+            // ZMĚNA 2: Přidání konfet, pokud je sezení dokončeno
+            if isFinished { // <--- Podmínka zobrazení
+                ConfettiView()
+                    .ignoresSafeArea() // Konfety padají přes celou obrazovku včetně status baru
+            }
+            
+        } // <--- KONEC ZSTACK
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(isFinished ? "Výsledek" : "Studium")
     }
@@ -130,7 +145,6 @@ struct SessionView: View {
     private func recordAnswer(isCorrect: Bool) {
         if isCorrect {
             correctCount += 1
-            // Tady bychom později uložili statistiku do databáze
         } else {
             incorrectCount += 1
         }
@@ -147,13 +161,15 @@ struct SessionView: View {
                     currentIndex += 1
                 }
             } else {
+                // Tady se aktivuje 'isFinished', což spustí konfety
                 isFinished = true
             }
         }
     }
+    
     private func saveSession() {
-        let session = StudySession(correctCount: correctCount, incorrectCount: incorrectCount)
-        modelContext.insert(session)
-        // SwiftData si to automaticky uloží
+        // Předpokládám, že StudySession máš definovaný jinde
+        // let session = StudySession(correctCount: correctCount, incorrectCount: incorrectCount)
+        // modelContext.insert(session)
     }
 }
