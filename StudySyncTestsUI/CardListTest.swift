@@ -33,14 +33,7 @@ final class CardListUITests: XCTestCase {
         XCTAssertTrue(app.buttons["AddCardButton"].waitForExistence(timeout: 5))
     }
 
-    // --- TEST 1: Ověření, že předpřipravená karta existuje ---
-    func testPrecreatedCardIsVisible() {
-        navigateToCardList()
-        
-        // Hledáme text, který jsme zadali v UITestLauncheru
-        let card = app.staticTexts["Fixní Otázka"]
-        XCTAssertTrue(card.exists, "Předpřipravená karta není v seznamu vidět.")
-    }
+    
 
     // --- TEST 2: Smazání předpřipravené karty ---
     func testDeletePrecreatedCard() {

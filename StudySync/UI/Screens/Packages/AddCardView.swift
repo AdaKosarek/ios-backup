@@ -45,7 +45,7 @@ struct AddCardView: View {
                         saveCard()
                     }
                     .disabled(question.isEmpty || answer.isEmpty)
-                    .accessibilityIdentifier("createPackageButton") // PŘIDÁNO PRO TESTY
+                    .accessibilityIdentifier("saveButton") // PŘIDÁNO PRO TESTY
                 }
             }
         }

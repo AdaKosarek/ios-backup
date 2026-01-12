@@ -75,27 +75,38 @@ final class AddCardUITests: XCTestCase {
     }
 
     func testSaveButtonIsDisabledInitially() {
-        let saveButton = app.buttons["saveButton"]
-        // Protože používáš axis: .vertical, TextField se chová jako TextView
-        let questionField = app.textViews["questionField"]
-        let answerField = app.textViews["answerField"]
+            let saveButton = app.buttons["saveButton"]
+            
+            // --- OPRAVA PRO axis: .vertical ---
+            // Kvůli axis: .vertical je Xcode zmatený, jestli je to TextView nebo TextField.
+            // Zkusíme najít TextView, a když tam není, zkusíme TextField.
+            
+            var questionField = app.textViews["questionField"]
+            if !questionField.exists {
+                questionField = app.textFields["questionField"]
+            }
+            
+            var answerField = app.textViews["answerField"]
+            if !answerField.exists {
+                answerField = app.textFields["answerField"]
+            }
 
-        // 1. Start: Neaktivní
-        XCTAssertFalse(saveButton.isEnabled, "Tlačítko má být na začátku šedé")
+            // 1. Start: Neaktivní
+            XCTAssertFalse(saveButton.isEnabled, "Tlačítko má být na začátku šedé")
 
-        // 2. Vyplnění otázky
-        questionField.tap()
-        questionField.typeText("Test Otázka")
-        
-        // 3. Vyplnění odpovědi
-        answerField.tap()
-        answerField.typeText("Test Odpověď")
-        
-        // 4. Čekání na aktivaci tlačítka (dáme SwiftUI čas na překreslení)
-        let isEnabledPredicate = NSPredicate(format: "isEnabled == true")
-        expectation(for: isEnabledPredicate, evaluatedWith: saveButton, handler: nil)
-        waitForExpectations(timeout: 3.0, handler: nil)
-        
-        XCTAssertTrue(saveButton.isEnabled, "Tlačítko se neaktivovalo po vyplnění")
-    }
+            // 2. Vyplnění otázky
+            questionField.tap()
+            questionField.typeText("Test Otázka")
+            
+            // 3. Vyplnění odpovědi
+            answerField.tap()
+            answerField.typeText("Test Odpověď")
+            
+            // 4. Čekání na aktivaci tlačítka
+            let isEnabledPredicate = NSPredicate(format: "isEnabled == true")
+            expectation(for: isEnabledPredicate, evaluatedWith: saveButton, handler: nil)
+            waitForExpectations(timeout: 3.0, handler: nil)
+            
+            XCTAssertTrue(saveButton.isEnabled, "Tlačítko se neaktivovalo po vyplnění")
+        }
 }

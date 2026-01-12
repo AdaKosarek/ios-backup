@@ -5,13 +5,6 @@
 //  Created by Miroslav Musil on 18.12.2025.
 //
 
-//
-//  SessionView.swift
-//  StudySync
-//
-//  Created by Miroslav Musil on 18.12.2025.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -29,133 +22,167 @@ struct SessionView: View {
     @State private var incorrectCount = 0
     @State private var isFinished = false
     
-    // NOVÉ: Stav pro zobrazení potvrzovacího okna
+    // NOVÉ: Stav pro zobrazení potvrzovacího okna při odchodu
     @State private var showExitAlert = false
     
     var body: some View {
-        ZStack {
-            VStack {
-                if isFinished {
-                    // ... (tvůj kód pro výsledky - beze změny) ...
-                    // Pro zkrácení zde vypisuji jen tu část, co už máš
-                    VStack(spacing: 20) {
-                        Image(systemName: "trophy.fill")
-                            .font(.system(size: 80))
-                            .foregroundStyle(.yellow)
-                        Text("Session Complete!")
-                        // ... zbytek výsledků ...
-                        Button("Uložit a zpět") {
-                            saveSession()
-                            dismiss()
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
-                    .padding(.vertical, 50)
-                } else {
-                    // --- PROBÍHAJÍCÍ UČENÍ ---
-                    
-                    ProgressView(value: Double(currentIndex), total: Double(cards.count))
-                        .padding()
-                    
-                    Text("\(currentIndex + 1) / \(cards.count)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    
-                    Spacer()
-                    
-                    if !cards.isEmpty {
-                        // Tvoje karta
-                         RoundedRectangle(cornerRadius: 20)
-                             .fill(Color.white)
-                             .shadow(radius: 5)
-                             .overlay(Text(isFlipped ? cards[currentIndex].answer : cards[currentIndex].question))
-                             .frame(height: 450)
-                             .padding()
-                             .onTapGesture {
-                                 isFlipped.toggle()
-                             }
-                    } else {
-                        Text("Tento balíček je prázdný.")
-                    }
-                    
-                    Spacer()
-                    
-                    // Tlačítka dole
-                    HStack(spacing: 30) {
-                        if isFlipped {
-                            Button(action: { recordAnswer(isCorrect: false) }) {
-                                VStack {
-                                    Image(systemName: "xmark.circle.fill").font(.largeTitle)
-                                    Text("Nevěděl")
-                                }
-                                .foregroundStyle(.red)
-                            }
-                            Button(action: { recordAnswer(isCorrect: true) }) {
-                                VStack {
-                                    Image(systemName: "checkmark.circle.fill").font(.largeTitle)
-                                    Text("Věděl")
-                                }
-                                .foregroundStyle(.green)
-                            }
-                        } else {
-                            Text("Klepni na kartu pro zobrazení odpovědi")
-                                .foregroundStyle(.secondary).font(.caption)
-                        }
-                    }
-                    .frame(height: 80)
-                    .padding(.bottom, 30)
-                }
-            }
-            
+        VStack {
             if isFinished {
-                ConfettiView().ignoresSafeArea()
+                // --- OBRAZOVKA VÝSLEDKŮ ---
+                VStack(spacing: 20) {
+                    Image(systemName: "trophy.fill")
+                        .font(.system(size: 80))
+                        .foregroundStyle(.yellow)
+                    
+                    Text("Session Complete!")
+                        .font(.largeTitle)
+                        .bold()
+                    
+                    HStack(spacing: 40) {
+                        VStack {
+                            Text("\(correctCount)")
+                                .font(.title)
+                                .foregroundStyle(.green)
+                                .bold()
+                            Text("Správně")
+                        }
+                        VStack {
+                            Text("\(incorrectCount)")
+                                .font(.title)
+                                .foregroundStyle(.red)
+                                .bold()
+                            Text("Špatně")
+                        }
+                    }
+                    .padding()
+                    
+                    Button("Uložit a zpět") {
+                        saveSession()
+                        dismiss()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("FinishButton")
+                }
+            } else {
+                // --- PROBÍHAJÍCÍ UČENÍ ---
+                
+                // 1. Progress Bar nahoře
+                ProgressView(value: Double(currentIndex), total: Double(cards.count))
+                    .padding()
+                
+                Text("\(currentIndex + 1) / \(cards.count)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                
+                Spacer()
+                
+                // 2. Karta (Pokud máme data)
+                if !cards.isEmpty {
+                    FlashCardView(
+                        question: cards[currentIndex].question,
+                        answer: cards[currentIndex].answer,
+                        isFlipped: isFlipped
+                    )
+                    .frame(height: 450)
+                    .padding()
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                            isFlipped.toggle()
+                        }
+                    }
+                    .accessibilityIdentifier("StudyCard")
+                } else {
+                    Text("Tento balíček je prázdný.")
+                }
+                
+                Spacer()
+                
+                // 3. Tlačítka (Zobrazí se až po otočení)
+                HStack(spacing: 30) {
+                    if isFlipped {
+                        Button(action: { recordAnswer(isCorrect: false) }) {
+                            VStack {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.largeTitle)
+                                Text("Nevěděl")
+                            }
+                            .foregroundStyle(.red)
+                        }
+                        .accessibilityIdentifier("ButtonWrong")
+                        
+                        Button(action: { recordAnswer(isCorrect: true) }) {
+                            VStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.largeTitle)
+                                Text("Věděl")
+                            }
+                            .foregroundStyle(.green)
+                        }
+                        .accessibilityIdentifier("ButtonCorrect")
+                        
+                    } else {
+                        Text("Klepni na kartu pro zobrazení odpovědi")
+                            .foregroundStyle(.secondary)
+                            .font(.caption)
+                    }
+                }
+                .frame(height: 80)
+                .padding(.bottom, 30)
             }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(isFinished ? "Výsledek" : "Studium")
-        // ZMĚNA: Skryjeme výchozí tlačítko zpět, abychom dali vlastní (volitelné)
-        .navigationBarBackButtonHidden(true)
         
-        // ZMĚNA: Přidání toolbaru s tlačítkem pro ukončení
+        // --- NOVÉ: IMPLEMENTACE TLAČÍTKA ZPĚT ---
+        .navigationBarBackButtonHidden(true) // Skryjeme výchozí systémové tlačítko
         .toolbar {
-            // Tlačítko vlevo nahoře (nebo vpravo, změň na .topBarTrailing)
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
                     if isFinished {
-                        // Pokud je hotovo, odejdi rovnou (a ulož)
+                        // Pokud je hotovo, rovnou odejdi a ulož
                         saveSession()
                         dismiss()
                     } else {
-                        // Pokud běží studium, zeptat se
+                        // Pokud běží lekce, zeptej se
                         showExitAlert = true
                     }
                 }) {
-                    // Můžeš použít text "Ukončit" nebo ikonku křížku/šipky
                     HStack {
                         Image(systemName: "chevron.left")
                         
                     }
                 }
+                .accessibilityIdentifier("BackButton") // ID pro testy
             }
         }
-        // ZMĚNA: Alert okno pro potvrzení odchodu
+        // Alert pro potvrzení odchodu
         .alert("Ukončit studium?", isPresented: $showExitAlert) {
             Button("Zrušit", role: .cancel) { }
             Button("Ukončit", role: .destructive) {
-                dismiss() // Tady odejdeme bez uložení
+                dismiss() // Odejít bez uložení
             }
         } message: {
             Text("Váš aktuální postup v této lekci nebude uložen.")
         }
     }
     
-    // ... tvé funkce recordAnswer a saveSession zůstávají stejné ...
+    // Logika posunu na další kartu
     private func recordAnswer(isCorrect: Bool) {
-        if isCorrect { correctCount += 1 } else { incorrectCount += 1 }
-        withAnimation { isFlipped = false }
+        if isCorrect {
+            correctCount += 1
+        } else {
+            incorrectCount += 1
+        }
+        
+        withAnimation {
+            isFlipped = false
+        }
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             if currentIndex < cards.count - 1 {
-                withAnimation { currentIndex += 1 }
+                withAnimation {
+                    currentIndex += 1
+                }
             } else {
                 isFinished = true
             }
@@ -163,6 +190,8 @@ struct SessionView: View {
     }
     
     private func saveSession() {
-        // modelContext.insert(...)
+        let session = StudySession(correctCount: correctCount, incorrectCount: incorrectCount)
+        modelContext.insert(session)
     }
 }
+
