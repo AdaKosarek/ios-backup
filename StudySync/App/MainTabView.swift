@@ -20,8 +20,10 @@ struct MainTabView: View {
             PackagesListView(viewModel: diContainer.makePackagesListViewModel())
                 .tabItem { Label("Library", systemImage: "books.vertical.fill") }
             
-            // Stats a Settings zatím necháme jak jsou, nebo implementujeme podobně
-            Text("Stats Placeholder").tabItem { Label("Stats", systemImage: "chart.bar.xaxis") }
+            StatisticsView(viewModel: diContainer.makeStatisticsViewModel())
+                .tabItem {
+                    Label("Stats", systemImage: "chart.bar.xaxis")
+                }
             Text("Settings Placeholder").tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
         .tint(.blue)

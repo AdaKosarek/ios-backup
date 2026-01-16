@@ -7,47 +7,46 @@
 
 
 import SwiftUI
-import SwiftData
 
 struct WatchContentView: View {
-    // Toto je hlavní kontejner, který umožňuje swipování
     var body: some View {
         TabView {
-            // 1. Stránka: Hlavní přehled (Dashboard)
             WatchDashboardView()
-            
-            // 2. Stránka: Statistiky (Stats)
             WatchStatsView()
-            
-            // 3. Stránka: Nastavení (Settings)
             WatchSettingsView()
         }
-        .tabViewStyle(.page) // Důležité: Toto zapne styl "teček" dole a swipování
+        .tabViewStyle(.page)
         .ignoresSafeArea()
     }
 }
 
-// MARK: - 1. OBRAZOVKA: DASHBOARD (Tvůj původní kód)
+// MARK: - DASHBOARD (Hlavní obrazovka)
+
 struct WatchDashboardView: View {
-    let cardsLeft = 4
-    let streak = 12
-    let xp = 90
+    // Používáme singleton, který drží data a komunikaci
+    @State private var connector = WatchConnector.shared
     
-    // Demo karty pro session
-    let demoCards = [
-        StudyCard(question: "What is the capital of France?", answer: "Paris"),
-        StudyCard(question: "H2O stands for?", answer: "Water"),
-        StudyCard(question: "2 + 2 = ?", answer: "4")
-    ]
+    // Vypočítané vlastnosti
+    var totalCardsCount: Int {
+        connector.receivedPackages.reduce(0) { pkgResult, pkg in
+            pkgResult + pkg.groups.reduce(0) { grpResult, grp in
+                grpResult + grp.cards.count
+            }
+        }
+    }
+    
+    var allCards: [CardDTO] {
+        connector.receivedPackages.flatMap { $0.groups.flatMap { $0.cards } }
+    }
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 8) {
-                // Kruhový graf
+                // Grafika (Kruh)
                 ZStack {
                     Circle()
                         .stroke(Color.gray.opacity(0.3), lineWidth: 8)
-                        .frame(width: 80, height: 80) // Trochu zmenšeno kvůli tečkám dole
+                        .frame(width: 80, height: 80)
                     
                     Circle()
                         .trim(from: 0, to: 0.75)
@@ -58,54 +57,40 @@ struct WatchDashboardView: View {
                         .frame(width: 80, height: 80)
                         .rotationEffect(.degrees(-90))
                     
-                    VStack(spacing: 0) {
-                        Text("\(cardsLeft)")
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
-                            .foregroundStyle(.white)
-                        Text("left")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.gray)
-                    }
+                    Image(systemName: "book.fill")
+                        .font(.title)
+                        .foregroundStyle(.white)
                 }
                 .padding(.top, 15)
                 
-                // Statistiky (Streak & XP)
-                HStack(spacing: 15) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "flame.fill")
-                            .foregroundStyle(.orange)
-                        Text("\(streak)")
-                            .fontWeight(.bold)
-                    }
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "bolt.fill")
-                            .foregroundStyle(.yellow)
-                        Text("\(xp)")
-                            .fontWeight(.bold)
-                    }
-                }
-                .font(.caption2)
+                // Text s počtem
+                Text("\(totalCardsCount) cards")
+                    .font(.caption)
+                    .foregroundStyle(.gray)
                 
                 Spacer()
-                
-                // Tlačítko Start
-                NavigationLink(destination: WatchSessionView(cards: demoCards)) {
-                    HStack {
-                        Text("Start Session")
-                        Spacer()
-                        Image(systemName: "chevron.right")
+
+                // Stavová logika
+                if connector.receivedPackages.isEmpty {
+                    Text("Otevři aplikaci na iPhone pro synchronizaci")
+                        .font(.caption2)
+                        .foregroundStyle(.gray)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                } else {
+                    NavigationLink(destination: WatchSessionView(cards: allCards, connector: connector)) {
+                        HStack {
+                            Text("Start Session")
+                            Spacer()
+                            Image(systemName: "play.fill")
+                        }
                     }
-                    .font(.footnote)
-                    .fontWeight(.semibold)
+                    .background(Color.blue)
+                    .clipShape(Capsule())
+                    .padding(.bottom)
                 }
-                .background(
-                    LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing)
-                )
-                .clipShape(Capsule())
-                .padding(.bottom, 10) // Místo pro tečky stránkování
             }
-            .padding(.horizontal)
+            .padding()
         }
     }
 }

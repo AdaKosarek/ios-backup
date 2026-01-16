@@ -47,4 +47,7 @@ class DIContainer: ObservableObject {
     func makeSessionViewModel(cards: [StudyCard]) -> SessionViewModel {
         return SessionViewModel(cards: cards, dataService: dataService)
     }
+    func makeStatisticsViewModel() -> StatisticsViewModel {
+        return StatisticsViewModel(dataService: dataService)
+    }
 }

@@ -46,6 +46,11 @@ struct PackagesListView: View {
                     }
                     .accessibilityIdentifier("AddPackageButton")
                 }
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Sync Watch") {
+                        viewModel.syncToWatch()
+                    }
+                }
             }
             .sheet(isPresented: $showingAddSheet) {
                 AddPackageSheet(onSave: { name, color in

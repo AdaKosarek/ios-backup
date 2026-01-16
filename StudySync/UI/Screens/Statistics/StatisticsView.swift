@@ -1,139 +1,159 @@
-//
-//  StatisticsView.swift
-//  StudySync
-//
-//  Created by Miroslav Musil on 18.12.2025.
-//
-
 import SwiftUI
-import SwiftData
-import Charts // Důležitý import pro grafy
+import Charts
 
 struct StatisticsView: View {
-    // Načteme všechny sessions seřazené od nejnovější
-    @Query(sort: \StudySession.date, order: .forward) private var sessions: [StudySession]
+    @State var viewModel: StatisticsViewModel
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
+                    // 1. Sekce s filtrem
+                    filterSection
                     
-                    // 1. KARTA: Celková přesnost
-                    VStack(alignment: .leading) {
-                        Text("Celková úspěšnost")
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
-                        
-                        HStack {
-                            Text("\(calculateOverallAccuracy())%")
-                                .font(.system(size: 40, weight: .bold))
-                                .foregroundStyle(.white)
-                            Spacer()
-                            Image(systemName: "chart.pie.fill")
-                                .font(.largeTitle)
-                                .foregroundStyle(.white.opacity(0.8))
-                        }
-                        
-                        ProgressView(value: Double(calculateOverallAccuracy()), total: 100)
-                            .tint(.white)
-                            .padding(.top, 5)
-                    }
-                    .padding()
-                    .background(Color.green.gradient) // Barva z Figmy
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .padding(.horizontal)
+                    // 2. Sekce s grafem (vyčleněna pro lepší výkon kompilátoru)
+                    chartSection
                     
-                    // 2. KARTA: Graf historie (Bar Chart)
-                    VStack(alignment: .leading) {
-                        Text("Tento týden")
-                            .font(.headline)
-                            .padding(.bottom, 10)
-                        
-                        if sessions.isEmpty {
-                            ContentUnavailableView("Zatím žádná data", systemImage: "chart.bar")
-                                .frame(height: 200)
-                        } else {
-                            Chart {
-                                ForEach(sessions) { session in
-                                    BarMark(
-                                        x: .value("Datum", session.date, unit: .day),
-                                        y: .value("Karty", session.totalCards)
-                                    )
-                                    .foregroundStyle(Color.blue.gradient)
-                                    .cornerRadius(5)
-                                }
-                            }
-                            .frame(height: 250)
-                            // Nastavení osy X na dny
-                            .chartXAxis {
-                                AxisMarks(values: .stride(by: .day)) { value in
-                                    AxisValueLabel(format: .dateTime.weekday())
-                                }
-                            }
-                        }
-                    }
-                    .padding()
-                    .background(Color(UIColor.secondarySystemBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .padding(.horizontal)
-                    
-                    // 3. STATISTIKY V ČÍSLECH
-                    HStack(spacing: 15) {
-                        StatBox(title: "Celkem karet", value: "\(calculateTotalCards())", icon: "rectangle.stack.fill", color: .blue)
-                        StatBox(title: "Sessions", value: "\(sessions.count)", icon: "play.circle.fill", color: .orange)
-                    }
-                    .padding(.horizontal)
+                    // 3. Sekce s kartičkami (vyčleněna)
+                    statsGridSection
                 }
                 .padding(.top)
             }
             .navigationTitle("Statistiky")
+            .background(Color(UIColor.systemGroupedBackground)) // Světle šedé pozadí
+            .onAppear {
+                viewModel.refreshData()
+            }
         }
     }
     
-    // --- POMOCNÉ VÝPOČTY ---
+    // MARK: - Subviews (Rozdělení pro kompilátor)
     
-    private func calculateOverallAccuracy() -> Int {
-        let totalCorrect = sessions.reduce(0) { $0 + $1.correctCount }
-        let totalAll = sessions.reduce(0) { $0 + $1.totalCards }
-        
-        guard totalAll > 0 else { return 0 }
-        return Int((Double(totalCorrect) / Double(totalAll)) * 100)
+    private var filterSection: some View {
+        Picker("Období", selection: $viewModel.selectedRange) {
+            ForEach(StatsRange.allCases, id: \.self) { range in
+                Text(range.rawValue).tag(range)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
     }
     
-    private func calculateTotalCards() -> Int {
-        sessions.reduce(0) { $0 + $1.totalCards }
+    private var chartSection: some View {
+        VStack(alignment: .leading) {
+            Text("Aktivita")
+                .font(.headline)
+            
+            Text("Zelená znamená splněný cíl")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.bottom, 5)
+            
+            Chart(viewModel.chartData) { item in
+                BarMark(
+                    x: .value("Čas", item.label),
+                    y: .value("Karty", item.value)
+                )
+                .foregroundStyle(item.isGoalMet ? Color.green.gradient : Color.gray.opacity(0.3).gradient)
+                .cornerRadius(4)
+            }
+            .frame(height: 200)
+            .chartXAxis {
+                AxisMarks { value in
+                    // Jednoduchá logika pro popisky osy X
+                    AxisValueLabel()
+                }
+            }
+        }
+        .padding()
+        .background(Color(UIColor.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+        .padding(.horizontal)
+    }
+    
+    private var statsGridSection: some View {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
+            StatSmallCard(
+                title: "Streak",
+                value: "\(viewModel.streakDays) dní",
+                subValue: "Drž to!",
+                icon: "flame.fill",
+                color: .orange
+            )
+            
+            StatSmallCard(
+                title: "Přesnost",
+                value: String(format: "%.0f %%", viewModel.overallAccuracy),
+                subValue: "Celková",
+                icon: "target",
+                color: .blue
+            )
+            
+            StatSmallCard(
+                title: "Celkem XP",
+                value: "\(viewModel.totalXP)",
+                subValue: "Zkušenosti",
+                icon: "star.fill",
+                color: .yellow
+            )
+            
+            // Zde můžeš přidat další, např. Cards Done
+            StatSmallCard(
+                title: "Hotovo",
+                value: "\(viewModel.sessions.reduce(0) { $0 + $1.totalCards })",
+                subValue: "Karet celkem",
+                icon: "checkmark.circle.fill",
+                color: .green
+            )
+        }
+        .padding(.horizontal)
+        .padding(.bottom, 20)
     }
 }
 
-// Malá komponenta pro čtverečky dole
-struct StatBox: View {
+// MARK: - Chybějící komponenta StatSmallCard
+// Tato struktura musí být MIMO strukturu StatisticsView (nebo uvnitř, ale správně uzavřená).
+// Zde je na konci souboru, což je nejbezpečnější.
+
+struct StatSmallCard: View {
     let title: String
     let value: String
+    let subValue: String
     let icon: String
     let color: Color
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Image(systemName: icon)
-                .foregroundStyle(color)
-                .font(.title2)
-                .padding(.bottom, 5)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundStyle(color)
+                    .font(.title2)
+                    .padding(8)
+                    .background(color.opacity(0.15))
+                    .clipShape(Circle())
+                Spacer()
+            }
             
-            Text(value)
-                .font(.title)
-                .bold()
+            VStack(alignment: .leading, spacing: 2) {
+                Text(value)
+                    .font(.title2)
+                    .bold()
+                    // Identifikátor pro UI testy
+                    .accessibilityIdentifier("value_\(title)")
+                
+                Text(subValue)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             
             Text(title)
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .padding(.top, 4)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(UIColor.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-}
-
-#Preview {
-    StatisticsView()
 }

@@ -84,10 +84,12 @@
 		C685B7052F10DFBD007EC0D8 /* Exceptions for "StudySync" folder in "StudySync Watch Watch App" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Model/SharedDTOs.swift,
 				Model/StudyCard.swift,
 				Model/StudyGroup.swift,
 				Model/StudyPackage.swift,
 				Model/StudySession.swift,
+				Serivices/WatchConnector.swift,
 			);
 			target = C689D85E2EF42E11003DBE2A /* StudySync Watch Watch App */;
 		};
