@@ -8,32 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		0F43131C2F1A5A2400179B72 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0F43131B2F1A5A2400179B72 /* Localizable.xcstrings */; };
-		0F43131E2F1A5E5A00179B72 /* StudySync Watch.app in Resources */ = {isa = PBXBuildFile; fileRef = C689D85A2EF42E11003DBE2A /* StudySync Watch.app */; };
-		0F4313212F1A5E7B00179B72 /* StudySync.app in Resources */ = {isa = PBXBuildFile; fileRef = C689D8482EF42DD9003DBE2A /* StudySync.app */; };
 		C689D8602EF42E11003DBE2A /* StudySync Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = C689D85F2EF42E11003DBE2A /* StudySync Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		0F43131F2F1A5E5A00179B72 /* PBXContainerItemProxy */ = {
+		0F4313292F1A944F00179B72 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C689D8402EF42DD9003DBE2A /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C689D8592EF42E11003DBE2A;
-			remoteInfo = "StudySync Watch";
-		};
-		0F4313222F1A5E7B00179B72 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C689D8402EF42DD9003DBE2A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C689D8472EF42DD9003DBE2A;
-			remoteInfo = StudySync;
-		};
-		0F4313242F1A77C500179B72 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C689D8402EF42DD9003DBE2A /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C689D8592EF42E11003DBE2A;
-			remoteInfo = "StudySync Watch";
+			remoteGlobalIDString = C689D85E2EF42E11003DBE2A;
+			remoteInfo = "StudySync Watch Watch App";
 		};
 		0F81C18C2F14F321000CE4D5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -89,13 +73,6 @@
 			);
 			target = 0F81C1872F14F321000CE4D5 /* StudySyncTests */;
 		};
-		0F81C1BA2F14FA99000CE4D5 /* Exceptions for "StudySyncTestsUI" folder in "StudySync" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Mock.swift,
-			);
-			target = C689D8472EF42DD9003DBE2A /* StudySync */;
-		};
 		0F81C1BE2F14FBEF000CE4D5 /* Exceptions for "StudySync" folder in "StudySyncTestsUI" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -128,9 +105,6 @@
 		};
 		0F81C1962F14F344000CE4D5 /* StudySyncTestsUI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				0F81C1BA2F14FA99000CE4D5 /* Exceptions for "StudySyncTestsUI" folder in "StudySync" target */,
-			);
 			path = StudySyncTestsUI;
 			sourceTree = "<group>";
 		};
@@ -275,6 +249,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0F43132A2F1A944F00179B72 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C689D8AC2EF42F95003DBE2A /* StudySync */,
@@ -316,9 +291,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				0F4313202F1A5E5A00179B72 /* PBXTargetDependency */,
-				0F4313232F1A5E7B00179B72 /* PBXTargetDependency */,
-				0F4313252F1A77C500179B72 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C689D8632EF42E11003DBE2A /* StudySync Watch Watch App */,
@@ -417,8 +389,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F4313212F1A5E7B00179B72 /* StudySync.app in Resources */,
-				0F43131E2F1A5E5A00179B72 /* StudySync Watch.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -456,20 +426,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		0F4313202F1A5E5A00179B72 /* PBXTargetDependency */ = {
+		0F43132A2F1A944F00179B72 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C689D8592EF42E11003DBE2A /* StudySync Watch */;
-			targetProxy = 0F43131F2F1A5E5A00179B72 /* PBXContainerItemProxy */;
-		};
-		0F4313232F1A5E7B00179B72 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C689D8472EF42DD9003DBE2A /* StudySync */;
-			targetProxy = 0F4313222F1A5E7B00179B72 /* PBXContainerItemProxy */;
-		};
-		0F4313252F1A77C500179B72 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C689D8592EF42E11003DBE2A /* StudySync Watch */;
-			targetProxy = 0F4313242F1A77C500179B72 /* PBXContainerItemProxy */;
+			target = C689D85E2EF42E11003DBE2A /* StudySync Watch Watch App */;
+			targetProxy = 0F4313292F1A944F00179B72 /* PBXContainerItemProxy */;
 		};
 		0F81C18D2F14F321000CE4D5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

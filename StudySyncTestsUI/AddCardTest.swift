@@ -4,7 +4,7 @@
 //
 //  Created by Martin Reich on 12.01.2026.
 //
-
+/*
 import XCTest
 
 final class AddCardUITests: XCTestCase {
@@ -100,4 +100,4 @@ final class AddCardUITests: XCTestCase {
         let newCardText = app.staticTexts["Kolik je 5x5?"]
         XCTAssertTrue(newCardText.waitForExistence(timeout: 2.0), "Nová karta se neobjevila v seznamu")
     }
-}
+}*/

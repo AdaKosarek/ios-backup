@@ -4,8 +4,15 @@ import Charts
 struct StatisticsView: View {
     @State var viewModel: StatisticsViewModel
     
-    // Animace pro graf
+    // Interaktivita grafu
+    @State private var rawSelectedDate: Date? = nil
     @State private var animateChart = false
+    
+    // Helper: Najde vybraný bod v grafu
+    var selectedItem: StatisticsViewModel.ChartPoint? {
+        guard let rawSelectedDate else { return nil }
+        return viewModel.findChartItem(for: rawSelectedDate)
+    }
     
     var body: some View {
         NavigationStack {
@@ -15,21 +22,22 @@ struct StatisticsView: View {
                     // 1. Přepínač období
                     rangePicker
                     
-                    // 2. Hlavní graf (Velká karta)
-                    mainChartCard
+                    // 2. Interaktivní Graf
+                    interactiveChartCard
                     
                     // 3. Mřížka statistik
-                    statsGrid
+                    statsGridSection
                 }
                 .padding()
             }
             .background(Color(UIColor.systemGroupedBackground))
-            .navigationTitle("Přehled")
+            .navigationTitle("Statistiky")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         withAnimation {
                             viewModel.generateMockData()
+                            // Restart animace
                             animateChart = false
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                 animateChart = true
@@ -48,7 +56,7 @@ struct StatisticsView: View {
         }
     }
     
-    // MARK: - Components
+    // MARK: - Komponenty
     
     private var rangePicker: some View {
         Picker("Range", selection: $viewModel.selectedRange) {
@@ -60,73 +68,103 @@ struct StatisticsView: View {
         .padding(.horizontal, 4)
     }
     
-    private var mainChartCard: some View {
+    private var interactiveChartCard: some View {
         VStack(alignment: .leading, spacing: 16) {
-            HStack {
+            // Hlavička grafu (Text se mění při dotyku)
+            HStack(alignment: .top) {
                 VStack(alignment: .leading) {
                     Text("Aktivita")
                         .font(.headline)
                         .foregroundStyle(.secondary)
                     
-                    // Dynamický součet pro vybrané období
-                    Text("\(viewModel.chartData.reduce(0) { $0 + $1.value }) karet")
-                        .font(.system(.title, design: .rounded))
-                        .bold()
+                    if let selectedItem {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("\(selectedItem.value) karet")
+                                .font(.system(.title, design: .rounded))
+                                .bold()
+                                .foregroundStyle(selectedItem.color)
+                            
+                            Text(selectedItem.date.formatted(date: .abbreviated, time: .omitted))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                         .contentTransition(.numericText())
-                }
-                Spacer()
-                
-                // Ikonka grafu
-                Image(systemName: "chart.bar.fill")
-                    .foregroundStyle(.blue.gradient)
-                    .font(.title2)
-            }
-            
-            // Samotný graf
-            Chart(viewModel.chartData) { item in
-                // Sloupce
-                BarMark(
-                    x: .value("Den", item.label),
-                    y: .value("Karty", animateChart ? item.value : 0)
-                )
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [item.color, item.color.opacity(0.6)],
-                        startPoint: .bottom,
-                        endPoint: .top
-                    )
-                )
-                .cornerRadius(6)
-                // Zobrazení hodnoty nad sloupcem (pokud je místo)
-                .annotation(position: .top, alignment: .center) {
-                    if item.value > 0 && viewModel.selectedRange == .week {
-                        Text("\(item.value)")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                    } else {
+                        // Výchozí stav (Součet)
+                        Text("\(viewModel.chartData.reduce(0) { $0 + $1.value }) karet")
+                            .font(.system(.title, design: .rounded))
+                            .bold()
+                            .contentTransition(.numericText())
                     }
                 }
+                Spacer()
+            }
+            
+            // --- GRAF ---
+            Chart {
+                // 1. Přerušovaná čára cíle
+                RuleMark(y: .value("Cíl", viewModel.dailyGoal))
+                    .lineStyle(StrokeStyle(lineWidth: 2, dash: [5, 5]))
+                    .foregroundStyle(.gray.opacity(0.5))
+                    .annotation(position: .leading, alignment: .bottom) {
+                        Text("Cíl")
+                            .font(.caption2)
+                            .foregroundStyle(.gray)
+                    }
+
+                // 2. Sloupce
+                ForEach(viewModel.chartData) { item in
+                    BarMark(
+                        x: .value("Den", item.date, unit: .day),
+                        y: .value("Karty", animateChart ? item.value : 0)
+                    )
+                    .foregroundStyle(
+                        // Zprůhlednění nevybraných
+                        selectedItem != nil && selectedItem != item
+                            ? item.color.opacity(0.3).gradient
+                            : item.color.gradient
+                    )
+                    .cornerRadius(6)
+                }
                 
-                // Čára průměru (volitelné, vypadá to "profi")
-                if let avg = calculateAverage(), avg > 0 {
-                    RuleMark(y: .value("Průměr", avg))
-                        .lineStyle(StrokeStyle(lineWidth: 2, dash: [5]))
-                        .foregroundStyle(.gray.opacity(0.3))
-                        .annotation(position: .leading, alignment: .bottom) {
-                            Text("Ø \(Int(avg))")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
+                // 3. Kurzoru při výběru
+                if let selectedItem {
+                    RuleMark(x: .value("Selected", selectedItem.date, unit: .day))
+                        .foregroundStyle(Color.gray.opacity(0.1))
+                        .zIndex(-1)
+                        .annotation(position: .top, overflowResolution: .init(x: .fit, y: .disabled)) {
+                            VStack {
+                                Text("\(selectedItem.value)")
+                                    .font(.caption)
+                                    .bold()
+                                    .foregroundStyle(.white)
+                            }
+                            .padding(.vertical, 4)
+                            .padding(.horizontal, 8)
+                            .background(Color.black.opacity(0.8))
+                            .clipShape(Capsule())
                         }
                 }
             }
             .frame(height: 220)
-            .chartYAxis(.hidden) // Skryjeme osu Y pro čistší vzhled
+            .chartXSelection(value: $rawSelectedDate) // Interaktivita
             .chartXAxis {
-                AxisMarks { _ in
-                    AxisValueLabel()
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                AxisMarks(values: .automatic) { value in
+                    if viewModel.selectedRange == .month {
+                        AxisGridLine()
+                        AxisTick()
+                        // Pro měsíc zobrazíme datum jen občas, aby to nebylo přeplácané
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel { Text(date, format: .dateTime.day()) }
+                        }
+                    } else if viewModel.selectedRange == .year {
+                        AxisValueLabel(format: .dateTime.month(.narrow))
+                    } else {
+                        AxisValueLabel(format: .dateTime.weekday())
+                    }
                 }
             }
+            .chartYAxis(.hidden)
         }
         .padding(20)
         .background(Color(UIColor.secondarySystemGroupedBackground))
@@ -134,93 +172,63 @@ struct StatisticsView: View {
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
     
-    private var statsGrid: some View {
+    private var statsGridSection: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
             
-            BentoCard(
-                title: "Streak",
+            // 1. Série (Streak)
+            StatCard(
+                title: "Série",
                 value: "\(viewModel.streakDays)",
                 unit: "dní",
                 icon: "flame.fill",
-                gradient: Gradient(colors: [.orange, .red])
+                color: .orange
             )
             
-            BentoCard(
+            // 2. Trend (Oproti minulu)
+            let isPositive = viewModel.trendPercentage >= 0
+            StatCard(
+                title: "Trend",
+                value: "\(isPositive ? "+" : "")\(Int(viewModel.trendPercentage))",
+                unit: "%",
+                icon: isPositive ? "chart.line.uptrend.xyaxis" : "chart.line.downtrend.xyaxis",
+                color: isPositive ? .green : .red
+            )
+            
+            // 3. Pravidelnost (Consistency)
+            StatCard(
+                title: "Pravidelnost",
+                value: String(format: "%.0f", viewModel.consistency),
+                unit: "%",
+                icon: "chart.pie.fill",
+                color: .purple
+            )
+            
+            // 4. Úspěšnost
+            StatCard(
+                title: "Úspěšnost",
+                value: String(format: "%.0f", viewModel.overallAccuracy),
+                unit: "%",
+                icon: "target",
+                color: .blue
+            )
+            
+            // 5. XP
+            StatCard(
                 title: "Zkušenosti",
                 value: "\(viewModel.totalXP)",
                 unit: "XP",
                 icon: "star.fill",
-                gradient: Gradient(colors: [.yellow, .orange])
+                color: .yellow
             )
             
-            BentoCard(
-                title: "Přesnost",
-                value: String(format: "%.0f", viewModel.overallAccuracy),
-                unit: "%",
-                icon: "target",
-                gradient: Gradient(colors: [.blue, .purple])
-            )
-            
-            BentoCard(
+            // 6. Celkem karet
+            StatCard(
                 title: "Celkem",
                 value: "\(viewModel.totalCardsStudied)",
                 unit: "karet",
                 icon: "rectangle.stack.fill",
-                gradient: Gradient(colors: [.green, .mint])
+                color: .gray
             )
         }
-    }
-    
-    // Pomocná funkce pro průměr v grafu
-    private func calculateAverage() -> Double? {
-        let total = viewModel.chartData.reduce(0) { $0 + $1.value }
-        return viewModel.chartData.isEmpty ? nil : Double(total) / Double(viewModel.chartData.count)
-    }
-}
-
-// MARK: - Moderní "Bento" Karta
-struct BentoCard: View {
-    let title: String
-    let value: String
-    let unit: String
-    let icon: String
-    let gradient: Gradient
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundStyle(.white)
-                    .frame(width: 36, height: 36)
-                    .background(LinearGradient(gradient: gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                    .clipShape(Circle())
-                
-                Spacer()
-            }
-            
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(alignment: .lastTextBaseline, spacing: 2) {
-                    Text(value)
-                        .font(.system(.title, design: .rounded))
-                        .fontWeight(.bold)
-                        .contentTransition(.numericText())
-                    
-                    Text(unit)
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.secondary)
-                }
-                
-                Text(title)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.03), radius: 8, x: 0, y: 4)
     }
 }

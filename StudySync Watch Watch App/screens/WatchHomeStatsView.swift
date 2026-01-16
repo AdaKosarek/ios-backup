@@ -5,178 +5,146 @@
 //  Created by Martin Reich on 12.01.2026.
 //
 
-//
-//  HomeStatsView.swift
-//  StudySync
-//
-//  Created by Martin Reich on 12.01.2026.
-//
-
 import SwiftUI
 
-struct HomeStatsView: View {
-    // Tmavé pozadí aplikace
-    let bgDark = Color(red: 0.05, green: 0.07, blue: 0.12)
-    let cardBg = Color(red: 0.1, green: 0.12, blue: 0.18)
+struct WatchDashboardView: View {
+    @State private var connector = WatchConnector.shared
     
-    var body: some View {
-        ZStack {
-            bgDark.ignoresSafeArea()
-            
-            ScrollView {
-                VStack(spacing: 25) {
-                    Text("Today's Stats")
-                        .font(.headline)
-                        .foregroundStyle(.gray)
-                        .padding(.top)
-                    
-                    // --- 1. KRUHOVÝ GRAF (ACCURACY) ---
-                    ZStack {
-                        // Podkladový kruh
-                        Circle()
-                            .stroke(Color.gray.opacity(0.15), lineWidth: 15)
-                            .frame(width: 160, height: 160)
-                        
-                        // Barevný kruh (87%)
-                        Circle()
-                            .trim(from: 0, to: 0.87)
-                            .stroke(
-                                LinearGradient(colors: [.green, .mint], startPoint: .top, endPoint: .bottom),
-                                style: StrokeStyle(lineWidth: 15, lineCap: .round)
-                            )
-                            .frame(width: 160, height: 160)
-                            .rotationEffect(.degrees(-90))
-                            .shadow(color: .green.opacity(0.3), radius: 10)
-                        
-                        // Text uvnitř
-                        VStack {
-                            Text("87%")
-                                .font(.system(size: 40, weight: .bold, design: .rounded))
-                                .foregroundStyle(.white)
-                            Text("Accuracy")
-                                .font(.caption)
-                                .foregroundStyle(.gray)
-                        }
-                    }
-                    .padding(.vertical, 10)
-                    
-                    // --- 2. BAREVNÉ KARTIČKY (XP, CARDS, TIMER) ---
-                    VStack(spacing: 15) {
-                        // XP Earned (Hnědá/Zlatá)
-                        StatCard(
-                            icon: "bolt.fill",
-                            color: .orange,
-                            title: "XP Earned",
-                            subtitle: "Today",
-                            value: "5",
-                            gradientColors: [Color.orange.opacity(0.2), Color.brown.opacity(0.2)]
-                        )
-                        
-                        // Cards Done (Modrá)
-                        StatCard(
-                            icon: "chart.bar.fill",
-                            color: .blue,
-                            title: "Cards Done",
-                            subtitle: "Today",
-                            value: "15",
-                            gradientColors: [Color.blue.opacity(0.2), Color.purple.opacity(0.2)]
-                        )
-                        
-                        // Next Session (Fialová)
-                        StatCard(
-                            icon: "clock.fill",
-                            color: .purple,
-                            title: "Next Session",
-                            subtitle: "Timer",
-                            value: "2h",
-                            gradientColors: [Color.purple.opacity(0.2), Color.pink.opacity(0.2)]
-                        )
-                    }
-                    .padding(.horizontal)
-                    
-                    // --- 3. GRAF (THIS WEEK) ---
-                    VStack(alignment: .leading, spacing: 15) {
-                        Text("This Week")
-                            .font(.caption)
-                            .foregroundStyle(.gray)
-                        
-                        HStack(alignment: .bottom, spacing: 12) {
-                            // Falešná data pro graf, aby vypadal jako na obrázku
-                            let heights: [CGFloat] = [30, 40, 35, 70, 50, 80, 40]
-                            let days = ["M", "T", "W", "T", "F", "S", "S"]
-                            
-                            ForEach(0..<7) { index in
-                                VStack {
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .fill(LinearGradient(colors: [.blue, .purple], startPoint: .bottom, endPoint: .top))
-                                        .frame(height: heights[index])
-                                    
-                                    Text(days[index])
-                                        .font(.system(size: 10))
-                                        .foregroundStyle(.gray)
-                                }
-                                .frame(maxWidth: .infinity)
-                            }
-                        }
-                    }
-                    .padding()
-                    // Pozadí grafu zmizí do ztracena (gradient)
-                    .background(
-                        LinearGradient(colors: [cardBg, bgDark], startPoint: .top, endPoint: .bottom)
-                    )
-                    .padding(.horizontal)
-                    
-                    Spacer(minLength: 80) // Místo dole pro tab bar
-                }
+    // Spočítáme skutečný počet karet
+    var totalCardsCount: Int {
+        connector.receivedPackages.reduce(0) { pkgResult, pkg in
+            pkgResult + pkg.groups.reduce(0) { grpResult, grp in
+                grpResult + grp.cards.count
             }
         }
     }
-}
-
-// Pomocná komponenta pro řádek statistiky
-struct StatCard: View {
-    let icon: String
-    let color: Color
-    let title: String
-    let subtitle: String
-    let value: String
-    let gradientColors: [Color]
+    
+    // Helper: Všechny karty v jednom poli
+    var allCards: [CardDTO] {
+        connector.receivedPackages.flatMap { $0.groups.flatMap { $0.cards } }
+    }
+    
+    let streak = 0
+    let xp = 0
     
     var body: some View {
-        HStack {
-            // Ikonka
-            ZStack {
-                Circle()
-                    .fill(Color.black.opacity(0.3))
-                    .frame(width: 40, height: 40)
-                Image(systemName: icon)
-                    .foregroundStyle(color)
+        NavigationStack {
+            VStack(spacing: 16) {
+                
+                // STAV 1: ÚPLNĚ BEZ DAT (Žádné balíčky)
+                if connector.receivedPackages.isEmpty {
+                    emptyStateView
+                }
+                
+                // STAV 2: MÁME BALÍČKY, ALE JSOU PRÁZNÉ (0 karet)
+                else if totalCardsCount == 0 {
+                    packagesButNoCardsView
+                }
+                
+                // STAV 3: MÁME KARTY -> MŮŽEME SE UČIT
+                else {
+                    dashboardContent
+                }
             }
+            .padding()
+        }
+    }
+    
+    // MARK: - Subviews
+    
+    // 1. Obsah Dashboardu (když je vše OK)
+    var dashboardContent: some View {
+        VStack(spacing: 16) {
+            // Kruh
+            CircularProgressView(
+                progress: 0.05,
+                title: "\(totalCardsCount)",
+                subtitle: "karet celkem",
+                color: .brandBlue
+            )
+            .frame(height: 120)
+            .contentTransition(.numericText())
             
-            // Texty
-            VStack(alignment: .leading) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                Text(subtitle)
-                    .font(.caption)
-                    .foregroundStyle(.gray)
+            // Statistiky
+            HStack(spacing: 20) {
+                HStack {
+                    Image(systemName: "flame.fill").foregroundStyle(.orange)
+                    Text("\(streak)").fontWeight(.bold)
+                }
+                HStack {
+                    Image(systemName: "star.fill").foregroundStyle(.yellow)
+                    Text("\(xp)").fontWeight(.bold)
+                }
             }
             
             Spacer()
             
-            // Hodnota
-            Text(value)
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundStyle(color)
+            // TLAČÍTKO START - Tady posíláme karty!
+            NavigationLink(destination: WatchSessionView(cards: allCards)) {
+                Text("Spustit učení >")
+                    .font(.headline)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.mainGradient)
+                    .clipShape(RoundedRectangle(cornerRadius: 25))
+            }
+            .buttonStyle(.plain)
         }
-        .padding()
-        .background(LinearGradient(colors: gradientColors, startPoint: .leading, endPoint: .trailing))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
     }
-}
-
-#Preview {
-    HomeStatsView()
+    
+    // 2. Úplně prázdno
+    var emptyStateView: some View {
+        VStack {
+            Spacer()
+            Image(systemName: "iphone.gen3.radiowaves.left.and.right")
+                .font(.largeTitle)
+                .foregroundStyle(.gray)
+                .padding(.bottom, 8)
+            
+            Text("Žádná data")
+                .font(.headline)
+            
+            Text("Otevři iPhone aplikaci a synchronizuj balíčky.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Button(action: { withAnimation { connector.generateMockData() } }) {
+                Text("Nahrát Demo Data")
+                    .fontWeight(.bold)
+            }
+            .tint(.orange)
+            .padding(.top)
+            Spacer()
+        }
+    }
+    
+    // 3. Balíčky jsou, ale karty ne
+    var packagesButNoCardsView: some View {
+        VStack {
+            Spacer()
+            Image(systemName: "tray")
+                .font(.largeTitle)
+                .foregroundStyle(.orange)
+                .padding(.bottom, 8)
+            
+            Text("Prázdné balíčky")
+                .font(.headline)
+            
+            Text("Máš balíčky, ale nejsou v nich žádné kartičky.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            // I tady nabídneme Demo data, abys to mohl otestovat
+            Button(action: { withAnimation { connector.generateMockData() } }) {
+                Text("Přidat Demo Karty")
+                    .fontWeight(.bold)
+            }
+            .tint(.blue)
+            .padding(.top)
+            Spacer()
+        }
+    }
 }

@@ -12,37 +12,55 @@ struct PackagesListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                if viewModel.packages.isEmpty {
-                    ContentUnavailableView("Žádné balíčky", systemImage: "tray.fill")
-                        .accessibilityIdentifier("EmptyPackagesView")
-                } else {
-                    ForEach(viewModel.packages) { package in
-                        NavigationLink(destination: PackageDetailView(viewModel: diContainer.makePackageDetailViewModel(package: package))) {
-                            HStack {
-                                Image(systemName: package.icon)
-                                    .font(.title2)
-                                    .foregroundStyle(.white)
-                                    .frame(width: 50, height: 50)
-                                    .background(Color(hex: package.colorHex))
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                
-                                VStack(alignment: .leading) {
-                                    Text(package.name).font(.headline)
-                                    Text("\(package.groups.count) skupin").font(.caption).foregroundStyle(.secondary)
+            ZStack {
+                // 1. Pozadí celé obrazovky (aby bílé kartičky vynikly)
+                Color(UIColor.systemGroupedBackground)
+                    .ignoresSafeArea()
+                
+                ScrollView {
+                    // 2. LazyVStack místo Listu pro flexibilní design
+                    LazyVStack(spacing: 16) {
+                        
+                        if viewModel.packages.isEmpty {
+                            // Prázdný stav
+                            ContentUnavailableView("Žádné balíčky", systemImage: "tray.fill")
+                                .padding(.top, 50)
+                                .accessibilityIdentifier("EmptyPackagesView")
+                        } else {
+                            // 3. Smyčka přes balíčky
+                            ForEach(viewModel.packages) { package in
+                                NavigationLink(destination: PackageDetailView(viewModel: diContainer.makePackageDetailViewModel(package: package))) {
+                                    
+                                    // Voláme oddělenou komponentu kartičky
+                                    PackageCardView(package: package)
+                                    
                                 }
+                                .buttonStyle(PlainButtonStyle()) // Důležité: Odstraní modrý efekt při kliknutí
+                                
+                                // 4. Mazání: Kontextové menu (dlouhé podržení)
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        if let index = viewModel.packages.firstIndex(of: package) {
+                                            viewModel.deletePackage(at: IndexSet(integer: index))
+                                        }
+                                    } label: {
+                                        Label("Smazat balíček", systemImage: "trash")
+                                    }
+                                }
+                                // DŮLEŽITÉ PRO TESTY: Identifikátor musí být na prvku, na který se kliká
+                                .accessibilityIdentifier("PackageRow_\(package.name)")
                             }
                         }
-                        .accessibilityIdentifier("PackageRow_\(package.name)")
                     }
-                    .onDelete(perform: viewModel.deletePackage)
+                    .padding() // Odsazení obsahu od krajů
                 }
             }
             .navigationTitle("Moje Balíčky")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { showingAddSheet = true }) {
-                        Image(systemName: "plus")
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
                     }
                     .accessibilityIdentifier("AddPackageButton")
                 }
@@ -65,7 +83,9 @@ struct PackagesListView: View {
     }
 }
 
-// --- Vylepšený vizuální styl přidávání (podle tvého screenshotu) ---
+
+
+// MARK: - Add Package Sheet (Formulář pro přidání)
 struct AddPackageSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var name = ""
@@ -76,32 +96,32 @@ struct AddPackageSheet: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 20) {
-                // Sekce Název
+            VStack(alignment: .leading, spacing: 24) {
+                
+                // Input pro název
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Název balíčku")
                         .font(.headline)
                         .foregroundStyle(.secondary)
                     
-                    TextField("Např. Matematika", text: $name)
+                    TextField("Např. Angličtina", text: $name)
                         .padding()
                         .background(Color(UIColor.secondarySystemBackground))
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .accessibilityIdentifier("packageNameField")
                 }
                 
-                // Sekce Barva
+                // Výběr barvy
                 VStack(alignment: .leading, spacing: 12) {
                     Text("Barva")
                         .font(.headline)
                         .foregroundStyle(.secondary)
                     
-                    // Vodorovný výběr barev ve dvou řadách nebo mřížce (podle místa)
-                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 6), spacing: 12) {
                         ForEach(availableColors, id: \.self) { colorName in
                             Circle()
-                                .fill(Color(hex: colorName))
-                                .frame(width: 40, height: 40)
+                                .fill(Color(hex: colorName).gradient)
+                                .frame(height: 44)
                                 .overlay {
                                     if selectedColor == colorName {
                                         Image(systemName: "checkmark")
@@ -110,7 +130,9 @@ struct AddPackageSheet: View {
                                     }
                                 }
                                 .onTapGesture {
-                                    selectedColor = colorName
+                                    withAnimation(.spring) {
+                                        selectedColor = colorName
+                                    }
                                 }
                                 .accessibilityIdentifier("color_\(colorName)")
                         }
@@ -119,13 +141,12 @@ struct AddPackageSheet: View {
                 
                 Spacer()
             }
-            .padding()
+            .padding(24)
             .navigationTitle("Nový balíček")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Zrušit") { dismiss() }
-                        .foregroundStyle(.blue)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Vytvořit") {
@@ -137,6 +158,6 @@ struct AddPackageSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium]) // Otevře se jen do poloviny obrazovky
+        .presentationDetents([.medium])
     }
 }

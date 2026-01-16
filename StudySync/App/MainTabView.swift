@@ -5,48 +5,50 @@
 //  Created by Miroslav Musil on 18.12.2025.
 //
 
+//
+//  MainTabView.swift
+//  StudySync
+//
+
 import SwiftUI
 
 struct MainTabView: View {
-    // Přístup k DI kontejneru
+    // Získám kontejner z prostředí (vloženo v StudySyncApp)
     @EnvironmentObject var diContainer: DIContainer
     
     var body: some View {
         TabView {
             // 1. Domů
-            HomeView(viewModel: diContainer.makeHomeViewModel())
+            HomeView(viewModel: HomeViewModel(dataService: diContainer.dataService))
                 .tabItem {
-                    Label("Today", systemImage: "house.fill")
+                    Label("Dnes", systemImage: "house")
                 }
                 .tag(0)
-                .accessibilityIdentifier("HomeTab") // ID pro testy
             
-            // 2. Knihovna
-            PackagesListView(viewModel: diContainer.makePackagesListViewModel())
+            // 2. Knihovna (Balíčky)
+            PackagesListView(viewModel: PackagesListViewModel(dataService: diContainer.dataService))
                 .tabItem {
-                    Label("Library", systemImage: "books.vertical.fill")
+                    Label("Knihovna", systemImage: "books.vertical")
                 }
                 .tag(1)
-                .accessibilityIdentifier("LibraryTab") // <--- TOTO HLEDÁ TVŮJ TEST
+                // --- TOTO ZDE CHYBĚLO PRO TESTY ---
+                .accessibilityIdentifier("LibraryTab")
             
             // 3. Statistiky
-            StatisticsView(viewModel: diContainer.makeStatisticsViewModel())
+            StatisticsView(viewModel: StatisticsViewModel(dataService: diContainer.dataService))
                 .tabItem {
-                    Label("Stats", systemImage: "chart.bar.xaxis")
+                    Label("Statistiky", systemImage: "chart.bar")
                 }
                 .tag(2)
-                .accessibilityIdentifier("StatsTab") // ID pro testy
+                .accessibilityIdentifier("StatsTab")
             
             // 4. Nastavení
             SettingsView()
                 .tabItem {
-                    Label("Settings", systemImage: "gearshape.fill")
+                    Label("Nastavení", systemImage: "gear")
                 }
                 .tag(3)
-                .accessibilityIdentifier("SettingsTab") // ID pro testy
+                .accessibilityIdentifier("SettingsTab")
         }
-        // ZDE JSME SMAZALI .tint(.blue)
-        // Barva se nyní řídí v StudySyncApp.swift, takže tady
-        // nic nenastavujeme, aby se projevila volba uživatele.
     }
 }

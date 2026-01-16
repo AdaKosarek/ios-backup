@@ -8,81 +8,69 @@ import SwiftData
 
 struct HomeView: View {
     @State var viewModel: HomeViewModel
-        
-        var body: some View {
-            NavigationStack {
-                ScrollView {
-                    VStack(spacing: 20) {
-                        DailyGoalWidget(cardsStudiedToday: viewModel.cardsStudiedToday)
-                            .padding(.horizontal)
-                        
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                            HomeStatCard(title: "Streak", value: "\(viewModel.streak) dní", icon: "flame.fill", color: .orange)
-                            HomeStatCard(title: "Total XP", value: "\(viewModel.totalXP)", icon: "star.fill", color: .yellow)
-                            HomeStatCard(title: "Další studium", value: "2 hod", icon: "clock.fill", color: .purple)
-                            HomeStatCard(title: "Dnes hotovo", value: "\(viewModel.cardsStudiedToday)", icon: "checkmark.circle.fill", color: .green)
-                        }
-                        .padding(.horizontal)
-                    }
-                    .padding(.top)
-                }
-                .navigationTitle("Today")
-                .onAppear {
-                    // Pokaždé když se view ukáže, načteme čerstvá data
-                    viewModel.loadData()
-                }
-            }
-        }
-    }
-    /*
-    // Výpočty zůstávají stejné...
-    private func calculateCardsToday() -> Int {
-        let todaySessions = sessions.filter { Calendar.current.isDateInToday($0.date) }
-        return todaySessions.reduce(0) { $0 + $1.totalCards }
-    }
-    
-    private func calculateTotalXP() -> Int {
-        let totalCorrect = sessions.reduce(0) { $0 + $1.correctCount }
-        return totalCorrect * 10
-    }
-    
-    private func calculateStreak() -> Int {
-        if sessions.contains(where: { Calendar.current.isDateInToday($0.date) }) {
-            return 1
-        }
-        return 0
-    }
-}
-*/
-struct HomeStatCard: View {
-    let title: String
-    let value: String
-    let icon: String
-    let color: Color
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundStyle(color)
-                    .font(.title2)
-                Spacer()
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    
+                    // 1. Widget denního cíle
+                    DailyGoalWidget(cardsStudiedToday: viewModel.cardsStudiedToday)
+                        .padding(.horizontal)
+                    
+                    // 2. Nadpis sekce (Volitelné)
+                    HStack {
+                        Text("Rychlý přehled")
+                            .font(.headline)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    
+                    // 3. Mřížka se statistikami (Používá sdílenou StatCard)
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                        
+                        StatCard(
+                            title: "Série",
+                            value: "\(viewModel.streak)",
+                            unit: "dní",
+                            icon: "flame.fill",
+                            color: .orange
+                        )
+                        
+                        StatCard(
+                            title: "Zkušenosti",
+                            value: "\(viewModel.totalXP)",
+                            unit: "XP",
+                            icon: "star.fill",
+                            color: .yellow
+                        )
+                        
+                        // Zde je statický údaj, pokud ho nemáš v modelu, necháme ho takto
+                        StatCard(
+                            title: "Další studium",
+                            value: "2",
+                            unit: "hod",
+                            icon: "clock.fill",
+                            color: .purple
+                        )
+                        
+                        StatCard(
+                            title: "Dnes hotovo",
+                            value: "\(viewModel.cardsStudiedToday)",
+                            unit: "karet",
+                            icon: "checkmark.circle.fill",
+                            color: .green
+                        )
+                    }
+                    .padding(.horizontal)
+                }
+                .padding(.top)
             }
-            
-            Text(value)
-                .font(.title2)
-                .bold()
-                // PŘIDÁNO: ID pro hodnotu (např. value_Streak)
-                .accessibilityIdentifier("value_\(title)")
-            
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            .background(Color(UIColor.systemGroupedBackground)) // Sjednocené pozadí
+            .navigationTitle("Dnes")
+            .onAppear {
+                viewModel.loadData()
+            }
         }
-        .padding()
-        .background(Color(UIColor.secondarySystemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        // PŘIDÁNO: ID pro celou kartu
-        .accessibilityIdentifier("statCard_\(title)")
     }
 }

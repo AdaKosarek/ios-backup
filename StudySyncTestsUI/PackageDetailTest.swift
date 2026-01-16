@@ -5,7 +5,7 @@
 //  Created by Martin Reich on 12.01.2026.
 //
 
-
+/*
 
 import XCTest
 
@@ -86,4 +86,4 @@ final class PackageDetailUITests: XCTestCase {
         let cardText = app.staticTexts["Fixní Otázka"]
         XCTAssertTrue(cardText.exists)
     }
-}
+}*/

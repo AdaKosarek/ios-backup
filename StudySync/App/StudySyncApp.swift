@@ -5,7 +5,6 @@
 //  Created by Miroslav Musil on 18.12.2025.
 //
 
-
 import SwiftUI
 import SwiftData
 
@@ -18,6 +17,7 @@ struct StudySyncApp: App {
     // Sledování stavu aplikace (aktivní / pozadí)
     @Environment(\.scenePhase) private var scenePhase
     
+    // Definice SwiftData kontejneru
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             StudyPackage.self,
@@ -37,8 +37,27 @@ struct StudySyncApp: App {
     let diContainer: DIContainer
 
     init() {
-        let dataService = SwiftDataService(modelContext: sharedModelContainer.mainContext)
-        self.diContainer = DIContainer(dataService: dataService)
+        // --- ZMĚNA ZDE: Logika pro UI Testy ---
+        // Kontrolujeme, zda aplikace startuje v testovacím režimu
+        if CommandLine.arguments.contains("--mock-data") {
+            print("🚀 UI Test Mode: Aktivuji Mock Data...")
+            
+            // 1. Vytvoříme Mock Service (data v paměti)
+            let mockService = MockDataService()
+            
+            // 2. Naplníme ho testovacími daty (Matematika, atd.)
+            mockService.addMockDataForUITests()
+            
+            // 3. Předáme Mock do DI kontejneru
+            self.diContainer = DIContainer(dataService: mockService)
+            
+        } else {
+            // --- Standardní běh aplikace (SwiftData) ---
+            print("📱 Normal Mode: Aktivuji SwiftData...")
+            let dataService = SwiftDataService(modelContext: sharedModelContainer.mainContext)
+            self.diContainer = DIContainer(dataService: dataService)
+        }
+        // ---------------------------------------
         
         _ = WatchConnector.shared
         
@@ -48,10 +67,9 @@ struct StudySyncApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // 2. TADY BYLA CHYBA: Musíš volat MainTabView, ne PackagesListView
             MainTabView()
                 .environmentObject(diContainer)
-                // 3. Aplikace nastavení vzhledu a jazyka
+                // Aplikace nastavení vzhledu a jazyka
                 .tint(selectedTheme.mainColor)
                 .environment(\.locale, .init(identifier: selectedLanguage.rawValue))
         }

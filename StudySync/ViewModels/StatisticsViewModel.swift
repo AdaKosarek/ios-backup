@@ -4,7 +4,6 @@
 //
 //  Created by Martin Reich on 16.01.2026.
 //
-
 import Foundation
 import Observation
 import SwiftData
@@ -24,29 +23,31 @@ class StatisticsViewModel {
     
     // UI State
     var selectedRange: StatsRange = .week {
-        didSet {
-            // Při změně filtru přepočítáme graf I KARTIČKY
-            recalculateAll()
-        }
+        didSet { recalculateAll() }
     }
     
     var chartData: [ChartPoint] = []
     
-    // Statistiky (nyní se budou měnit podle filtru)
+    // Statistiky
     var overallAccuracy: Double = 0
     var totalXP: Int = 0
     var totalCardsStudied: Int = 0
-    
-    // Streak necháme globální (je to aktuální série), nebo ho můžeš taky filtrovat
     var streakDays: Int = 0
     
-    struct ChartPoint: Identifiable {
+    // Nové metriky
+    var consistency: Double = 0       // Pravidelnost v %
+    var trendPercentage: Double = 0   // Změna oproti minulu v %
+    
+    // Denní cíl (pro přerušovanou čáru v grafu)
+    var dailyGoal: Int = 20
+    
+    struct ChartPoint: Identifiable, Equatable {
         let id = UUID()
         let label: String
         let value: Int
         let date: Date
         var color: Color {
-            value > 20 ? .green : (value > 0 ? .blue : .gray.opacity(0.3))
+            value >= 20 ? .green : (value > 0 ? .blue : .gray.opacity(0.3))
         }
     }
 
@@ -63,82 +64,95 @@ class StatisticsViewModel {
         }
     }
     
-    // Hlavní funkce, která spustí všechny výpočty
-    private func recalculateAll() {
-        calculateAggregatedStats() // Kartičky
-        calculateChartData()       // Graf
+    // Helper pro interaktivitu grafu
+    func findChartItem(for date: Date) -> ChartPoint? {
+        return chartData.min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) })
     }
     
-    // MARK: - Výpočet statistik pro kartičky (Upraveno pro filtrování)
+    // MARK: - Hlavní výpočty
+    
+    private func recalculateAll() {
+        calculateAggregatedStats()
+        calculateChartData()
+        calculateTrend()
+    }
+    
     private func calculateAggregatedStats() {
-        // 1. Nejprve spočítáme Streak (ten je vždy globální - aktuální série)
+        // 1. Streak (počítá se globálně k dnešnímu dni)
         streakDays = calculateStreak()
         
-        // 2. Pro ostatní statistiky vyfiltrujeme sessions podle zvoleného období
+        // 2. Filtrace dat pro aktuální období
         let filteredSessions = getSessionsForSelectedRange()
         
-        // 3. Spočítáme hodnoty jen z vyfiltrovaných dat
+        // 3. Základní součty
         totalCardsStudied = filteredSessions.reduce(0) { $0 + $1.totalCards }
         let totalCorrect = filteredSessions.reduce(0) { $0 + $1.correctCount }
         
-        // Ošetření dělení nulou
         overallAccuracy = totalCardsStudied > 0 ? (Double(totalCorrect) / Double(totalCardsStudied)) * 100 : 0
-        
-        // XP (např. 10 bodů za správnou odpověď)
         totalXP = totalCorrect * 10
+        
+        // 4. Výpočet Pravidelnosti (Consistency)
+        let calendar = Calendar.current
+        // Počet unikátních dní, kdy se uživatel učil
+        let uniqueDaysStudied = Set(filteredSessions.map { calendar.startOfDay(for: $0.date) }).count
+        
+        // Celkový počet dní v období
+        let totalDaysInRange: Int
+        switch selectedRange {
+        case .week: totalDaysInRange = 7
+        case .month: totalDaysInRange = 30
+        case .year: totalDaysInRange = 365
+        }
+        
+        consistency = (Double(uniqueDaysStudied) / Double(totalDaysInRange)) * 100
     }
     
-    // Pomocná funkce: Vrátí jen sessions, které spadají do vybraného období
-    private func getSessionsForSelectedRange() -> [StudySession] {
+    private func calculateTrend() {
         let calendar = Calendar.current
         let today = Date()
         
-        // Určíme datum, od kterého nás to zajímá
-        let cutoffDate: Date?
+        // 1. Definice intervalů (Tento vs Minulý)
+        let currentStartDate: Date?
+        let previousStartDate: Date?
+        let previousEndDate: Date?
         
         switch selectedRange {
         case .week:
-            cutoffDate = calendar.date(byAdding: .day, value: -7, to: today)
+            currentStartDate = calendar.date(byAdding: .day, value: -7, to: today)
+            previousEndDate = currentStartDate
+            previousStartDate = calendar.date(byAdding: .day, value: -14, to: today)
         case .month:
-            cutoffDate = calendar.date(byAdding: .day, value: -30, to: today)
+            currentStartDate = calendar.date(byAdding: .day, value: -30, to: today)
+            previousEndDate = currentStartDate
+            previousStartDate = calendar.date(byAdding: .day, value: -60, to: today)
         case .year:
-            cutoffDate = calendar.date(byAdding: .month, value: -12, to: today)
+            currentStartDate = calendar.date(byAdding: .month, value: -12, to: today)
+            previousEndDate = currentStartDate
+            previousStartDate = calendar.date(byAdding: .month, value: -24, to: today)
         }
         
-        guard let start = cutoffDate else { return sessions }
-        
-        // Vrátíme jen sessions novější než cutoffDate
-        return sessions.filter { $0.date >= start }
-    }
-    
-    // MARK: - Generátor Mock Dat
-    func generateMockData() {
-        let calendar = Calendar.current
-        let today = Date()
-        var newSessions: [StudySession] = []
-        
-        // Vygenerujeme data pro posledních 100 dní (aby bylo dost dat i pro roční pohled)
-        for i in 0..<100 {
-            guard let date = calendar.date(byAdding: .day, value: -i, to: today) else { continue }
-            
-            // 60% šance, že se ten den učil
-            if Int.random(in: 1...100) > 40 {
-                let cardsCount = Int.random(in: 10...60)
-                // Náhodná úspěšnost mezi 50% a 100%
-                let correct = Int(Double(cardsCount) * Double.random(in: 0.5...1.0))
-                
-                let session = StudySession(correctCount: correct, incorrectCount: cardsCount - correct)
-                session.date = date // Simulace staršího data
-                
-                newSessions.append(session)
-            }
+        guard let currentStart = currentStartDate,
+              let prevStart = previousStartDate,
+              let prevEnd = previousEndDate else {
+            trendPercentage = 0
+            return
         }
         
-        self.sessions = newSessions
-        recalculateAll()
+        // 2. Data pro období
+        let currentCards = sessions.filter { $0.date >= currentStart }.reduce(0) { $0 + $1.totalCards }
+        let previousCards = sessions.filter { $0.date >= prevStart && $0.date < prevEnd }.reduce(0) { $0 + $1.totalCards }
+        
+        // 3. Výpočet procentuální změny
+        if previousCards == 0 {
+            trendPercentage = currentCards > 0 ? 100 : 0
+        } else {
+            let diff = Double(currentCards - previousCards)
+            trendPercentage = (diff / Double(previousCards)) * 100
+        }
     }
     
-    // MARK: - Graf (Zůstává stejný, jen pro úplnost)
+    // MARK: - Graf a Data
+    
     private func calculateChartData() {
         let calendar = Calendar.current
         let today = Date()
@@ -157,15 +171,27 @@ class StatisticsViewModel {
         self.chartData = points
     }
     
+    // Helpery
+    private func getSessionsForSelectedRange() -> [StudySession] {
+        let calendar = Calendar.current
+        let today = Date()
+        let cutoffDate: Date?
+        
+        switch selectedRange {
+        case .week: cutoffDate = calendar.date(byAdding: .day, value: -7, to: today)
+        case .month: cutoffDate = calendar.date(byAdding: .day, value: -30, to: today)
+        case .year: cutoffDate = calendar.date(byAdding: .month, value: -12, to: today)
+        }
+        
+        guard let start = cutoffDate else { return sessions }
+        return sessions.filter { $0.date >= start }
+    }
+    
     private func getLabel(for date: Date, range: StatsRange) -> String {
         let formatter = DateFormatter()
-        if range == .year {
-            formatter.dateFormat = "MMM"
-        } else if range == .month {
-             formatter.dateFormat = "d"
-        } else {
-            formatter.dateFormat = "EE"
-        }
+        if range == .year { formatter.dateFormat = "MMM" }
+        else if range == .month { formatter.dateFormat = "d.M." }
+        else { formatter.dateFormat = "EE" }
         return formatter.string(from: date)
     }
 
@@ -180,15 +206,32 @@ class StatisticsViewModel {
         var streak = 0
         let calendar = Calendar.current
         var checkDate = Date()
-        
-        if getCardsCount(for: checkDate, granularity: .day) == 0 {
-            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate)!
-        }
-        
+        if getCardsCount(for: checkDate, granularity: .day) == 0 { checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate)! }
         while getCardsCount(for: checkDate, granularity: .day) > 0 {
             streak += 1
             checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate)!
         }
         return streak
+    }
+    
+    // MARK: - Mock Data Generátor
+    func generateMockData() {
+        let calendar = Calendar.current
+        let today = Date()
+        var newSessions: [StudySession] = []
+        
+        for i in 0..<100 {
+            guard let date = calendar.date(byAdding: .day, value: -i, to: today) else { continue }
+            // 60% šance na učení
+            if Int.random(in: 1...100) > 40 {
+                let cardsCount = Int.random(in: 5...60)
+                let correct = Int(Double(cardsCount) * Double.random(in: 0.6...1.0))
+                let session = StudySession(correctCount: correct, incorrectCount: cardsCount - correct)
+                session.date = date
+                newSessions.append(session)
+            }
+        }
+        self.sessions = newSessions
+        recalculateAll()
     }
 }

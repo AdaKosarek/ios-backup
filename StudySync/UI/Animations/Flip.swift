@@ -10,45 +10,50 @@ struct FlipCardView: View {
     let question: String
     let answer: String
     let isFlipped: Bool
-    let onTap: () -> Void // Callback po kliknutí
+    let onTap: () -> Void
     
     var body: some View {
         ZStack {
-            // Pozadí karty
+            // Zadní strana (Odpověď) - BÍLÁ
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white)
-                .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+                .fill(Color.white) // Bílá pro odpověď
+                .shadow(radius: 5)
+                .overlay(
+                    Text(answer)
+                        .font(.title)
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .foregroundStyle(.black) // Černý text na bílém
+                )
+                .rotation3DEffect(
+                    .degrees(isFlipped ? 0 : 180), // Pokud je otočená, vidíme ji (0°), jinak je schovaná (180°)
+                    axis: (x: 0.0, y: 1.0, z: 0.0)
+                )
+                .opacity(isFlipped ? 1 : 0) // Skryjeme ji, když není aktivní (pro lepší efekt)
             
-            // Obsah (Otázka nebo Odpověď)
-            VStack {
-                Text(isFlipped ? answer : question)
-                    .font(.largeTitle)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    // DŮLEŽITÉ: Pokud je karta otočená, musíme text otočit zpět,
-                    // jinak by byl zrcadlově obrácený (nečitelný).
-                    .rotation3DEffect(
-                        .degrees(isFlipped ? 180 : 0),
-                        axis: (x: 0.0, y: 1.0, z: 0.0)
-                    )
-            }
+            // Přední strana (Otázka) - MODRÁ
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.blue.gradient) // Modrá (s gradientem pro hezčí efekt) pro otázku
+                .shadow(radius: 5)
+                .overlay(
+                    Text(question)
+                        .font(.title)
+                        .bold()
+                        .multilineTextAlignment(.center)
+                        .padding()
+                        .foregroundStyle(.white) // Bílý text na modrém
+                )
+                .rotation3DEffect(
+                    .degrees(isFlipped ? -180 : 0), // Pokud je otočená, schováme ji (-180°), jinak ji vidíme (0°)
+                    axis: (x: 0.0, y: 1.0, z: 0.0)
+                )
+                .opacity(isFlipped ? 0 : 1) // Skryjeme ji, když je otočeno
         }
-        .frame(height: 350) // Výška karty
+        .frame(height: 300) // Výška karty
         .padding()
-        // DŮLEŽITÉ: 3D Rotace celé karty
-        .rotation3DEffect(
-            .degrees(isFlipped ? 180 : 0),
-            axis: (x: 0.0, y: 1.0, z: 0.0)
-        )
-        // Reakce na kliknutí
         .onTapGesture {
             onTap()
         }
-        // Definice animace (pružinový efekt)
-        .animation(.spring(response: 0.6, dampingFraction: 0.8), value: isFlipped)
     }
-}
-
-#Preview {
-    FlipCardView(question: "Otázka", answer: "Odpověď", isFlipped: false, onTap: {})
 }

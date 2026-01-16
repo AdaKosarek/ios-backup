@@ -93,3 +93,27 @@ class WatchConnector: NSObject, WCSessionDelegate {
     }
     #endif
 }
+extension WatchConnector {
+    func generateMockData() {
+        // Vytvoříme fiktivní balíček "Angličtina"
+        let card1 = CardDTO(id: UUID(), question: "Pes", answer: "Dog")
+        let card2 = CardDTO(id: UUID(), question: "Kočka", answer: "Cat")
+        let card3 = CardDTO(id: UUID(), question: "Jablko", answer: "Apple")
+        
+        let group1 = GroupDTO(id: UUID(), name: "Zvířata", cards: [card1, card2])
+        let group2 = GroupDTO(id: UUID(), name: "Jídlo", cards: [card3])
+        
+        let package1 = PackageDTO(id: UUID(), name: "Angličtina", colorHex: "blue", groups: [group1, group2])
+        
+        // Vytvoříme fiktivní balíček "Matematika"
+        let card4 = CardDTO(id: UUID(), question: "2 + 2", answer: "4")
+        let group3 = GroupDTO(id: UUID(), name: "Sčítání", cards: [card4])
+        
+        let package2 = PackageDTO(id: UUID(), name: "Matematika", colorHex: "orange", groups: [group3])
+        
+        // Uložíme do receivedPackages (což automaticky aktualizuje UI)
+        DispatchQueue.main.async {
+            self.receivedPackages = [package1, package2]
+        }
+    }
+}
