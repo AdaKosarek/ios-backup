@@ -16,89 +16,80 @@ class WatchConnector: NSObject, WCSessionDelegate {
     
     var receivedPackages: [PackageDTO] = []
     
-    override init() {
+    private override init() {
         super.init()
+        // Stejná inicializace jako ve WeatherApp
         if WCSession.isSupported() {
-            let session = WCSession.default
-            session.delegate = self
-            session.activate()
+            WCSession.default.delegate = self
+            WCSession.default.activate()
         }
     }
     
     // --- ODESÍLÁNÍ DAT (Použije iOS) ---
-    // ZMĚNA: Používáme updateApplicationContext místo sendMessage
+    // ZMĚNA: Používáme sendMessageData (stejný princip jako WeatherApp sendMessage, ale pro JSON)
     func sendDataToWatch(packages: [PackageDTO]) {
-        // 1. Aktivace, pokud není
-        if WCSession.default.activationState != .activated {
+        // Stejná kontrola jako ve WeatherApp
+        if WCSession.default.isReachable {
+            do {
+                let data = try JSONEncoder().encode(packages)
+                
+                // sendMessageData je "okamžitá zpráva" s binárními daty
+                WCSession.default.sendMessageData(data, replyHandler: nil) { error in
+                    print("Chyba odesílání na hodinky: \(error.localizedDescription)")
+                }
+                print("✅ Odeslána okamžitá zpráva (sendMessageData)")
+            } catch {
+                print("Chyba při kódování dat: \(error)")
+            }
+        } else {
+            print("⚠️ Hodinky nejsou 'Reachable'. Musí běžet aplikace na hodinkách.")
+            // Pokus o aktivaci, kdyby náhodou
             WCSession.default.activate()
-        }
-        
-        do {
-            let data = try JSONEncoder().encode(packages)
-            
-            // updateApplicationContext funguje i na pozadí a nevyžaduje 'isReachable'
-            try WCSession.default.updateApplicationContext(["packagesData": data])
-            
-            print("✅ Data odeslána do kontextu (bude synchronizováno)!")
-        } catch {
-            print("❌ Chyba při kódování dat: \(error)")
         }
     }
     
     // --- ODESÍLÁNÍ VÝSLEDKU (Použijí Hodinky) ---
     func sendResultToPhone(result: SessionResultDTO) {
-        if WCSession.default.activationState != .activated {
-            WCSession.default.activate()
-        }
-        
-        do {
-            let data = try JSONEncoder().encode(result)
-            // I zpátky použijeme robustnější metodu
-            try WCSession.default.updateApplicationContext(["resultData": data])
-        } catch {
-            print("Chyba kódování výsledku")
+        if WCSession.default.isReachable {
+            do {
+                let data = try JSONEncoder().encode(result)
+                WCSession.default.sendMessageData(data, replyHandler: nil) { error in
+                    print("Chyba odesílání výsledku: \(error.localizedDescription)")
+                }
+            } catch {
+                print("Chyba kódování výsledku")
+            }
         }
     }
 
-    // --- PŘÍJEM DAT (NOVÁ METODA PRO CONTEXT) ---
-    // Toto se zavolá, když dorazí data přes updateApplicationContext
-    func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
-        
-        // 1. Příjem Balíčků (iOS -> Watch)
-        if let data = applicationContext["packagesData"] as? Data {
-            if let packages = try? JSONDecoder().decode([PackageDTO].self, from: data) {
-                DispatchQueue.main.async {
-                    self.receivedPackages = packages
-                    print("⌚️ Hodinky aktualizovaly data: \(packages.count) balíčků")
-                }
-            }
-        }
-        
-        // 2. Příjem Výsledku (Watch -> iOS)
-        if let data = applicationContext["resultData"] as? Data {
-            if let result = try? JSONDecoder().decode(SessionResultDTO.self, from: data) {
-                DispatchQueue.main.async {
-                    print("📱 iPhone přijal výsledek: \(result.correct)/\(result.incorrect)")
-                }
-            }
-        }
-    }
-    
-    // --- Stará metoda pro přímé zprávy (ponecháme pro jistotu) ---
+    // --- PŘÍJEM DAT (Používáme didReceiveMessageData) ---
+    // Toto odpovídá metodě sendMessageData
     func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
-        // ... (stejná logika jako nahoře, kdyby náhodou) ...
+        // 1. Zkusíme dekódovat Balíčky
+        if let packages = try? JSONDecoder().decode([PackageDTO].self, from: messageData) {
+            DispatchQueue.main.async {
+                self.receivedPackages = packages
+                print("⌚️ Hodinky přijaly data (sendMessage): \(packages.count) balíčků")
+            }
+        }
+        
+        // 2. Zkusíme dekódovat Výsledek
+        if let result = try? JSONDecoder().decode(SessionResultDTO.self, from: messageData) {
+            DispatchQueue.main.async {
+                print("📱 iPhone přijal výsledek: \(result.correct)/\(result.incorrect)")
+            }
+        }
     }
     
-    // --- Povinné metody WCSessionDelegate ---
-    func session(_ session: WCSession, activationDidCompleteWith state: WCSessionActivationState, error: Error?) {
-        print("WCSession aktivována: \(state.rawValue)")
-        // Po aktivaci můžeme zkusit poslat data znovu, pokud nějaká čekají (volitelné)
+    // --- Povinné metody WCSessionDelegate (Stejné jako ve WeatherApp) ---
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        print("Session aktivována: \(activationState.rawValue)")
     }
     
     #if os(iOS)
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {
-        session.activate()
+        WCSession.default.activate()
     }
     #endif
 }

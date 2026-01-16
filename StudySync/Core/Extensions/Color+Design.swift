@@ -23,3 +23,50 @@ extension Color {
         }
     }
 }
+// 1. Definice barev (Témat)
+enum AppTheme: String, CaseIterable, Identifiable {
+    case blue = "Blue"
+    case green = "Green"
+    case orange = "Orange"
+    case purple = "Purple"
+    case red = "Red"
+    
+    var id: String { rawValue }
+    
+    // Skutečná barva pro SwiftUI
+    var mainColor: Color {
+        switch self {
+        case .blue: return .blue
+        case .green: return .green
+        case .orange: return .orange
+        case .purple: return .purple
+        case .red: return .red
+        }
+    }
+    
+    // Název pro zobrazení v UI
+    var localizedName: String {
+        switch self {
+        case .blue: return "Modrá"
+        case .green: return "Zelená"
+        case .orange: return "Oranžová"
+        case .purple: return "Fialová"
+        case .red: return "Červená"
+        }
+    }
+}
+
+// 2. Definice jazyků
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case czech = "cs"
+    case english = "en"
+    
+    var id: String { rawValue }
+    
+    var displayName: String {
+        switch self {
+        case .czech: return "Čeština 🇨🇿"
+        case .english: return "English 🇺🇸"
+        }
+    }
+}

@@ -4,11 +4,17 @@
 //
 //  Created by Miroslav Musil on 18.12.2025.
 //
+
+
 import SwiftUI
 import SwiftData
 
 @main
 struct StudySyncApp: App {
+    // 1. Načítání nastavení (Barva a Jazyk)
+    @AppStorage("selectedLanguage") private var selectedLanguage: AppLanguage = .czech
+    @AppStorage("selectedTheme") private var selectedTheme: AppTheme = .blue
+    
     // Sledování stavu aplikace (aktivní / pozadí)
     @Environment(\.scenePhase) private var scenePhase
     
@@ -36,29 +42,26 @@ struct StudySyncApp: App {
         
         _ = WatchConnector.shared
         
-        // --- 1. PŘIDEJ: Požádat o notifikace při startu ---
+        // Požádat o notifikace při startu
         NotificationManager.shared.requestPermission()
-        // --------------------------------------------------
     }
 
     var body: some Scene {
         WindowGroup {
-            PackagesListView(viewModel: PackagesListViewModel(dataService: SwiftDataService(modelContext: sharedModelContainer.mainContext)))
+            // 2. TADY BYLA CHYBA: Musíš volat MainTabView, ne PackagesListView
+            MainTabView()
                 .environmentObject(diContainer)
+                // 3. Aplikace nastavení vzhledu a jazyka
+                .tint(selectedTheme.mainColor)
+                .environment(\.locale, .init(identifier: selectedLanguage.rawValue))
         }
         .modelContainer(sharedModelContainer)
-        // --- 2. PŘIDEJ: Reakce na uspane aplikace ---
-        .onChange(of: scenePhase) { oldPhase, newPhase in
+        .onChange(of: scenePhase) { _, newPhase in
             if newPhase == .background {
-                // Když uživatel zavře aplikaci, zkontrolujeme, zda dnes studoval
-                // Pokud NE -> naplánujeme večerní připomínku
-                // Pokud ANO -> zrušíme ji (pokud tam nějaká visí)
-                // Musíme vytvořit nový kontext nebo použít existující (zde trik s MainActor)
                 Task { @MainActor in
                     NotificationManager.shared.scheduleEveningNotification(ifNotStudied: sharedModelContainer.mainContext)
                 }
             }
         }
-        // -------------------------------------------
     }
 }

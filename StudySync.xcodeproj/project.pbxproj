@@ -7,10 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F43131C2F1A5A2400179B72 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0F43131B2F1A5A2400179B72 /* Localizable.xcstrings */; };
+		0F43131E2F1A5E5A00179B72 /* StudySync Watch.app in Resources */ = {isa = PBXBuildFile; fileRef = C689D85A2EF42E11003DBE2A /* StudySync Watch.app */; };
+		0F4313212F1A5E7B00179B72 /* StudySync.app in Resources */ = {isa = PBXBuildFile; fileRef = C689D8482EF42DD9003DBE2A /* StudySync.app */; };
 		C689D8602EF42E11003DBE2A /* StudySync Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = C689D85F2EF42E11003DBE2A /* StudySync Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0F43131F2F1A5E5A00179B72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C689D8402EF42DD9003DBE2A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C689D8592EF42E11003DBE2A;
+			remoteInfo = "StudySync Watch";
+		};
+		0F4313222F1A5E7B00179B72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C689D8402EF42DD9003DBE2A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C689D8472EF42DD9003DBE2A;
+			remoteInfo = StudySync;
+		};
+		0F4313242F1A77C500179B72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C689D8402EF42DD9003DBE2A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C689D8592EF42E11003DBE2A;
+			remoteInfo = "StudySync Watch";
+		};
 		0F81C18C2F14F321000CE4D5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = C689D8402EF42DD9003DBE2A /* Project object */;
@@ -49,6 +73,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0F43131B2F1A5A2400179B72 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		0F81C1882F14F321000CE4D5 /* StudySyncTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StudySyncTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F81C1952F14F344000CE4D5 /* StudySyncTestsUI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StudySyncTestsUI.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C689D8482EF42DD9003DBE2A /* StudySync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudySync.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -158,13 +183,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0F43131D2F1A5E5A00179B72 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C689D83F2EF42DD9003DBE2A = {
 			isa = PBXGroup;
 			children = (
+				0F43131B2F1A5A2400179B72 /* Localizable.xcstrings */,
 				C689D8AC2EF42F95003DBE2A /* StudySync */,
 				C689D8632EF42E11003DBE2A /* StudySync Watch Watch App */,
 				0F81C1892F14F321000CE4D5 /* StudySyncTests */,
 				0F81C1962F14F344000CE4D5 /* StudySyncTestsUI */,
+				0F43131D2F1A5E5A00179B72 /* Frameworks */,
 				C689D8492EF42DD9003DBE2A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -282,6 +316,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				0F4313202F1A5E5A00179B72 /* PBXTargetDependency */,
+				0F4313232F1A5E7B00179B72 /* PBXTargetDependency */,
+				0F4313252F1A77C500179B72 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				C689D8632EF42E11003DBE2A /* StudySync Watch Watch App */,
@@ -328,6 +365,7 @@
 			knownRegions = (
 				en,
 				Base,
+				cs,
 			);
 			mainGroup = C689D83F2EF42DD9003DBE2A;
 			minimizedProjectReferenceProxies = 1;
@@ -364,6 +402,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F43131C2F1A5A2400179B72 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +417,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0F4313212F1A5E7B00179B72 /* StudySync.app in Resources */,
+				0F43131E2F1A5E5A00179B72 /* StudySync Watch.app in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,6 +456,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0F4313202F1A5E5A00179B72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C689D8592EF42E11003DBE2A /* StudySync Watch */;
+			targetProxy = 0F43131F2F1A5E5A00179B72 /* PBXContainerItemProxy */;
+		};
+		0F4313232F1A5E7B00179B72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C689D8472EF42DD9003DBE2A /* StudySync */;
+			targetProxy = 0F4313222F1A5E7B00179B72 /* PBXContainerItemProxy */;
+		};
+		0F4313252F1A77C500179B72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C689D8592EF42E11003DBE2A /* StudySync Watch */;
+			targetProxy = 0F4313242F1A77C500179B72 /* PBXContainerItemProxy */;
+		};
 		0F81C18D2F14F321000CE4D5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = C689D8472EF42DD9003DBE2A /* StudySync */;
@@ -570,6 +626,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -626,6 +683,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -711,7 +769,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mendelu.StudySync-Watch.watchkitapp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mendelu.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
@@ -743,7 +801,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.mendelu.StudySync-Watch.watchkitapp";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mendelu.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;

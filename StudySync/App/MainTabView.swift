@@ -13,19 +13,40 @@ struct MainTabView: View {
     
     var body: some View {
         TabView {
-            // Vytváříme View a rovnou mu dáváme ViewModel z kontejneru
+            // 1. Domů
             HomeView(viewModel: diContainer.makeHomeViewModel())
-                .tabItem { Label("Today", systemImage: "house.fill") }
+                .tabItem {
+                    Label("Today", systemImage: "house.fill")
+                }
+                .tag(0)
+                .accessibilityIdentifier("HomeTab") // ID pro testy
             
+            // 2. Knihovna
             PackagesListView(viewModel: diContainer.makePackagesListViewModel())
-                .tabItem { Label("Library", systemImage: "books.vertical.fill") }
+                .tabItem {
+                    Label("Library", systemImage: "books.vertical.fill")
+                }
+                .tag(1)
+                .accessibilityIdentifier("LibraryTab") // <--- TOTO HLEDÁ TVŮJ TEST
             
+            // 3. Statistiky
             StatisticsView(viewModel: diContainer.makeStatisticsViewModel())
                 .tabItem {
                     Label("Stats", systemImage: "chart.bar.xaxis")
                 }
-            Text("Settings Placeholder").tabItem { Label("Settings", systemImage: "gearshape.fill") }
+                .tag(2)
+                .accessibilityIdentifier("StatsTab") // ID pro testy
+            
+            // 4. Nastavení
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape.fill")
+                }
+                .tag(3)
+                .accessibilityIdentifier("SettingsTab") // ID pro testy
         }
-        .tint(.blue)
+        // ZDE JSME SMAZALI .tint(.blue)
+        // Barva se nyní řídí v StudySyncApp.swift, takže tady
+        // nic nenastavujeme, aby se projevila volba uživatele.
     }
 }

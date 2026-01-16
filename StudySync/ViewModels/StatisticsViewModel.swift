@@ -8,8 +8,8 @@
 import Foundation
 import Observation
 import SwiftData
+import SwiftUI
 
-// Enum pro přepínání rozsahu
 enum StatsRange: String, CaseIterable {
     case week = "Týden"
     case month = "Měsíc"
@@ -20,32 +20,34 @@ enum StatsRange: String, CaseIterable {
 class StatisticsViewModel {
     private let dataService: DataServiceProtocol
     
-    // Data z databáze
     var sessions: [StudySession] = []
-    var packages: [StudyPackage] = []
     
-    // Vybraný filtr - při změně se přepočítá graf
+    // UI State
     var selectedRange: StatsRange = .week {
         didSet {
-            calculateChartData()
+            // Při změně filtru přepočítáme graf I KARTIČKY
+            recalculateAll()
         }
     }
     
-    // Hlavní statistiky
-    var overallAccuracy: Double = 0
-    var totalXP: Int = 0
-    var streakDays: Int = 0
-    
-    // Data pro graf
     var chartData: [ChartPoint] = []
     
-    // Struktura pro jeden bod v grafu
+    // Statistiky (nyní se budou měnit podle filtru)
+    var overallAccuracy: Double = 0
+    var totalXP: Int = 0
+    var totalCardsStudied: Int = 0
+    
+    // Streak necháme globální (je to aktuální série), nebo ho můžeš taky filtrovat
+    var streakDays: Int = 0
+    
     struct ChartPoint: Identifiable {
         let id = UUID()
-        let label: String    // Např. "Po", "Út" nebo "Leden"
-        let value: Int       // Počet karet
-        let isGoalMet: Bool  // Splněno (studováno) ten den?
-        let date: Date       // Pro řazení
+        let label: String
+        let value: Int
+        let date: Date
+        var color: Color {
+            value > 20 ? .green : (value > 0 ? .blue : .gray.opacity(0.3))
+        }
     }
 
     init(dataService: DataServiceProtocol) {
@@ -55,81 +57,130 @@ class StatisticsViewModel {
     func refreshData() {
         do {
             self.sessions = try dataService.fetchSessions()
-            self.packages = try dataService.fetchPackages()
-            
-            calculateAggregatedStats()
-            calculateChartData() // Voláme výpočet grafu
+            recalculateAll()
         } catch {
-            print("Chyba při načítání statistik: \(error)")
+            print("Chyba načítání: \(error)")
         }
     }
     
-    private func calculateAggregatedStats() {
-        let totalCards = sessions.reduce(0) { $0 + $1.totalCards }
-        let totalCorrect = sessions.reduce(0) { $0 + $1.correctCount }
-        
-        overallAccuracy = totalCards > 0 ? (Double(totalCorrect) / Double(totalCards)) * 100 : 0
-        totalXP = totalCorrect * 10
-        
-        streakDays = calculateCurrentStreak()
+    // Hlavní funkce, která spustí všechny výpočty
+    private func recalculateAll() {
+        calculateAggregatedStats() // Kartičky
+        calculateChartData()       // Graf
     }
     
-    // --- TOTO JE TA FUNKCE, KTERÁ TI CHYBĚLA ---
+    // MARK: - Výpočet statistik pro kartičky (Upraveno pro filtrování)
+    private func calculateAggregatedStats() {
+        // 1. Nejprve spočítáme Streak (ten je vždy globální - aktuální série)
+        streakDays = calculateStreak()
+        
+        // 2. Pro ostatní statistiky vyfiltrujeme sessions podle zvoleného období
+        let filteredSessions = getSessionsForSelectedRange()
+        
+        // 3. Spočítáme hodnoty jen z vyfiltrovaných dat
+        totalCardsStudied = filteredSessions.reduce(0) { $0 + $1.totalCards }
+        let totalCorrect = filteredSessions.reduce(0) { $0 + $1.correctCount }
+        
+        // Ošetření dělení nulou
+        overallAccuracy = totalCardsStudied > 0 ? (Double(totalCorrect) / Double(totalCardsStudied)) * 100 : 0
+        
+        // XP (např. 10 bodů za správnou odpověď)
+        totalXP = totalCorrect * 10
+    }
+    
+    // Pomocná funkce: Vrátí jen sessions, které spadají do vybraného období
+    private func getSessionsForSelectedRange() -> [StudySession] {
+        let calendar = Calendar.current
+        let today = Date()
+        
+        // Určíme datum, od kterého nás to zajímá
+        let cutoffDate: Date?
+        
+        switch selectedRange {
+        case .week:
+            cutoffDate = calendar.date(byAdding: .day, value: -7, to: today)
+        case .month:
+            cutoffDate = calendar.date(byAdding: .day, value: -30, to: today)
+        case .year:
+            cutoffDate = calendar.date(byAdding: .month, value: -12, to: today)
+        }
+        
+        guard let start = cutoffDate else { return sessions }
+        
+        // Vrátíme jen sessions novější než cutoffDate
+        return sessions.filter { $0.date >= start }
+    }
+    
+    // MARK: - Generátor Mock Dat
+    func generateMockData() {
+        let calendar = Calendar.current
+        let today = Date()
+        var newSessions: [StudySession] = []
+        
+        // Vygenerujeme data pro posledních 100 dní (aby bylo dost dat i pro roční pohled)
+        for i in 0..<100 {
+            guard let date = calendar.date(byAdding: .day, value: -i, to: today) else { continue }
+            
+            // 60% šance, že se ten den učil
+            if Int.random(in: 1...100) > 40 {
+                let cardsCount = Int.random(in: 10...60)
+                // Náhodná úspěšnost mezi 50% a 100%
+                let correct = Int(Double(cardsCount) * Double.random(in: 0.5...1.0))
+                
+                let session = StudySession(correctCount: correct, incorrectCount: cardsCount - correct)
+                session.date = date // Simulace staršího data
+                
+                newSessions.append(session)
+            }
+        }
+        
+        self.sessions = newSessions
+        recalculateAll()
+    }
+    
+    // MARK: - Graf (Zůstává stejný, jen pro úplnost)
     private func calculateChartData() {
         let calendar = Calendar.current
         let today = Date()
         var points: [ChartPoint] = []
         
-        switch selectedRange {
-        case .week:
-            // Posledních 7 dní
-            for i in (0..<7).reversed() {
-                if let date = calendar.date(byAdding: .day, value: -i, to: today) {
-                    let dayName = i == 0 ? "Dnes" : calendar.shortWeekdaySymbols[calendar.component(.weekday, from: date) - 1]
-                    let count = getCardsCount(for: date, granularity: .day)
-                    points.append(ChartPoint(label: dayName, value: count, isGoalMet: count > 0, date: date))
-                }
-            }
-            
-        case .month:
-            // Posledních 30 dní
-            for i in (0..<30).reversed() {
-                if let date = calendar.date(byAdding: .day, value: -i, to: today) {
-                    let dayNum = calendar.component(.day, from: date)
-                    let label = "\(dayNum)."
-                    let count = getCardsCount(for: date, granularity: .day)
-                    points.append(ChartPoint(label: label, value: count, isGoalMet: count > 0, date: date))
-                }
-            }
-            
-        case .year:
-            // Posledních 12 měsíců
-            for i in (0..<12).reversed() {
-                if let date = calendar.date(byAdding: .month, value: -i, to: today) {
-                    let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: date) - 1]
-                    let count = getCardsCount(for: date, granularity: .month)
-                    points.append(ChartPoint(label: monthName, value: count, isGoalMet: count > 0, date: date))
-                }
+        let daysBack = selectedRange == .week ? 7 : (selectedRange == .month ? 30 : 12)
+        let granularity: Calendar.Component = selectedRange == .year ? .month : .day
+        
+        for i in (0..<daysBack).reversed() {
+            if let date = calendar.date(byAdding: granularity, value: -i, to: today) {
+                let label = getLabel(for: date, range: selectedRange)
+                let count = getCardsCount(for: date, granularity: granularity)
+                points.append(ChartPoint(label: label, value: count, date: date))
             }
         }
-        
         self.chartData = points
     }
     
-    // Pomocná funkce pro sčítání karet
+    private func getLabel(for date: Date, range: StatsRange) -> String {
+        let formatter = DateFormatter()
+        if range == .year {
+            formatter.dateFormat = "MMM"
+        } else if range == .month {
+             formatter.dateFormat = "d"
+        } else {
+            formatter.dateFormat = "EE"
+        }
+        return formatter.string(from: date)
+    }
+
     private func getCardsCount(for date: Date, granularity: Calendar.Component) -> Int {
         let calendar = Calendar.current
-        return sessions.filter { session in
-            calendar.isDate(session.date, equalTo: date, toGranularity: granularity)
+        return sessions.filter {
+            calendar.isDate($0.date, equalTo: date, toGranularity: granularity)
         }.reduce(0) { $0 + $1.totalCards }
     }
     
-    private func calculateCurrentStreak() -> Int {
+    private func calculateStreak() -> Int {
         var streak = 0
         let calendar = Calendar.current
         var checkDate = Date()
         
-        // Pokud dnes nebylo nic, zkusíme včerejšek
         if getCardsCount(for: checkDate, granularity: .day) == 0 {
             checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate)!
         }
