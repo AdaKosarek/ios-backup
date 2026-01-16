@@ -57,22 +57,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0F6ADE1C2F1A393F006EBFAE /* Exceptions for "StudySync" folder in "StudySyncTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Serivices/MockData/MockDataSevice.swift,
+			);
+			target = 0F81C1872F14F321000CE4D5 /* StudySyncTests */;
+		};
 		0F81C1BA2F14FA99000CE4D5 /* Exceptions for "StudySyncTestsUI" folder in "StudySync" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Mock.swift,
 			);
 			target = C689D8472EF42DD9003DBE2A /* StudySync */;
-		};
-		0F81C1BD2F14FBEF000CE4D5 /* Exceptions for "StudySync" folder in "StudySyncTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Model/StudyCard.swift,
-				Model/StudyGroup.swift,
-				Model/StudyPackage.swift,
-				Model/StudySession.swift,
-			);
-			target = 0F81C1872F14F321000CE4D5 /* StudySyncTests */;
 		};
 		0F81C1BE2F14FBEF000CE4D5 /* Exceptions for "StudySync" folder in "StudySyncTestsUI" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -119,7 +116,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				C685B7052F10DFBD007EC0D8 /* Exceptions for "StudySync" folder in "StudySync Watch Watch App" target */,
-				0F81C1BD2F14FBEF000CE4D5 /* Exceptions for "StudySync" folder in "StudySyncTests" target */,
+				0F6ADE1C2F1A393F006EBFAE /* Exceptions for "StudySync" folder in "StudySyncTests" target */,
 				0F81C1BE2F14FBEF000CE4D5 /* Exceptions for "StudySync" folder in "StudySyncTestsUI" target */,
 			);
 			path = StudySync;

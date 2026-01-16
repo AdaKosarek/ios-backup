@@ -4,55 +4,38 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct PackagesListView: View {
-    @Query(sort: \StudyPackage.dateCreated, order: .reverse) private var packages: [StudyPackage]
-    @Environment(\.modelContext) private var modelContext
+    @State var viewModel: PackagesListViewModel
+    @EnvironmentObject var diContainer: DIContainer
     @State private var showingAddSheet = false
 
     var body: some View {
         NavigationStack {
             List {
-                if packages.isEmpty {
-                    ContentUnavailableView(
-                        "Žádné balíčky",
-                        systemImage: "tray.fill",
-                        description: Text("Klikni na + a vytvoř svůj první studijní balíček.")
-                    )
-                    .accessibilityIdentifier("EmptyPackagesView") // PŘIDÁNO
+                if viewModel.packages.isEmpty {
+                    ContentUnavailableView("Žádné balíčky", systemImage: "tray.fill")
+                        .accessibilityIdentifier("EmptyPackagesView")
                 } else {
-                    ForEach(packages) { package in
-                        NavigationLink(destination: PackageDetailView(package: package)) {
+                    ForEach(viewModel.packages) { package in
+                        NavigationLink(destination: PackageDetailView(viewModel: diContainer.makePackageDetailViewModel(package: package))) {
                             HStack {
                                 Image(systemName: package.icon)
                                     .font(.title2)
                                     .foregroundStyle(.white)
                                     .frame(width: 50, height: 50)
-                                    .background(
-                                        package.colorHex == "red" ? Color.red :
-                                        package.colorHex == "green" ? Color.green :
-                                        package.colorHex == "orange" ? Color.orange :
-                                        package.colorHex == "purple" ? Color.purple :
-                                        package.colorHex == "pink" ? Color.pink :
-                                        Color.blue
-                                    )
+                                    .background(Color(hex: package.colorHex))
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
                                 
                                 VStack(alignment: .leading) {
-                                    Text(package.name)
-                                        .font(.headline)
-                                    Text("\(package.groups.count) skupin")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                    Text(package.name).font(.headline)
+                                    Text("\(package.groups.count) skupin").font(.caption).foregroundStyle(.secondary)
                                 }
                             }
-                            .padding(.vertical, 4)
                         }
-                        // PŘIDÁNO: Identifikátor pro konkrétní balíček
                         .accessibilityIdentifier("PackageRow_\(package.name)")
                     }
-                    .onDelete(perform: deletePackage)
+                    .onDelete(perform: viewModel.deletePackage)
                 }
             }
             .navigationTitle("Moje Balíčky")
@@ -61,41 +44,94 @@ struct PackagesListView: View {
                     Button(action: { showingAddSheet = true }) {
                         Image(systemName: "plus")
                     }
-                    .accessibilityIdentifier("AddPackageButton") // PŘIDÁNO
+                    .accessibilityIdentifier("AddPackageButton")
                 }
             }
             .sheet(isPresented: $showingAddSheet) {
-                // Pozor: V tvém kódu je EditPackageView i VStack pod ním.
-                // Pro testy přidáme ID i testovacímu tlačítku.
-                VStack {
-                    EditPackageView()
-                    Divider()
-                    Button("Přidat testovací data") {
-                        addMockData()
-                        showingAddSheet = false
-                    }
-                    .accessibilityIdentifier("AddMockDataButton") // PŘIDÁNO
-                    .buttonStyle(.borderedProminent)
-                    .padding()
+                AddPackageSheet(onSave: { name, color in
+                    viewModel.addPackage(name: name, color: color, icon: "book.closed.fill")
+                    showingAddSheet = false
+                })
+            }
+            .onAppear {
+                viewModel.loadPackages()
+            }
+        }
+    }
+}
+
+// --- Vylepšený vizuální styl přidávání (podle tvého screenshotu) ---
+struct AddPackageSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var name = ""
+    @State private var selectedColor = "blue"
+    
+    let availableColors = ["blue", "red", "green", "orange", "purple", "pink", "yellow", "gray"]
+    var onSave: (String, String) -> Void
+    
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 20) {
+                // Sekce Název
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Název balíčku")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                    
+                    TextField("Např. Matematika", text: $name)
+                        .padding()
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .accessibilityIdentifier("packageNameField")
                 }
-                .presentationDetents([.medium, .large])
+                
+                // Sekce Barva
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Barva")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                    
+                    // Vodorovný výběr barev ve dvou řadách nebo mřížce (podle místa)
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 10) {
+                        ForEach(availableColors, id: \.self) { colorName in
+                            Circle()
+                                .fill(Color(hex: colorName))
+                                .frame(width: 40, height: 40)
+                                .overlay {
+                                    if selectedColor == colorName {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.white)
+                                            .bold()
+                                    }
+                                }
+                                .onTapGesture {
+                                    selectedColor = colorName
+                                }
+                                .accessibilityIdentifier("color_\(colorName)")
+                        }
+                    }
+                }
+                
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Nový balíček")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Zrušit") { dismiss() }
+                        .foregroundStyle(.blue)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Vytvořit") {
+                        onSave(name, selectedColor)
+                    }
+                    .disabled(name.isEmpty)
+                    .bold()
+                    .accessibilityIdentifier("createPackageButton")
+                }
             }
         }
-    }
-    
-    private func deletePackage(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(packages[index])
-            }
-        }
-    }
-    
-    private func addMockData() {
-        let newPackage = StudyPackage(name: "Matematika", icon: "function")
-        modelContext.insert(newPackage)
-        
-        let newPackage2 = StudyPackage(name: "Angličtina", icon: "globe")
-        modelContext.insert(newPackage2)
+        .presentationDetents([.medium]) // Otevře se jen do poloviny obrazovky
     }
 }

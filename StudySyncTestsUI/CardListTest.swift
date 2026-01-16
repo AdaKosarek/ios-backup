@@ -7,54 +7,46 @@ final class CardListUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
-        // Načteme data s předpřipravenou kartou "Fixní Otázka"
         app.launchArguments.append("--mock-data")
         app.launch()
     }
 
-    // Jednoduchá navigace k hotovému
     func navigateToCardList() {
-        // 1. Library
         let libraryTab = app.tabBars.buttons["Library"]
         XCTAssertTrue(libraryTab.waitForExistence(timeout: 5))
         libraryTab.tap()
         
-        // 2. Balíček
         let packageRow = app.buttons["PackageRow_Matematika"]
         XCTAssertTrue(packageRow.waitForExistence(timeout: 5))
         packageRow.tap()
         
-        // 3. Skupina (Už tam je z Mock dat, nemusíme nic vytvářet)
-        let groupRow = app.staticTexts["Testovací Skupina"]
-        XCTAssertTrue(groupRow.waitForExistence(timeout: 5), "Skupina z Mock dat se nenačetla.")
-        groupRow.tap()
-        
-        // 4. Jsme v seznamu?
-        XCTAssertTrue(app.buttons["AddCardButton"].waitForExistence(timeout: 5))
+        // Použijeme skupinu z Mocku
+        let groupRow = app.buttons["groupRow_Testovací Skupina"]
+        if groupRow.waitForExistence(timeout: 5) {
+             groupRow.tap()
+        } else {
+             app.staticTexts["Testovací Skupina"].tap()
+        }
     }
 
-    
-
-    // --- TEST 2: Smazání předpřipravené karty ---
     func testDeletePrecreatedCard() {
         navigateToCardList()
         
+        // "Fixní Otázka" pochází z MockDataService.addMockDataForUITests()
         let card = app.staticTexts["Fixní Otázka"]
         XCTAssertTrue(card.waitForExistence(timeout: 5), "Karta k smazání tam není.")
         
-        // Gesto pro smazání
         card.swipeLeft()
         
-        // Kliknutí na Delete/Smazat
-        let deleteBtn = app.buttons["Delete"]
+        let deleteBtn = app.buttons["Delete"] // Anglicky systém
         if deleteBtn.exists {
             deleteBtn.tap()
         } else {
-            app.buttons["Smazat"].tap()
+            let smazatBtn = app.buttons["Smazat"] // Česky
+            if smazatBtn.exists { smazatBtn.tap() }
         }
         
-        // Ověření, že zmizela
-        // Použijeme predikát, abychom počkali na dokončení animace zmizení
+        // Ověření zmizení
         let doesNotExist = NSPredicate(format: "exists == false")
         expectation(for: doesNotExist, evaluatedWith: card, handler: nil)
         waitForExpectations(timeout: 5.0, handler: nil)

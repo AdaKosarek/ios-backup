@@ -2,17 +2,14 @@
 //  AddCardView.swift
 //  StudySync
 //
-//  Created by Miroslav Musil on 18.12.2025.
-//
 
 import SwiftUI
-import SwiftData
 
 struct AddCardView: View {
     @Environment(\.dismiss) private var dismiss
     
-    // Potřebujeme vědět, do které skupiny kartu přidáváme
-    var group: StudyGroup
+    // View Model předaný z rodiče
+    var viewModel: CardListViewModel
     
     @State private var question = ""
     @State private var answer = ""
@@ -25,13 +22,15 @@ struct AddCardView: View {
                     TextField("Např. a² + b² = ?", text: $question, axis: .vertical)
                         .focused($isQuestionFocused)
                         .lineLimit(2...5)
-                        .accessibilityIdentifier("questionField") // PŘIDÁNO PRO TESTY
+                        // --- KLÍČOVÉ PRO TESTY ---
+                        .accessibilityIdentifier("questionField")
                 }
                 
                 Section("Odpověď") {
                     TextField("Např. c²", text: $answer, axis: .vertical)
                         .lineLimit(2...5)
-                        .accessibilityIdentifier("answerField") // PŘIDÁNO PRO TESTY
+                        // --- KLÍČOVÉ PRO TESTY ---
+                        .accessibilityIdentifier("answerField")
                 }
             }
             .navigationTitle("Nová karta")
@@ -42,21 +41,17 @@ struct AddCardView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Uložit") {
-                        saveCard()
+                        viewModel.addCard(question: question, answer: answer)
+                        dismiss()
                     }
                     .disabled(question.isEmpty || answer.isEmpty)
-                    .accessibilityIdentifier("saveButton") // PŘIDÁNO PRO TESTY
+                    // --- KLÍČOVÉ PRO TESTY ---
+                    .accessibilityIdentifier("saveButton")
                 }
             }
         }
         .onAppear {
             isQuestionFocused = true
         }
-    }
-    
-    private func saveCard() {
-        let newCard = StudyCard(question: question, answer: answer)
-        group.cards.append(newCard)
-        dismiss()
     }
 }

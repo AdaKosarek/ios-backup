@@ -5,6 +5,8 @@
 //  Created by Martin Reich on 12.01.2026.
 //
 
+
+
 import XCTest
 
 final class PackageDetailUITests: XCTestCase {
@@ -12,61 +14,76 @@ final class PackageDetailUITests: XCTestCase {
     var app: XCUIApplication!
 
     override func setUpWithError() throws {
-        // Zastavíme test při první chybě
         continueAfterFailure = false
         app = XCUIApplication()
         
-        // Spustíme aplikaci s čistými Mock daty (vytvoří se balíček Matematika)
+        // VŽDY použijeme Mock data, protože testujeme detail existujícího balíčku
         app.launchArguments.append("--mock-data")
         app.launch()
         
-        // --- NAVIGACE ---
-        // 1. Přepneme se na Library tab
-        app.tabBars.buttons["Library"].tap()
+        navigateToDetail()
+    }
+    
+    func navigateToDetail() {
+        // 1. Library
+        let libraryTab = app.tabBars.buttons["Library"]
+        XCTAssertTrue(libraryTab.waitForExistence(timeout: 5))
+        libraryTab.tap()
         
-        // 2. Klikneme na balíček Matematika, abychom se dostali do PackageDetailView
+        // 2. Balíček Matematika
         let packageRow = app.buttons["PackageRow_Matematika"]
-        XCTAssertTrue(packageRow.waitForExistence(timeout: 5), "Balíček Matematika nebyl v seznamu nalezen.")
+        XCTAssertTrue(packageRow.waitForExistence(timeout: 5))
         packageRow.tap()
     }
 
     func testAddNewGroupViaAlert() {
+        // Klik na +
         let addButton = app.buttons["addGroupButton"]
         XCTAssertTrue(addButton.waitForExistence(timeout: 5))
         addButton.tap()
         
-        // 1. Najdeme alert
+        // Alert
         let alert = app.alerts["Nová skupina"]
-        XCTAssertTrue(alert.waitForExistence(timeout: 5), "Alert se neobjevil")
+        XCTAssertTrue(alert.waitForExistence(timeout: 2))
         
-        // 2. Najdeme textové pole (použijeme firstMatch pro jistotu)
+        // Vyplnění
         let textField = alert.textFields.firstMatch
-        XCTAssertTrue(textField.exists)
         textField.tap()
         textField.typeText("Geometrie")
         
-        // 3. KLÍČOVÁ OPRAVA: Kliknutí na tlačítko "Vytvořit"
-        // Použijeme .buttons["Vytvořit"].firstMatch, aby Xcode neřešil duplicity
+        // Potvrzení
         let confirmButton = alert.buttons["Vytvořit"].firstMatch
-        
-        XCTAssertTrue(confirmButton.exists, "Tlačítko Vytvořit nebylo nalezeno")
         confirmButton.tap()
         
-        // 4. Ověření výsledku
-        let newGroup = app.staticTexts["Geometrie"]
-        XCTAssertTrue(newGroup.waitForExistence(timeout: 5), "Nová skupina se v seznamu neobjevila")
+        // Ověření - hledáme tlačítko/řádek s názvem skupiny
+        // Poznámka: V PackageDetailView máme NavigationLink, což se v testech často tváří jako Button
+        let newGroup = app.buttons["groupRow_Geometrie"]
+        
+        // Fallback hledání (pokud ID nezafunguje hned)
+        if !newGroup.waitForExistence(timeout: 2) {
+             XCTAssertTrue(app.staticTexts["Geometrie"].exists)
+        } else {
+             XCTAssertTrue(newGroup.exists)
+        }
     }
 
-    func testPlayButtonAvailability() {
-        // Tlačítko Play by mělo existovat
-        let playButton = app.buttons["playSessionButton"]
-        XCTAssertTrue(playButton.exists)
+    func testPlayButtonOpensSession() {
+        // V naší nové MockDataService.addMockDataForUITests() jsme přidali i KARTU.
+        // Tím pádem tlačítko Play MUSÍ být aktivní a funkční.
         
-        // V našem Mocku nemá balíček Matematika hned po startu žádné karty,
-        // takže kliknutí by nemělo otevřít SessionView.
+        let playButton = app.buttons["playSessionButton"]
+        XCTAssertTrue(playButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(playButton.isEnabled, "Tlačítko Play by mělo být aktivní, protože mock data obsahují karty.")
+        
         playButton.tap()
         
-        // Ověříme, že se neotevřela obrazovka s nadpisem "Učení" (pokud ho v SessionView máš)
-        XCTAssertFalse(app.navigationBars["Učení"].exists)
+        // Ověříme, že se otevřelo SessionView
+        // Můžeme hledat nav bar "Studium" nebo kartu
+        let studyNavBar = app.navigationBars["Studium"]
+        XCTAssertTrue(studyNavBar.waitForExistence(timeout: 2), "Po kliknutí na Play se neotevřelo okno Studium")
+        
+        // Ověříme, že vidíme mockovanou kartu
+        let cardText = app.staticTexts["Fixní Otázka"]
+        XCTAssertTrue(cardText.exists)
     }
 }

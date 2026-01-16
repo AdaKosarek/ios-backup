@@ -8,33 +8,22 @@
 import SwiftUI
 
 struct MainTabView: View {
+    // Přístup k DI kontejneru
+    @EnvironmentObject var diContainer: DIContainer
+    
     var body: some View {
         TabView {
-            // 1. Home
-            HomeView().handleUITests() // Zatím tam dáme jen toto, hned to vytvoříme
-                .tabItem {
-                    Label("Today", systemImage: "house.fill")
-                }
-                
+            // Vytváříme View a rovnou mu dáváme ViewModel z kontejneru
+            HomeView(viewModel: diContainer.makeHomeViewModel())
+                .tabItem { Label("Today", systemImage: "house.fill") }
             
-            // 2. Packages
-            PackagesListView()
-                .tabItem {
-                    Label("Library", systemImage: "books.vertical.fill")
-                }
+            PackagesListView(viewModel: diContainer.makePackagesListViewModel())
+                .tabItem { Label("Library", systemImage: "books.vertical.fill") }
             
-            // 3. Stats
-            StatisticsView()
-                .tabItem {
-                    Label("Stats", systemImage: "chart.bar.xaxis")
-                }
-            
-            // 4. Settings
-            SettingsView() // Odkaz na nastavení
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape.fill")
-                }
+            // Stats a Settings zatím necháme jak jsou, nebo implementujeme podobně
+            Text("Stats Placeholder").tabItem { Label("Stats", systemImage: "chart.bar.xaxis") }
+            Text("Settings Placeholder").tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
-        .tint(.blue) // Barva aktivní ikonky
+        .tint(.blue)
     }
 }

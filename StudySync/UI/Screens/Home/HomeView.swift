@@ -7,56 +7,34 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
-    @Query(sort: \StudySession.date, order: .reverse) private var sessions: [StudySession]
-    
-    private var today: Date { Date() }
-    
-    var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    DailyGoalWidget(cardsStudiedToday: calculateCardsToday())
+    @State var viewModel: HomeViewModel
+        
+        var body: some View {
+            NavigationStack {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        DailyGoalWidget(cardsStudiedToday: viewModel.cardsStudiedToday)
+                            .padding(.horizontal)
+                        
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
+                            HomeStatCard(title: "Streak", value: "\(viewModel.streak) dní", icon: "flame.fill", color: .orange)
+                            HomeStatCard(title: "Total XP", value: "\(viewModel.totalXP)", icon: "star.fill", color: .yellow)
+                            HomeStatCard(title: "Další studium", value: "2 hod", icon: "clock.fill", color: .purple)
+                            HomeStatCard(title: "Dnes hotovo", value: "\(viewModel.cardsStudiedToday)", icon: "checkmark.circle.fill", color: .green)
+                        }
                         .padding(.horizontal)
-                        .accessibilityIdentifier("dailyGoalWidget")
-                    
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
-                        
-                        HomeStatCard(
-                            title: "Streak",
-                            value: "\(calculateStreak()) dní",
-                            icon: "flame.fill",
-                            color: .orange
-                        )
-                        
-                        HomeStatCard(
-                            title: "Total XP",
-                            value: "\(calculateTotalXP())",
-                            icon: "star.fill",
-                            color: .yellow
-                        )
-                        
-                        HomeStatCard(
-                            title: "Další studium",
-                            value: "2 hod",
-                            icon: "clock.fill",
-                            color: .purple
-                        )
-                        
-                        HomeStatCard(
-                            title: "Dnes hotovo",
-                            value: "\(calculateCardsToday())",
-                            icon: "checkmark.circle.fill",
-                            color: .green
-                        )
                     }
-                    .padding(.horizontal)
+                    .padding(.top)
                 }
-                .padding(.top)
+                .navigationTitle("Today")
+                .onAppear {
+                    // Pokaždé když se view ukáže, načteme čerstvá data
+                    viewModel.loadData()
+                }
             }
-            .navigationTitle("Today")
         }
     }
-    
+    /*
     // Výpočty zůstávají stejné...
     private func calculateCardsToday() -> Int {
         let todaySessions = sessions.filter { Calendar.current.isDateInToday($0.date) }
@@ -75,7 +53,7 @@ struct HomeView: View {
         return 0
     }
 }
-
+*/
 struct HomeStatCard: View {
     let title: String
     let value: String
