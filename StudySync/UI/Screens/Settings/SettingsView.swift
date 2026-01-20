@@ -120,9 +120,6 @@ struct SettingsView: View {
                                 .fontWeight(.medium)
                                 .foregroundStyle(.secondary)
                             
-                            Text("Made with ❤️ by Miroslav")
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
                         }
                         .padding(.top, 20)
                         .padding(.bottom, 40)

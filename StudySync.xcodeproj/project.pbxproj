@@ -91,7 +91,7 @@
 				Model/StudyGroup.swift,
 				Model/StudyPackage.swift,
 				Model/StudySession.swift,
-				Serivices/WatchConnector.swift,
+				Serivices/Connector/WatchConnector.swift,
 			);
 			target = C689D85E2EF42E11003DBE2A /* StudySync Watch Watch App */;
 		};
