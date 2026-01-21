@@ -5,6 +5,7 @@
 //  Created by Martin Reich on 16.01.2026.
 //
 
+
 import Foundation
 import Observation
 
@@ -18,13 +19,13 @@ class PackageDetailViewModel {
         self.dataService = dataService
     }
     
+    // --- PŘIDÁNÍ SKUPINY ---
     func addGroup(name: String) {
         guard !name.isEmpty else { return }
         dataService.addGroup(to: package, name: name)
-        // Pozor: Protože 'package' je referenční typ (Class) a SwiftData ho sleduje,
-        // UI by se mělo aktualizovat, ale v MVVM je dobré explicitně říct, že se něco změnilo.
     }
     
+    // --- SMAZÁNÍ (Swipe gesto) ---
     func deleteGroup(at offsets: IndexSet) {
         for index in offsets {
             let group = package.groups[index]
@@ -32,6 +33,12 @@ class PackageDetailViewModel {
         }
     }
     
+    // --- SMAZÁNÍ (Konkrétní objekt - pro kontextové menu) ---
+    func deleteGroup(_ group: StudyGroup) {
+        dataService.deleteGroup(group)
+    }
+    
+    // --- POMOCNÉ ---
     var allCards: [StudyCard] {
         package.groups.flatMap { $0.cards }
     }

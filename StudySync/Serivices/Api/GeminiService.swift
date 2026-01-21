@@ -109,4 +109,6 @@ class GeminiService {
             print("❌ Nepodařilo se načíst seznam modelů: \(error)")
         }
     }
+    
 }
+

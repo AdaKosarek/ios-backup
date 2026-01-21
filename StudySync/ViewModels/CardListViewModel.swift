@@ -22,10 +22,16 @@ class CardListViewModel {
         dataService.addCard(to: group, question: question, answer: answer)
     }
     
+    // Smazání přes Swipe (IndexSet)
     func deleteCard(at offsets: IndexSet) {
         for index in offsets {
             let card = group.cards[index]
             dataService.deleteCard(card)
         }
+    }
+    
+    // NOVÉ: Smazání konkrétní karty (pro kontextové menu)
+    func deleteCard(_ card: StudyCard) {
+        dataService.deleteCard(card)
     }
 }

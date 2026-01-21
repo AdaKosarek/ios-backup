@@ -1,3 +1,8 @@
+//
+//  StatisticsView.swift
+//  StudySync
+//
+
 import SwiftUI
 import Charts
 
@@ -7,6 +12,7 @@ struct StatisticsView: View {
     // Interaktivita grafu
     @State private var rawSelectedDate: Date? = nil
     @State private var animateChart = false
+    @AppStorage("selectedTheme") private var selectedTheme: AppTheme = .blue
     
     // Helper: Najde vybraný bod v grafu
     var selectedItem: StatisticsViewModel.ChartPoint? {
@@ -16,21 +22,30 @@ struct StatisticsView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    
-                    // 1. Přepínač období
-                    rangePicker
-                    
-                    // 2. Interaktivní Graf
-                    interactiveChartCard
-                    
-                    // 3. Mřížka statistik
-                    statsGridSection
+            ZStack {
+                // 1. VRSTVA: Animované pozadí
+                BackgroundBlob()
+                    .ignoresSafeArea()
+                
+                // 2. VRSTVA: Obsah
+                ScrollView {
+                    VStack(spacing: 24) {
+                        
+                        // 1. Přepínač období
+                        rangePicker
+                        
+                        // 2. Interaktivní Graf
+                        interactiveChartCard
+                        
+                        // 3. Mřížka statistik
+                        statsGridSection
+                    }
+                    .padding()
                 }
-                .padding()
+                // DŮLEŽITÉ: Zprůhlednění ScrollView, aby bylo vidět pozadí
+                .scrollContentBackground(.hidden)
+                .background(Color.clear)
             }
-            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Statistiky")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -54,6 +69,7 @@ struct StatisticsView: View {
                 animateChart = true
             }
         }
+        .tint(selectedTheme.mainColor)
     }
     
     // MARK: - Komponenty
@@ -66,6 +82,9 @@ struct StatisticsView: View {
         }
         .pickerStyle(.segmented)
         .padding(.horizontal, 4)
+        // Použijeme Material pro efekt skla pod pickerem
+        .background(Material.thin)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
     
     private var interactiveChartCard: some View {
@@ -153,7 +172,7 @@ struct StatisticsView: View {
                     if viewModel.selectedRange == .month {
                         AxisGridLine()
                         AxisTick()
-                        // Pro měsíc zobrazíme datum jen občas, aby to nebylo přeplácané
+                        // Pro měsíc zobrazíme datum jen občas
                         if let date = value.as(Date.self) {
                             AxisValueLabel { Text(date, format: .dateTime.day()) }
                         }
@@ -167,68 +186,95 @@ struct StatisticsView: View {
             .chartYAxis(.hidden)
         }
         .padding(20)
-        .background(Color(UIColor.secondarySystemGroupedBackground))
+        // ZMĚNA: Použijeme Material (matné sklo), aby prosvítala animace pozadí
+        .background(Material.regular)
         .clipShape(RoundedRectangle(cornerRadius: 24))
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
     }
     
     private var statsGridSection: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-            
-            // 1. Série (Streak)
-            StatCard(
-                title: "Série",
-                value: "\(viewModel.streakDays)",
-                unit: "dní",
-                icon: "flame.fill",
-                color: .orange
-            )
-            
-            // 2. Trend (Oproti minulu)
-            let isPositive = viewModel.trendPercentage >= 0
-            StatCard(
-                title: "Trend",
-                value: "\(isPositive ? "+" : "")\(Int(viewModel.trendPercentage))",
-                unit: "%",
-                icon: isPositive ? "chart.line.uptrend.xyaxis" : "chart.line.downtrend.xyaxis",
-                color: isPositive ? .green : .red
-            )
-            
-            // 3. Pravidelnost (Consistency)
-            StatCard(
-                title: "Pravidelnost",
-                value: String(format: "%.0f", viewModel.consistency),
-                unit: "%",
-                icon: "chart.pie.fill",
-                color: .purple
-            )
-            
-            // 4. Úspěšnost
-            StatCard(
-                title: "Úspěšnost",
-                value: String(format: "%.0f", viewModel.overallAccuracy),
-                unit: "%",
-                icon: "target",
-                color: .blue
-            )
-            
-            // 5. XP
-            StatCard(
-                title: "Zkušenosti",
-                value: "\(viewModel.totalXP)",
-                unit: "XP",
-                icon: "star.fill",
-                color: .yellow
-            )
-            
-            // 6. Celkem karet
-            StatCard(
-                title: "Celkem",
-                value: "\(viewModel.totalCardsStudied)",
-                unit: "karet",
-                icon: "rectangle.stack.fill",
-                color: .gray
-            )
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                
+                // 1. Série (Streak) -> OHEŇ (.flame)
+                Button(action: { hapticFeedback() }) {
+                    StatCard(
+                        title: "Série",
+                        value: "\(viewModel.streakDays)",
+                        unit: "dní",
+                        iconType: .flame,
+                        color: .orange
+                    )
+                }
+                
+                
+                // 2. Trend -> GRAF (.chart)
+                // Poznámka: Vlastní tvar šipky nemáme, ale barva (Zelená/Červená)
+                // jasně indiku, zda je to dobře nebo špatně.
+                Button(action: { hapticFeedback() }) {
+                    let isPositive = viewModel.trendPercentage >= 0
+                    StatCard(
+                        title: "Trend",
+                        value: "\(isPositive ? "+" : "")\(Int(viewModel.trendPercentage))",
+                        unit: "%",
+                        iconType: .chart,
+                        color: isPositive ? .green : .red
+                    )
+                }
+                
+                
+                // 3. Pravidelnost -> GRAF (.chart)
+                Button(action: { hapticFeedback() }) {
+                    StatCard(
+                        title: "Pravidelnost",
+                        value: String(format: "%.0f", viewModel.consistency),
+                        unit: "%",
+                        iconType: .chart,
+                        color: .purple
+                    )
+                }
+                
+                
+                // 4. Úspěšnost -> TERČ (.target)
+                Button(action: { hapticFeedback() }) {
+                    StatCard(
+                        title: "Úspěšnost",
+                        value: String(format: "%.0f", viewModel.overallAccuracy),
+                        unit: "%",
+                        iconType: .target,
+                        color: .blue
+                    )
+                }
+                
+                
+                // 5. Zkušenosti -> HVĚZDA (.star)
+                Button(action: { hapticFeedback() }) {
+                    StatCard(
+                        title: "Zkušenosti",
+                        value: "\(viewModel.totalXP)",
+                        unit: "XP",
+                        iconType: .star,
+                        color: .yellow
+                    )
+                }
+                
+                
+                // 6. Celkem karet -> BLESK (.bolt)
+                // (Jako symbol energie/síly celé kolekce)
+                Button(action: { hapticFeedback() }) {
+                    StatCard(
+                        title: "Celkem",
+                        value: "\(viewModel.totalCardsStudied)",
+                        unit: "karet",
+                        iconType: .bolt,
+                        color: .gray
+                    )
+                }
+                
+            }
         }
+    
+    private func hapticFeedback() {
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
     }
 }

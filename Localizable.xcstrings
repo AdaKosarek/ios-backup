@@ -2,7 +2,36 @@
   "sourceLanguage" : "en",
   "strings" : {
     "" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ""
+          }
+        }
+      }
+    },
+    "/ %lld" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ %lld"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ %lld"
+          }
+        }
+      }
     },
     "%lld" : {
       "localizations" : {
@@ -37,7 +66,36 @@
       }
     },
     "%lld karet" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld karet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld cards"
+          }
+        }
+      }
+    },
+    "%lld otázek" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld otázek"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld questions"
+          }
+        }
+      }
     },
     "%lld skupin" : {
       "localizations" : {
@@ -71,6 +129,22 @@
         }
       }
     },
+    "•" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "•"
+          }
+        }
+      }
+    },
     "1.0.0" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -87,6 +161,12 @@
           }
         }
       }
+    },
+    "1.0.0 (Beta)" : {
+
+    },
+    "Akcentní barva" : {
+
     },
     "Aktivita" : {
       "localizations" : {
@@ -137,19 +217,104 @@
         }
       }
     },
+    "Celkem karet" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celkem karet"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Cards"
+          }
+        }
+      }
+    },
     "Cíl" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cíl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Goal"
+          }
+        }
+      }
     },
     "Demo Data" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo Data"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo Data"
+          }
+        }
+      }
     },
     "Den" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day"
+          }
+        }
+      }
     },
     "Dnes" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dnes"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today"
+          }
+        }
+      }
+    },
+    "Dnešní cíl" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dnešní cíl"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Goal"
+          }
+        }
+      }
     },
     "Dnešní pokrok" : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
@@ -161,6 +326,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today's Progress"
+          }
+        }
+      }
+    },
+    "Hotovo" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hotovo"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
           }
         }
       }
@@ -182,7 +363,21 @@
       }
     },
     "Jazyk" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jazyk"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language"
+          }
+        }
+      }
     },
     "Jazyk aplikace" : {
       "extractionState" : "stale",
@@ -201,7 +396,24 @@
         }
       }
     },
+    "Jen tak dál!" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jen tak dál!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep it up!"
+          }
+        }
+      }
+    },
     "karet naučeno" : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
@@ -250,10 +462,37 @@
       }
     },
     "Klikni na ✨ pro vygenerování odpovědi pomocí AI." : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klikni na ✨ pro vygenerování odpovědi pomocí AI."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap ✨ to generate answer using AI."
+          }
+        }
+      }
     },
     "Knihovna" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Knihovna"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Library"
+          }
+        }
+      }
     },
     "Library" : {
       "extractionState" : "stale",
@@ -288,39 +527,87 @@
         }
       }
     },
-    "Např. a² + b² = ?" : {
+    "Např.\na² + b² = ?" : {
       "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Např. a² + b² = ?"
+            "value" : "Např.\na² + b² = ?"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "E.g. a² + b² = ?"
+            "value" : "E.g.\na² + b² = ?"
           }
         }
       }
     },
-    "Např. Angličtina" : {
-
-    },
-    "Např. c²" : {
+    "Např.\nAngličtina" : {
       "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Např. c²"
+            "value" : "Např.\nAngličtina"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "E.g. c²"
+            "value" : "E.g.\nEnglish"
+          }
+        }
+      }
+    },
+    "Např.\nc²" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Např.\nc²"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E.g.\nc²"
+          }
+        }
+      }
+    },
+    "Např.\nHlavní město Francie?" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Např.\nHlavní město Francie?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E.g.\nCapital of France?"
+          }
+        }
+      }
+    },
+    "Např.\nMatematika" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Např.\nMatematika"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E.g.\nMathematics"
           }
         }
       }
@@ -329,20 +616,7 @@
 
     },
     "Např. Matematika" : {
-      "localizations" : {
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Např. Matematika"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "E.g. Mathematics"
-          }
-        }
-      }
+
     },
     "Nastavení" : {
       "localizations" : {
@@ -441,6 +715,7 @@
       }
     },
     "Nový balíček" : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
@@ -522,17 +797,102 @@
         }
       }
     },
+    "Přidej novou skupinu tlačítkem +" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přidej novou skupinu tlačítkem +"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a new group with the + button"
+          }
+        }
+      }
+    },
     "Přizpůsobte si aplikaci podle sebe" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přizpůsobte si aplikaci podle sebe"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Customize the app your way"
+          }
+        }
+      }
+    },
+    "Q" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Q"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Q"
+          }
+        }
+      }
     },
     "Range" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozsah"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Range"
+          }
+        }
+      }
     },
     "Rychlý přehled" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rychlý přehled"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick Overview"
+          }
+        }
+      }
     },
     "Selected" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vybráno"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected"
+          }
+        }
+      }
     },
     "Settings" : {
       "extractionState" : "stale",
@@ -602,7 +962,52 @@
       }
     },
     "Smazat balíček" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat balíček"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Package"
+          }
+        }
+      }
+    },
+    "Smazat kartu" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat kartu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Card"
+          }
+        }
+      }
+    },
+    "Smazat skupinu" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smazat skupinu"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Group"
+          }
+        }
+      }
     },
     "Špatně" : {
       "localizations" : {
@@ -616,6 +1021,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Incorrect"
+          }
+        }
+      }
+    },
+    "Splněno!" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Splněno!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completed!"
           }
         }
       }
@@ -637,6 +1058,7 @@
       }
     },
     "Start Session" : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
@@ -701,13 +1123,57 @@
         }
       }
     },
+    "Studovat vše" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studovat vše"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Study All"
+          }
+        }
+      }
+    },
     "StudySync" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "StudySync"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "StudySync"
+          }
+        }
+      }
     },
     "StudySync v1.0.0" : {
-
+      "extractionState" : "stale",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "StudySync v1.0.0"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "StudySync v1.0.0"
+          }
+        }
+      }
     },
     "Sync Watch" : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
@@ -723,21 +1189,25 @@
         }
       }
     },
-    "Tato skupina je prázdná. Klikni na + a přidej otázku." : {
+    "Tato skupina je prázdná.\nKlikni na + a přidej otázku." : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tato skupina je prázdná. Klikni na + a přidej otázku."
+            "value" : "Tato skupina je prázdná.\nKlikni na + a přidej otázku."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This group is empty. Tap + to add a question."
+            "value" : "This group is empty.\nTap + to add a question."
           }
         }
       }
+    },
+    "Tato skupina je prázdná. Klikni na + a přidej otázku." : {
+
     },
     "Today" : {
       "extractionState" : "stale",
@@ -752,6 +1222,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Today"
+          }
+        }
+      }
+    },
+    "Uč se chytřeji" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uč se chytřeji"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Study Smarter"
           }
         }
       }
@@ -800,6 +1286,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Save"
+          }
+        }
+      }
+    },
+    "Upravit" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upravit"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
           }
         }
       }
@@ -968,8 +1470,40 @@
         }
       }
     },
-    "Zde bude odpověď..." : {
+    "Žádné skupiny" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Žádné skupiny"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Groups"
+          }
+        }
+      }
+    },
+    "Zapnuto" : {
 
+    },
+    "Zde bude odpověď..." : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zde bude odpověď..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Answer will be here..."
+          }
+        }
+      }
     },
     "Zelená znamená splněný cíl" : {
       "extractionState" : "stale",

@@ -50,4 +50,7 @@ class DIContainer: ObservableObject {
     func makeStatisticsViewModel() -> StatisticsViewModel {
         return StatisticsViewModel(dataService: dataService)
     }
+    func makeEditPackageViewModel(package: StudyPackage?) -> EditPackageViewModel {
+        return EditPackageViewModel(package: package, dataService: self.dataService)
+    }
 }
