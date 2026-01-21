@@ -249,6 +249,9 @@
         }
       }
     },
+    "Klikni na ✨ pro vygenerování odpovědi pomocí AI." : {
+
+    },
     "Knihovna" : {
 
     },
@@ -286,6 +289,7 @@
       }
     },
     "Např. a² + b² = ?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
@@ -305,6 +309,7 @@
 
     },
     "Např. c²" : {
+      "extractionState" : "stale",
       "localizations" : {
         "cs" : {
           "stringUnit" : {
@@ -319,6 +324,9 @@
           }
         }
       }
+    },
+    "Např. Hlavní město Francie?" : {
+
     },
     "Např. Matematika" : {
       "localizations" : {
@@ -959,6 +967,9 @@
           }
         }
       }
+    },
+    "Zde bude odpověď..." : {
+
     },
     "Zelená znamená splněný cíl" : {
       "extractionState" : "stale",

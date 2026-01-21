@@ -66,6 +66,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0F5C7A5D2F20C6AA00ED7AB5 /* Exceptions for "StudySync" folder in "StudySync" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = C689D8472EF42DD9003DBE2A /* StudySync */;
+		};
 		0F6ADE1C2F1A393F006EBFAE /* Exceptions for "StudySync" folder in "StudySyncTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -91,7 +98,6 @@
 				Model/StudyGroup.swift,
 				Model/StudyPackage.swift,
 				Model/StudySession.swift,
-				Serivices/Connector/WatchConnector.swift,
 			);
 			target = C689D85E2EF42E11003DBE2A /* StudySync Watch Watch App */;
 		};
@@ -116,6 +122,7 @@
 		C689D8AC2EF42F95003DBE2A /* StudySync */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				0F5C7A5D2F20C6AA00ED7AB5 /* Exceptions for "StudySync" folder in "StudySync" target */,
 				C685B7052F10DFBD007EC0D8 /* Exceptions for "StudySync" folder in "StudySync Watch Watch App" target */,
 				0F6ADE1C2F1A393F006EBFAE /* Exceptions for "StudySync" folder in "StudySyncTests" target */,
 				0F81C1BE2F14FBEF000CE4D5 /* Exceptions for "StudySync" folder in "StudySyncTestsUI" target */,
@@ -650,6 +657,8 @@
 		};
 		C689D8562EF42DDB003DBE2A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C689D8AC2EF42F95003DBE2A /* StudySync */;
+			baseConfigurationReferenceRelativePath = Serivices/Api/ApiKeys.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -658,6 +667,7 @@
 				DEVELOPMENT_TEAM = 2G6H4MYRLR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StudySync/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -682,6 +692,8 @@
 		};
 		C689D8572EF42DDB003DBE2A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = C689D8AC2EF42F95003DBE2A /* StudySync */;
+			baseConfigurationReferenceRelativePath = Serivices/Api/ApiKeys.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -690,6 +702,7 @@
 				DEVELOPMENT_TEAM = 2G6H4MYRLR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = StudySync/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

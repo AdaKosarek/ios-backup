@@ -1,3 +1,4 @@
+/*
 import SwiftUI
 
 struct WatchContentView: View {
@@ -18,3 +19,4 @@ struct WatchContentView: View {
         .background(Color.brandDarkBg.ignoresSafeArea()) // Tmavé pozadí pro celou appku
     }
 }
+*/

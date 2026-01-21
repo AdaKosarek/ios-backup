@@ -4,7 +4,7 @@
 //
 //  Created by Miroslav Musil on 18.12.2025.
 //
-
+/*
 import SwiftUI
 
 struct WatchStatsView: View {
@@ -54,3 +54,4 @@ struct WatchStatsView: View {
         }
     }
 }
+*/

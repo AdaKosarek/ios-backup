@@ -4,7 +4,7 @@
 //
 //  Created by Martin Reich on 12.01.2026.
 //
-
+/*
 import SwiftUI
 
 struct WatchDashboardView: View {
@@ -148,3 +148,4 @@ struct WatchDashboardView: View {
         }
     }
 }
+*/

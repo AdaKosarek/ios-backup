@@ -12,7 +12,7 @@ import SwiftData
 struct StudySync_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            WatchContentView()
+           // WatchContentView()
         }
         .modelContainer(for: [
             StudyPackage.self,
