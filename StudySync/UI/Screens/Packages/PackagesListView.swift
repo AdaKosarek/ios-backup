@@ -53,9 +53,6 @@ struct PackagesListView: View {
                 // OPRAVA 2: Okno bude jen do poloviny obrazovky
                 .presentationDetents([.medium])
             }
-            
-            // 2. SHEET: Editace existujícího balíčku
-            // OPRAVA 1: onDismiss zajistí načtení dat po zavření okna
             .sheet(item: $packageToEdit, onDismiss: {
                 viewModel.loadPackages()
             }) { package in

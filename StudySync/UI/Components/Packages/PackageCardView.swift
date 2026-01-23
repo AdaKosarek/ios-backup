@@ -32,7 +32,7 @@ struct PackageCardView: View {
                 
                 HStack(spacing: 6) {
                     Label("\(package.groups.count) skupin", systemImage: "folder.fill")
-                    Text("•")
+                    
                     Text("\(countCards()) karet")
                 }
                 .font(.subheadline)

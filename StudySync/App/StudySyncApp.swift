@@ -10,13 +10,9 @@ import SwiftData
 
 @main
 struct StudySyncApp: App {
-    // 1. Načítání nastavení
     @AppStorage("selectedLanguage") private var selectedLanguage: AppLanguage = .czech
     @AppStorage("selectedTheme") private var selectedTheme: AppTheme = .blue
-    
-    // 2. NOVÉ: Stav pro zobrazení Splash Screenu
     @State private var showSplashScreen = true
-    
     @Environment(\.scenePhase) private var scenePhase
     
     // Definice SwiftData kontejneru

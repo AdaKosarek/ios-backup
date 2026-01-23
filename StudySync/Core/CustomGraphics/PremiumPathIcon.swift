@@ -15,8 +15,8 @@ struct IconShapeWrapper: Shape {
     
     func path(in rect: CGRect) -> Path {
         switch type {
-        case .home:     return HomeShape().path(in: rect) // Použije vylepšený domeček
-        case .settings: return GearShape().path(in: rect) // Použije ozubené kolo
+        case .home:     return HomeShape().path(in: rect)
+        case .settings: return GearShape().path(in: rect)
         case .folder: return FolderShape().path(in: rect)
         case .chart:    return ChartBarsShape().path(in: rect)
         case .flame:    return FlameShape().path(in: rect)

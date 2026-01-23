@@ -2,9 +2,9 @@
 //  WatchSettingsScreenView.swift
 //  StudySync
 //
-//  Created by Martin Reich on 12.01.2026.
+//  Created by mp on 23.01.2026.
 //
-/*
+
 import SwiftUI
 
 struct WatchSettingsView: View {
@@ -81,4 +81,3 @@ struct WatchSettingsView: View {
         }
     }
 }
-*/

@@ -2,9 +2,9 @@
 //  WatchStatsView.swift
 //  StudySync
 //
-//  Created by Miroslav Musil on 18.12.2025.
+//  Created by mp on 23.01.2026.
 //
-/*
+
 import SwiftUI
 
 struct WatchStatsView: View {
@@ -54,4 +54,3 @@ struct WatchStatsView: View {
         }
     }
 }
-*/

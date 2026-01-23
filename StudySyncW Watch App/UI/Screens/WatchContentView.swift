@@ -1,4 +1,10 @@
-/*
+//
+//  WatchContentView.swift
+//  StudySync
+//
+//  Created by mp on 23.01.2026.
+//
+
 import SwiftUI
 
 struct WatchContentView: View {
@@ -19,4 +25,3 @@ struct WatchContentView: View {
         .background(Color.brandDarkBg.ignoresSafeArea()) // Tmavé pozadí pro celou appku
     }
 }
-*/

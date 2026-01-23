@@ -8,11 +8,8 @@ import SwiftUI
 struct SplashScreenView: View {
     @Binding var isFinished: Bool
     
-    // Stavy pro animace
     @State private var startEntranceAnimation = false
     @State private var textOpacity = 0.0
-    
-    // NOVÉ: Stav pro nekonečnou rotaci
     @State private var rotationAngle: Double = 0
     
     @AppStorage("selectedTheme") private var selectedTheme: AppTheme = .blue
@@ -24,13 +21,11 @@ struct SplashScreenView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 20) {
-                // IKONA (Animovaná)
                 ZStack {
                     // Záře za ikonou
                     Circle()
                         .fill(selectedTheme.mainColor.opacity(0.2))
                         .frame(width: 140, height: 140)
-                        // Efekt "dýchání" při příletu
                         .scaleEffect(startEntranceAnimation ? 1.2 : 0.8)
                         .blur(radius: 20)
                     

@@ -1,18 +1,21 @@
 //
-//  StudySync_WatchApp.swift
-//  StudySync Watch Watch App
+//  StudySyncWApp.swift
+//  StudySyncW Watch App
 //
-//  Created by Miroslav Musil on 18.12.2025.
+//  Created by mp on 23.01.2026.
 //
-
 import SwiftUI
 import SwiftData
 
 @main
-struct StudySync_Watch_AppApp: App {
+struct StudySyncW_Watch_AppApp: App {
+    init() {
+        _ = WatchConnector.shared
+    }
+    
     var body: some Scene {
         WindowGroup {
-           // WatchContentView()
+            WatchContentView()
         }
         .modelContainer(for: [
             StudyPackage.self,

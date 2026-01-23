@@ -11,18 +11,17 @@ import SwiftUI
 
 // Definice záložek
 enum Tab: String, CaseIterable {
-    case home = "Dnes"
+    case home = "Domů"
     case packages = "Balíčky"
     case stats = "Statistiky"
     case settings = "Nastavení"
-    
-    // Přiřazení našich vlastních ikon
+
     var iconType: CustomIconType {
         switch self {
         case .home: return .home
         case .packages: return .folder
         case .stats: return .chart
-        case .settings: return .doc // Nebo vytvořit tvar 'gear', prozatím doc
+        case .settings: return .doc
         }
     }
 }
@@ -68,19 +67,16 @@ struct CustomTabBar: View {
                         .frame(height: 30)
                         
                         // TEXT (Zobrazíme jen u vybraného nebo u všech, podle preference)
-                        if selectedTab == tab {
-                            Text(tab.rawValue)
-                                .font(.system(size: 10, weight: .bold))
-                                .foregroundStyle(activeColor)
-                                .transition(.opacity.combined(with: .scale))
-                        } else {
-                            // U nevybraných můžeme skrýt text, aby byl bar čistší,
-                            // nebo ho nechat malý šedý. Zde ho necháme jako malou tečku nebo skrytý.
-                             Circle()
-                                 .fill(.gray.opacity(0.3))
-                                 .frame(width: 4, height: 4)
-                                 .padding(.top, 4)
-                        }
+                        Text(tab.rawValue)
+                            .font(.system(size: 10, weight: selectedTab == tab ? .bold : .regular))
+                            .foregroundStyle(
+                                selectedTab == tab
+                                ? activeColor
+                                : Color.gray.opacity(0.6)
+                            )
+                            .opacity(selectedTab == tab ? 1.0 : 0.85)
+                            .animation(.easeInOut(duration: 0.2), value: selectedTab)
+
                     }
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
@@ -109,7 +105,7 @@ struct CustomTabBar: View {
         )
         // ODSAZENÍ OD KRAJŮ (To, co jste chtěl)
         .padding(.horizontal, 24)
-        .padding(.bottom, 10) // Zvednutí ode dna (nad Home Indicator)
+        .padding(.bottom, 10)
     }
 }
 

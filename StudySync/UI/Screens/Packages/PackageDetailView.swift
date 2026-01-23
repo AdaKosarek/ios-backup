@@ -81,8 +81,8 @@ struct PackageDetailView: View {
                 
                 Button(action: { showingStudySession = true }) {
                     HStack {
-                        Image(systemName: "play.fill")
                         Text("Studovat vše")
+                        Image(systemName: "play.fill")
                     }
                     .fontWeight(.semibold)
                     .padding(.horizontal, 20)
@@ -105,7 +105,7 @@ struct PackageDetailView: View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Skupiny")
                     .font(.headline)
-                    .padding(.horizontal) // Padding pro nadpis
+                    .padding(.horizontal)
                     .padding(.top, 10)
                 
                 if viewModel.package.groups.isEmpty {
@@ -116,14 +116,12 @@ struct PackageDetailView: View {
                     )
                     .padding(.top, 20)
                 } else {
-                    // ZDE JE OPRAVA:
-                    // VStack pro seznam skupin
                     VStack(spacing: 16) {
                         ForEach(viewModel.package.groups) { group in
                             groupRow(for: group)
                         }
                     }
-                    .padding(.horizontal) // <--- TOTO PŘIDÁ PADDING Z BOKŮ PRO KARTY
+                    .padding(.horizontal)
                 }
             }
         }
