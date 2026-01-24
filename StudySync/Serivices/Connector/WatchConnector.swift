@@ -15,6 +15,7 @@ class WatchConnector: NSObject, WCSessionDelegate {
     static let shared = WatchConnector()
     
     var receivedPackages: [PackageDTO] = []
+    var receivedStats: WatchStatsDTO?
     
     private override init() {
         super.init()
@@ -29,50 +30,48 @@ class WatchConnector: NSObject, WCSessionDelegate {
         _ session: WCSession,
         didReceiveApplicationContext applicationContext: [String : Any]
     ) {
-        print("📥 didReceiveApplicationContext")
-
-        guard
-            let data = applicationContext["packages"] as? Data,
-            let packages = try? JSONDecoder().decode([PackageDTO].self, from: data)
-        else {
-            print("❌ Decode applicationContext selhal")
-            return
-        }
-
         DispatchQueue.main.async {
-            self.receivedPackages = packages
-            print("⌚️ Watch aktualizovala balíčky: \(packages.count)")
+
+            if let data = applicationContext["packages"] as? Data,
+               let packages = try? JSONDecoder().decode([PackageDTO].self, from: data) {
+                self.receivedPackages = packages
+                print("⌚️ Packages updated: \(packages.count)")
+            }
+
+            if let data = applicationContext["stats"] as? Data,
+               let stats = try? JSONDecoder().decode(WatchStatsDTO.self, from: data) {
+                self.receivedStats = stats
+                print("⌚️ Stats updated")
+            }
         }
     }
+
     func session(
         _ session: WCSession,
         activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
-        print("⌚️ Session aktivována: \(activationState.rawValue)")
-
-        guard
-            let data = session.receivedApplicationContext["packages"] as? Data,
-            let packages = try? JSONDecoder().decode([PackageDTO].self, from: data)
-        else {
-            print("ℹ️ Žádná data v applicationContext")
-            return
-        }
-
         DispatchQueue.main.async {
-            self.receivedPackages = packages
-            print("⌚️ Watch načetla balíčky při startu: \(packages.count)")
+
+            if let data = session.receivedApplicationContext["packages"] as? Data,
+               let packages = try? JSONDecoder().decode([PackageDTO].self, from: data) {
+                self.receivedPackages = packages
+                print("Packages loaded on start")
+            }
+
+            if let data = session.receivedApplicationContext["stats"] as? Data,
+               let stats = try? JSONDecoder().decode(WatchStatsDTO.self, from: data) {
+                self.receivedStats = stats
+                print("Stats loaded on start")
+            }
         }
     }
 
-    
-    // --- ODESÍLÁNÍ DAT (Použije iOS) ---
-    // ZMĚNA: Používáme sendMessageData (stejný princip jako WeatherApp sendMessage, ale pro JSON)
     func sendDataToWatch(packages: [PackageDTO]) {
-        guard WCSession.isSupported() else {
+        /*guard WCSession.isSupported() else {
             print("❌ WCSession not supported")
             return
-        }
+        }*/
 
         do {
             let data = try JSONEncoder().encode(packages)
@@ -81,13 +80,23 @@ class WatchConnector: NSObject, WCSessionDelegate {
                 "packages": data
             ])
 
-            print("✅ Sync uložen do applicationContext (\(packages.count) balíčků)")
+            print("✅ Sync uložen (\(packages.count) balíčků)")
 
         } catch {
             print("❌ Chyba syncu: \(error)")
         }
     }
 
+    func sendStatsToWatch(_ stats: WatchStatsDTO) {
+        do {
+            let data = try JSONEncoder().encode(stats)
+            try WCSession.default.updateApplicationContext([
+                "stats": data
+            ])
+        } catch {
+            print("❌ Stats sync error: \(error)")
+        }
+    }
     // --- ODESÍLÁNÍ VÝSLEDKU (Použijí Hodinky) ---
     /*func sendResultToPhone(result: SessionResultDTO) {
         if WCSession.default.isReachable {

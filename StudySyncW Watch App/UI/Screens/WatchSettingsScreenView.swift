@@ -45,6 +45,7 @@ struct WatchSettingsView: View {
                     withAnimation {
                         // Vymaže data, aby sis mohl znovu zkusit "Nahrát Demo Data"
                         connector.receivedPackages.removeAll()
+                        connector.receivedStats = nil
                     }
                 }) {
                     Label("Smazat data (Reset)", systemImage: "trash")

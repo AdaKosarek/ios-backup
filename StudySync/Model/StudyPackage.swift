@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class StudyPackage {
+class StudyPackage: Identifiable {
     var id: UUID
     var name: String
     var colorHex: String

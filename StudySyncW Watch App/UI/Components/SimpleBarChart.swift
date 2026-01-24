@@ -9,22 +9,30 @@ import SwiftUI
 
 
 struct SimpleBarChart: View {
-    let data: [Double] // Hodnoty pro sloupc
-    let labels: [String] // Popisky (např. dny v týdnu)
+
+    let data: [Int]
+    let labels: [String]
+
+    private var maxValue: Int {
+        max(data.max() ?? 1, 1)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("This Week")
+
+            Text("Tento týden")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-            
+
             HStack(alignment: .bottom, spacing: 8) {
-                ForEach(0..<data.count, id: \.self) { index in
+                ForEach(data.indices, id: \.self) { index in
                     VStack {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(Color.mainGradient)
-                            .frame(height: CGFloat(data[index] * 50)) // Výška podle hodnoty
-                        
+                            .frame(
+                                height: CGFloat(data[index]) / CGFloat(maxValue) * 50
+                            )
+
                         Text(labels[index])
                             .font(.caption2)
                             .foregroundStyle(.secondary)

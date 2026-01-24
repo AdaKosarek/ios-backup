@@ -9,6 +9,7 @@ import SwiftUI
 
 struct WatchDashboardView: View {
     @State private var connector = WatchConnector.shared
+    @State private var viewModel = WatchStatsViewModel()
     
     // Spočítáme skutečný počet karet
     var totalCardsCount: Int {
@@ -69,11 +70,11 @@ struct WatchDashboardView: View {
             HStack(spacing: 20) {
                 HStack {
                     Image(systemName: "flame.fill").foregroundStyle(.orange)
-                    Text("\(streak)").fontWeight(.bold)
+                    Text("\(viewModel.streakDays)").fontWeight(.bold)
                 }
                 HStack {
                     Image(systemName: "star.fill").foregroundStyle(.yellow)
-                    Text("\(xp)").fontWeight(.bold)
+                    Text("\(viewModel.xpAll)").fontWeight(.bold)
                 }
             }
             

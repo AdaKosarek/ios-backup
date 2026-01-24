@@ -26,6 +26,14 @@ class HomeViewModel {
         do {
             self.sessions = try dataService.fetchSessions()
             calculateStats()
+            let statsVM = StatisticsViewModel(dataService: dataService)
+            statsVM.refreshData()
+
+            let statsDTO = statsVM.makeWatchStatsDTO()
+
+            DispatchQueue.main.async {
+                WatchConnector.shared.sendStatsToWatch(statsDTO)
+            }
         } catch {
             print("Error loading sessions: \(error)")
         }

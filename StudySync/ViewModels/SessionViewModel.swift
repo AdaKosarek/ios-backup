@@ -65,5 +65,14 @@ class SessionViewModel {
         isFinished = true
         let session = StudySession(correctCount: correctCount, incorrectCount: incorrectCount)
         dataService.saveSession(session)
+        
+        let statsVM = StatisticsViewModel(dataService: dataService)
+        statsVM.refreshData()
+
+        let statsDTO = statsVM.makeWatchStatsDTO()
+
+        DispatchQueue.main.async {
+            WatchConnector.shared.sendStatsToWatch(statsDTO)
+        }
     }
 }

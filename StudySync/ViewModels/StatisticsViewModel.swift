@@ -235,3 +235,23 @@ class StatisticsViewModel {
         recalculateAll()
     }
 }
+
+extension StatisticsViewModel {
+
+    func makeWatchStatsDTO() -> WatchStatsDTO {
+        let todayXP = sessions
+            .filter { Calendar.current.isDateInToday($0.date) }
+            .reduce(0) { $0 + $1.correctCount * 10 }
+
+        let weekly = chartData.map { $0.value }
+
+        return WatchStatsDTO(
+            xpToday: todayXP,
+            xpAll: totalXP,
+            streakDays: streakDays,
+            accuracy: overallAccuracy,
+            weeklyCards: weekly
+        )
+    }
+}
+

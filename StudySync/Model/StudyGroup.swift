@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class StudyGroup {
+class StudyGroup: Identifiable {
     var id: UUID
     var name: String
     var dateCreated: Date

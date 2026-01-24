@@ -34,3 +34,11 @@ struct SessionResultDTO: Codable {
     let incorrect: Int
     let date: Date
 }
+
+struct WatchStatsDTO: Codable {
+    let xpToday: Int
+    let xpAll: Int
+    let streakDays: Int
+    let accuracy: Double
+    let weeklyCards: [Int]   // 7 hodnot (Po–Ne)
+}
