@@ -11,10 +11,7 @@ struct WatchStatsView: View {
     @State private var connector = WatchConnector.shared
     @State private var viewModel = WatchStatsViewModel()
     
-    // Spočítáme balíčky
     var packagesCount: Int { connector.receivedPackages.count }
-    
-    // Spočítáme karty
     var cardsCount: Int {
         connector.receivedPackages.reduce(0) { $0 + $1.groups.reduce(0) { $0 + $1.cards.count } }
     }

@@ -7,7 +7,6 @@
 
 import Foundation
 
-// DTO = Data Transfer Object (objekt pro přenos dat)
 
 struct PackageDTO: Codable, Identifiable {
     let id: UUID

@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-// 2. Konkrétní implementace pro SwiftData
+
 class SwiftDataService: DataServiceProtocol {
     private let modelContext: ModelContext
     

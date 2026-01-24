@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-// 1. Protokol definující kontrakt (rozhraní)
+
 protocol DataServiceProtocol {
     func fetchPackages() throws -> [StudyPackage]
     func addPackage(_ package: StudyPackage)

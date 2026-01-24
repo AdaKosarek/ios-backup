@@ -14,6 +14,10 @@ struct WatchSessionView: View {
     // 2. STAV
     @State private var currentIndex = 0
     @State private var isAnswerRevealed = false
+    
+    @State private var correctCount = 0
+    @State private var incorrectCount = 0
+    
     @Environment(\.dismiss) var dismiss
     
     // Bezpečný přístup k aktuální kartě
@@ -71,7 +75,10 @@ struct WatchSessionView: View {
                 } else {
                     HStack(spacing: 12) {
                         // Tlačítko ŠPATNĚ
-                        Button(action: { nextCard() }) {
+                        Button(action: {
+                            incorrectCount += 1
+                            nextCard()
+                        }) {
                             Image(systemName: "xmark")
                                 .font(.headline) // Menší ikonka
                         }
@@ -81,7 +88,10 @@ struct WatchSessionView: View {
                         .frame(width: 40, height: 40) // Menší kolečko (bylo 50)
                         
                         // Tlačítko DOBŘE
-                        Button(action: { nextCard() }) {
+                        Button(action: {
+                            correctCount += 1
+                            nextCard()
+                        }) {
                             Image(systemName: "checkmark")
                                 .font(.headline) // Menší ikonka
                         }
@@ -132,5 +142,19 @@ struct WatchSessionView: View {
     private func nextCard() {
         isAnswerRevealed = false
         currentIndex += 1
+
+        if currentIndex >= cards.count {
+            finishSession()
+        }
+    }
+
+    private func finishSession() {
+        let result = SessionResultDTO(
+            correct: correctCount,
+            incorrect: incorrectCount,
+            date: Date()
+        )
+
+        WatchConnector.shared.sendSessionResult(result)
     }
 }

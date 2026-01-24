@@ -7,10 +7,9 @@
 
 import SwiftUI
 import SwiftData
-import Combine // 1. PŘIDÁNO: Nutné pro protokol ObservableObject
+import Combine
 
-// 2. ODSTRANĚNO: @MainActor (není nutný pro tento kontejner a blokoval automatickou konformitu)
-//@Observable
+
 class DIContainer: ObservableObject {
     
     // Zde držíme náš Service jako protokol -> klíč k testovatelnosti

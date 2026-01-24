@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import WatchConnectivity
 
 @main
 struct StudySyncApp: App {
@@ -34,22 +35,28 @@ struct StudySyncApp: App {
     
     let diContainer: DIContainer
 
+    
+    //!
     init() {
-        // --- Logika pro UI Testy a SwiftData (Zachováno) ---
+        let dataService: DataServiceProtocol
+
         if CommandLine.arguments.contains("--mock-data") {
-            print("🚀 UI Test Mode: Aktivuji Mock Data...")
             let mockService = MockDataService()
             mockService.addMockDataForUITests()
+            dataService = mockService
             self.diContainer = DIContainer(dataService: mockService)
         } else {
-            print("📱 Normal Mode: Aktivuji SwiftData...")
-            let dataService = SwiftDataService(modelContext: sharedModelContainer.mainContext)
-            self.diContainer = DIContainer(dataService: dataService)
+            let realService = SwiftDataService(
+                modelContext: sharedModelContainer.mainContext
+            )
+            dataService = realService
+            self.diContainer = DIContainer(dataService: realService)
         }
-        
-        _ = WatchConnector.shared
+        WatchConnector.shared.configure(dataService: dataService)
+
         NotificationManager.shared.requestPermission()
     }
+
 
     var body: some Scene {
         WindowGroup {
@@ -78,11 +85,23 @@ struct StudySyncApp: App {
         }
         .modelContainer(sharedModelContainer)
         .onChange(of: scenePhase) { _, newPhase in
-            if newPhase == .background {
+            switch newPhase {
+
+            case .active:
+                WCSession.default.activate()
+                print("📱 iOS active → WCSession activated")
+
+            case .background:
                 Task { @MainActor in
-                    NotificationManager.shared.scheduleEveningNotification(ifNotStudied: sharedModelContainer.mainContext)
+                    NotificationManager.shared.scheduleEveningNotification(
+                        ifNotStudied: sharedModelContainer.mainContext
+                    )
                 }
+
+            default:
+                break
             }
         }
+
     }
 }
