@@ -24,7 +24,7 @@ struct StudyCardRowView: View {
                 Text(card.question)
                     .font(.body)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.black)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true) // Aby se text nezasekl
                 
@@ -35,7 +35,8 @@ struct StudyCardRowView: View {
                 // Odpověď (Jemnější, kurzíva)
                 Text(card.answer)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.black)
+                    .opacity(0.75)
                     .lineLimit(2)
             }
             

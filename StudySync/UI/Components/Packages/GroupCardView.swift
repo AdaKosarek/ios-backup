@@ -26,7 +26,7 @@ struct GroupCardView: View {
                 Text(group.name)
                     .font(.headline) // Výraznější
                     .fontWeight(.bold)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.black)
                 
                 // KONTRASTNÍ ŠTÍTEK
                 Text("\(group.cards.count) otázek")

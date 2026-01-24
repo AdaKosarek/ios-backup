@@ -61,7 +61,6 @@ struct CardListView: View {
     
     // Samostatná funkce pro řádek karty
     private func cardRow(for card: StudyCard) -> some View {
-        // Zabalíme do Buttonu, aby fungoval .tiltStyle() (animace kliknutí)
         Button(action: {
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()

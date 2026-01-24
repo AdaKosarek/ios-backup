@@ -54,6 +54,7 @@ struct StatCard: View {
                         .font(.footnote)
                         .fontWeight(.medium)
                         .foregroundStyle(.secondary)
+                        .foregroundColor(.black)
                 }
             }
             .padding(16)

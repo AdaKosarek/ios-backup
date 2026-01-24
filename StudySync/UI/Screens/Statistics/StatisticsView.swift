@@ -205,11 +205,7 @@ struct StatisticsView: View {
                         color: .orange
                     )
                 }
-                
-                
-                // 2. Trend -> GRAF (.chart)
-                // Poznámka: Vlastní tvar šipky nemáme, ale barva (Zelená/Červená)
-                // jasně indiku, zda je to dobře nebo špatně.
+            
                 Button(action: { hapticFeedback() }) {
                     let isPositive = viewModel.trendPercentage >= 0
                     StatCard(

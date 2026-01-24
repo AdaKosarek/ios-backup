@@ -167,7 +167,14 @@
 
     },
     "Akcentní barva" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accent color"
+          }
+        }
+      }
     },
     "Aktivita" : {
       "localizations" : {
@@ -446,6 +453,9 @@
         }
       }
     },
+    "Key" : {
+      "extractionState" : "manual"
+    },
     "Klepni pro otočení" : {
       "localizations" : {
         "cs" : {
@@ -617,7 +627,20 @@
 
     },
     "Např. Matematika" : {
-
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Např. Matematika"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E. g. Mathematics"
+          }
+        }
+      }
     },
     "Nastavení" : {
       "localizations" : {

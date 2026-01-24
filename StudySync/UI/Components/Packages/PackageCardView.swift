@@ -28,7 +28,7 @@ struct PackageCardView: View {
                 Text(package.name)
                     .font(.title3) // Větší písmo
                     .fontWeight(.bold) // Lepší čitelnost
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.black)
                 
                 HStack(spacing: 6) {
                     Label("\(package.groups.count) skupin", systemImage: "folder.fill")
