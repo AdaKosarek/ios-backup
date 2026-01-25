@@ -19,3 +19,24 @@ extension Color {
         endPoint: .bottomTrailing
     )
 }
+
+
+extension View {
+    func watchBackground() -> some View {
+        self
+            .background(
+                LinearGradient(
+                    colors: [
+                        Color(red: 0/255, green: 0/255, blue: 8/255),
+                        Color(red: 10/255, green: 20/255, blue: 45/255),
+                        Color(red: 10/255, green: 20/255, blue: 45/255),
+                        Color(red: 0/255, green: 0/255, blue: 8/255)
+                    ],
+                    startPoint: .bottomLeading,
+                    endPoint: .topTrailing
+                )
+                .ignoresSafeArea()
+            )
+    }
+}
+

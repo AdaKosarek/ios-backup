@@ -87,9 +87,9 @@ struct StudySyncApp: App {
         .onChange(of: scenePhase) { _, newPhase in
             switch newPhase {
 
-            case .active:
+            /*case .active:
                 WCSession.default.activate()
-                print("📱 iOS active → WCSession activated")
+                */
 
             case .background:
                 Task { @MainActor in

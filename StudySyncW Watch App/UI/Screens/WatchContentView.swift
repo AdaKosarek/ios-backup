@@ -22,6 +22,6 @@ struct WatchContentView: View {
                 .tag(2)
         }
         .tabViewStyle(.page(indexDisplayMode: .automatic))
-        .background(Color.brandDarkBg.ignoresSafeArea()) // Tmavé pozadí pro celou appku
+        .watchBackground() 
     }
 }

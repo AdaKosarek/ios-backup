@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0F43131C2F1A5A2400179B72 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0F43131B2F1A5A2400179B72 /* Localizable.xcstrings */; };
 		ED66EDD22F240FF4007C5146 /* StudySyncW Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = ED66EDC82F240FF4007C5146 /* StudySyncW Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EDE446382F25934300A3DDDD /* TestPlan.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = EDE446372F25934300A3DDDD /* TestPlan.xctestplan */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,11 +50,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0F43131B2F1A5A2400179B72 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		0F81C1882F14F321000CE4D5 /* StudySyncTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StudySyncTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0F81C1952F14F344000CE4D5 /* StudySyncTestsUI.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StudySyncTestsUI.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C689D8482EF42DD9003DBE2A /* StudySync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StudySync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED66EDC82F240FF4007C5146 /* StudySyncW Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StudySyncW Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EDE446372F25934300A3DDDD /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -167,7 +167,7 @@
 		C689D83F2EF42DD9003DBE2A = {
 			isa = PBXGroup;
 			children = (
-				0F43131B2F1A5A2400179B72 /* Localizable.xcstrings */,
+				EDE446372F25934300A3DDDD /* TestPlan.xctestplan */,
 				C689D8AC2EF42F95003DBE2A /* StudySync */,
 				0F81C1892F14F321000CE4D5 /* StudySyncTests */,
 				0F81C1962F14F344000CE4D5 /* StudySyncTestsUI */,
@@ -351,7 +351,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0F43131C2F1A5A2400179B72 /* Localizable.xcstrings in Resources */,
+				EDE446382F25934300A3DDDD /* TestPlan.xctestplan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

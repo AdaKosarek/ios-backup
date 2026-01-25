@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct WatchSessionView: View {
-    // 1. DATA
     var cards: [CardDTO] = []
     
-    // 2. STAV
     @State private var currentIndex = 0
     @State private var isAnswerRevealed = false
     
@@ -19,11 +17,11 @@ struct WatchSessionView: View {
     @State private var incorrectCount = 0
     
     @Environment(\.dismiss) var dismiss
+    @State private var sessionCards: [CardDTO] = []
     
-    // Bezpečný přístup k aktuální kartě
     var currentCard: CardDTO? {
-        if cards.indices.contains(currentIndex) {
-            return cards[currentIndex]
+        if sessionCards.indices.contains(currentIndex) {
+            return sessionCards[currentIndex]
         }
         return nil
     }
@@ -33,7 +31,10 @@ struct WatchSessionView: View {
             
             if let card = currentCard {
                 // --- 1. PROGRESS BAR (Tenčí) ---
-                ProgressView(value: Double(currentIndex + 1), total: Double(cards.count))
+                ProgressView(
+                    value: Double(currentIndex + 1),
+                    total: Double(sessionCards.count)
+                )
                     .tint(.blue)
                     .scaleEffect(y: 0.3) // Zmenšená tloušťka linky
                     .padding(.horizontal)
@@ -104,7 +105,7 @@ struct WatchSessionView: View {
                 }
                 
                 // --- 5. POČÍTADLO (Miniaturní) ---
-                Text("\(currentIndex + 1) / \(cards.count)")
+                Text("\(currentIndex + 1) / \(sessionCards.count)")
                     .font(.system(size: 9))
                     .foregroundStyle(.gray)
                     .padding(.bottom, 2)
@@ -128,7 +129,11 @@ struct WatchSessionView: View {
                 }
             }
         }
-        .background(Color.black.ignoresSafeArea())
+        .onAppear {
+            if sessionCards.isEmpty {
+                sessionCards = Array(cards.shuffled().prefix(20))
+            }
+        }
     }
     
     private func textToShow(for card: CardDTO) -> String {
@@ -143,7 +148,7 @@ struct WatchSessionView: View {
         isAnswerRevealed = false
         currentIndex += 1
 
-        if currentIndex >= cards.count {
+        if currentIndex >= sessionCards.count {
             finishSession()
         }
     }

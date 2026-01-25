@@ -69,12 +69,12 @@ struct WatchDashboardView: View {
             // Statistiky
             HStack(spacing: 20) {
                 HStack {
-                    Image(systemName: "flame.fill").foregroundStyle(.orange)
-                    Text("\(viewModel.streakDays)").fontWeight(.bold)
-                }
-                HStack {
                     Image(systemName: "star.fill").foregroundStyle(.yellow)
                     Text("\(viewModel.xpAll)").fontWeight(.bold)
+                }
+                HStack {
+                    Image(systemName: "flame.fill").foregroundStyle(.red)
+                    Text("\(viewModel.streakDays)").fontWeight(.bold)
                 }
             }
             
@@ -91,6 +91,8 @@ struct WatchDashboardView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 25))
             }
             .buttonStyle(.plain)
+            
+            Spacer()
         }
     }
     

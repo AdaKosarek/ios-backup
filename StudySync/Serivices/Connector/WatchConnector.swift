@@ -125,7 +125,7 @@ class WatchConnector: NSObject, WCSessionDelegate {
                 )
                 print("watch, SessionResult sent via sendMessage: \(result.correct)/\(result.incorrect)")
             } else {
-                // 📦 iOS neběží → uložit na později
+                // iOS neběží → uložit na později
                 WCSession.default.transferUserInfo(
                     ["sessionResult": data]
                 )

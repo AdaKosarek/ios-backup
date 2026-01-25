@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "16A549EE-FD5F-44DC-AD87-668B39F6260D",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:StudySync.xcodeproj",
+        "identifier" : "0F81C1872F14F321000CE4D5",
+        "name" : "StudySyncTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:StudySync.xcodeproj",
+        "identifier" : "0F81C1942F14F344000CE4D5",
+        "name" : "StudySyncTestsUI"
+      }
+    }
+  ],
+  "version" : 1
+}

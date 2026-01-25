@@ -60,7 +60,6 @@ struct WatchSettingsView: View {
                 
                 Divider().background(Color.white.opacity(0.2))
                 
-                // 2. Notifikace
                 Toggle(isOn: $notificationsEnabled) {
                     VStack(alignment: .leading) {
                         Text("Notifikace")
