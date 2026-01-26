@@ -12,23 +12,20 @@ struct StudyCardRowView: View {
     let card: StudyCard
     
     var body: some View {
-        HStack(alignment: .top, spacing: 16) { // Alignment .top pro delší texty
-            // 1. IKONA
-            PremiumPathIcon(type: .doc, color: .orange, size: 44)
-                .padding(.top, 2) // Malá korekce zarovnání
+        HStack(alignment: .top, spacing: 16) {
+            PremiumPathIcon(type: .doc, color: Color.black.opacity(0.75), size: 44)
+                .padding(.top, 2)
+                .foregroundStyle(.black)
             
-            // 2. TEXTY
-            VStack(alignment: .leading, spacing: 8) { // Větší mezera mezi Q a A
+            VStack(alignment: .leading, spacing: 8) {
                 
-                // Otázka (Výrazná)
                 Text(card.question)
                     .font(.body)
                     .fontWeight(.semibold)
                     .foregroundStyle(.black)
                     .lineLimit(3)
-                    .fixedSize(horizontal: false, vertical: true) // Aby se text nezasekl
+                    .fixedSize(horizontal: false, vertical: true)
                 
-                // Oddělovač (čára)
                 Divider()
                     .background(Color.orange.opacity(0.2))
                 

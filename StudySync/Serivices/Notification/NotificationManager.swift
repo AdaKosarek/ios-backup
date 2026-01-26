@@ -55,7 +55,7 @@ class NotificationManager {
         
         // Pokud nestudoval, naplánujeme na 20:00
         let content = UNMutableNotificationContent()
-        content.title = "Udrž si Streak! 🔥"
+        content.title = "Udrž si Streak!"
         content.body = "Dnes jsi ještě nestudoval. Dokonči lekci před půlnocí!"
         content.sound = .default
         

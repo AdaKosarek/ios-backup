@@ -46,7 +46,7 @@ struct StatisticsView: View {
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
             }
-            .navigationTitle("Statistiky")
+            .navigationTitle("tab_stats")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
@@ -77,7 +77,7 @@ struct StatisticsView: View {
     private var rangePicker: some View {
         Picker("Range", selection: $viewModel.selectedRange) {
             ForEach(StatsRange.allCases, id: \.self) { range in
-                Text(range.rawValue).tag(range)
+                Text(range.titleKey).tag(range)
             }
         }
         .pickerStyle(.segmented)
@@ -198,9 +198,9 @@ struct StatisticsView: View {
                 // 1. Série (Streak) -> OHEŇ (.flame)
                 Button(action: { hapticFeedback() }) {
                     StatCard(
-                        title: "Série",
+                        title: "stat_series",
                         value: "\(viewModel.streakDays)",
-                        unit: "dní",
+                        unit: "stat_days",
                         iconType: .flame,
                         color: .orange
                     )
@@ -209,7 +209,7 @@ struct StatisticsView: View {
                 Button(action: { hapticFeedback() }) {
                     let isPositive = viewModel.trendPercentage >= 0
                     StatCard(
-                        title: "Trend",
+                        title: "stat_trend",
                         value: "\(isPositive ? "+" : "")\(Int(viewModel.trendPercentage))",
                         unit: "%",
                         iconType: .chart,
@@ -221,7 +221,7 @@ struct StatisticsView: View {
                 // 3. Pravidelnost -> GRAF (.chart)
                 Button(action: { hapticFeedback() }) {
                     StatCard(
-                        title: "Pravidelnost",
+                        title: "stat_reg",
                         value: String(format: "%.0f", viewModel.consistency),
                         unit: "%",
                         iconType: .chart,
@@ -233,7 +233,7 @@ struct StatisticsView: View {
                 // 4. Úspěšnost -> TERČ (.target)
                 Button(action: { hapticFeedback() }) {
                     StatCard(
-                        title: "Úspěšnost",
+                        title: "stat_succ",
                         value: String(format: "%.0f", viewModel.overallAccuracy),
                         unit: "%",
                         iconType: .target,
@@ -245,7 +245,7 @@ struct StatisticsView: View {
                 // 5. Zkušenosti -> HVĚZDA (.star)
                 Button(action: { hapticFeedback() }) {
                     StatCard(
-                        title: "Zkušenosti",
+                        title: "stat_ex",
                         value: "\(viewModel.totalXP)",
                         unit: "XP",
                         iconType: .star,
@@ -258,9 +258,9 @@ struct StatisticsView: View {
                 // (Jako symbol energie/síly celé kolekce)
                 Button(action: { hapticFeedback() }) {
                     StatCard(
-                        title: "Celkem",
+                        title: "stat_tot",
                         value: "\(viewModel.totalCardsStudied)",
-                        unit: "karet",
+                        unit: "stat_cards",
                         iconType: .bolt,
                         color: .gray
                     )

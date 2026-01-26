@@ -23,12 +23,12 @@ class EditPackageViewModel {
     private let dataService: DataServiceProtocol
     
     // Computovaná vlastnost pro nadpis View
-    var title: String {
-        packageToEdit == nil ? "Nový balíček" : "Upravit balíček"
+    var title: LocalizedStringKey {
+        packageToEdit == nil ? "new_pack" : "edit_pack"
     }
     
-    var buttonTitle: String {
-        packageToEdit == nil ? "Vytvořit" : "Uložit"
+    var buttonTitle: LocalizedStringKey {
+        packageToEdit == nil ? "create" : "save"
     }
     
     // --- INIT ---

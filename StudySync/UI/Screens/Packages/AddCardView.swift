@@ -25,23 +25,23 @@ struct AddCardView: View {
                     .opacity(0.3)
                 
                 Form {
-                    Section("Otázka") {
-                        TextField("Např. Hlavní město Francie?", text: $question, axis: .vertical)
+                    Section("ques") {
+                        TextField("eg_fran", text: $question, axis: .vertical)
                             .focused($isQuestionFocused)
                             .lineLimit(2...5)
                             .accessibilityIdentifier("questionField")
                     }
                     
                     Section(
-                        header: Text("Odpověď"),
+                        header: Text("ans"),
                         footer: Group {
                             if !question.isEmpty {
-                                Text("Klikni na ✨ pro vygenerování odpovědi pomocí AI.")
+                                Text("hid")
                             }
                         }
                     ) {
                         HStack(alignment: .top) {
-                            TextField("Zde bude odpověď...", text: $answer, axis: .vertical)
+                            TextField("hid2", text: $answer, axis: .vertical)
                                 .lineLimit(2...8)
                                 .accessibilityIdentifier("answerField")
                             
@@ -62,14 +62,14 @@ struct AddCardView: View {
                 }
                 .scrollContentBackground(.hidden) // ZMĚNA: Průhledný formulář
             }
-            .navigationTitle("Nová karta")
+            .navigationTitle("new_card")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Zrušit") { dismiss() }
+                    Button("action_cancle") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Uložit") {
+                    Button("save") {
                         viewModel.addCard(question: question, answer: answer)
                         dismiss()
                     }
@@ -95,7 +95,7 @@ struct AddCardView: View {
                     self.isGenerating = false
                 }
             } catch {
-                print("Chyba Gemini: \(error)")
+                print("Gemini error: \(error)")
                 await MainActor.run {
                     self.isGenerating = false
                 }

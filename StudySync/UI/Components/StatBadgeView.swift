@@ -6,9 +6,9 @@
 import SwiftUI
 
 struct StatCard: View {
-    let title: String
+    let title: LocalizedStringKey
     let value: String
-    let unit: String
+    let unit: LocalizedStringKey
     
     // ZMĚNA: Místo String používáme náš Enum
     let iconType: CustomIconType

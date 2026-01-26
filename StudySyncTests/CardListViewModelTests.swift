@@ -19,7 +19,6 @@ final class CardListViewModelTests: XCTestCase {
         super.setUp()
         mockService = MockDataService()
         
-        // Vytvoříme skupinu (nemusí být ani v balíčku pro tento test)
         testGroup = StudyGroup(name: "Test Group")
         
         viewModel = CardListViewModel(group: testGroup, dataService: mockService!)
@@ -33,10 +32,8 @@ final class CardListViewModelTests: XCTestCase {
     }
     
     func test_AddCard_ShouldAddCardToGroup() {
-        // Act
         viewModel.addCard(question: "Kolik je 2+2?", answer: "4")
         
-        // Assert
         XCTAssertEqual(testGroup.cards.count, 1)
         let card = testGroup.cards.first
         XCTAssertEqual(card?.question, "Kolik je 2+2?")

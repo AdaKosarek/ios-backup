@@ -11,10 +11,10 @@ import SwiftUI
 
 // Definice záložek
 enum Tab: String, CaseIterable {
-    case home = "Domů"
-    case packages = "Balíčky"
-    case stats = "Statistiky"
-    case settings = "Nastavení"
+    case home
+    case packages
+    case stats
+    case settings
 
     var iconType: CustomIconType {
         switch self {
@@ -22,6 +22,25 @@ enum Tab: String, CaseIterable {
         case .packages: return .folder
         case .stats: return .chart
         case .settings: return .doc
+        }
+    }
+    var titleKey: LocalizedStringKey {
+            switch self {
+            case .home: return "tab_home"
+            case .packages: return "tab_packages"
+            case .stats: return "tab_stats"
+            case .settings: return "tab_settings"
+            }
+        }
+}
+
+extension Tab {
+    var nameForUITest: String {
+        switch self {
+        case .home: return "home"
+        case .packages: return "packages"
+        case .stats: return "stats"
+        case .settings: return "settings"
         }
     }
 }
@@ -67,7 +86,7 @@ struct CustomTabBar: View {
                         .frame(height: 30)
                         
                         // TEXT (Zobrazíme jen u vybraného nebo u všech, podle preference)
-                        Text(tab.rawValue)
+                        Text(tab.titleKey)
                             .font(.system(size: 10, weight: selectedTab == tab ? .bold : .regular))
                             .foregroundStyle(
                                 selectedTab == tab
@@ -80,7 +99,7 @@ struct CustomTabBar: View {
                     }
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
-                }
+                }.accessibilityIdentifier("tab_\(tab.nameForUITest)")
             }
         }
         .padding(.vertical, 14) // Vnitřní výška baru

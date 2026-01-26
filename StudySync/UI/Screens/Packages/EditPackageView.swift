@@ -12,7 +12,7 @@ struct EditPackageView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        // Vytvoříme bindable verzi pro TextFieldy
+        //bindable verze pro TextFieldy
         @Bindable var vm = viewModel
         
         NavigationStack {
@@ -23,12 +23,12 @@ struct EditPackageView: View {
                     .opacity(0.3)
                 
                 Form {
-                    Section("Název balíčku") {
-                        TextField("Např. Matematika", text: $vm.name)
+                    Section("pack_name") {
+                        TextField("eg_maths", text: $vm.name)
                             .accessibilityIdentifier("packageNameField")
                     }
                     
-                    Section("Barva") {
+                    Section("add_color") {
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))], spacing: 10) {
                             ForEach(viewModel.availableColors, id: \.self) { colorName in
                                 Circle()
@@ -58,7 +58,7 @@ struct EditPackageView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Zrušit") { dismiss() }
+                    Button("action_cancle") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(viewModel.buttonTitle) {

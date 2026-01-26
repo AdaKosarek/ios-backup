@@ -39,7 +39,9 @@ struct StudySyncApp: App {
     //!
     init() {
         let dataService: DataServiceProtocol
-
+        if CommandLine.arguments.contains("--ui-testing") {
+            showSplashScreen = false
+        }
         if CommandLine.arguments.contains("--mock-data") {
             let mockService = MockDataService()
             mockService.addMockDataForUITests()

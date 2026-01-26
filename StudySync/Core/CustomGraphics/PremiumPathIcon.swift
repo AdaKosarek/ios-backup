@@ -47,7 +47,6 @@ struct PremiumPathIcon: View {
         let shape = IconShapeWrapper(type: type)
         
         ZStack {
-            // A. POZADÍ IKONY (Destička)
             RoundedRectangle(cornerRadius: size * 0.22)
                 .fill(
                     LinearGradient(
@@ -65,7 +64,6 @@ struct PremiumPathIcon: View {
                         .stroke(.white.opacity(0.5), lineWidth: 0.5)
                 )
 
-            // B. SAMOTNÝ TVAR (S 3D efekty)
             shape
                 .fill(
                     LinearGradient(
@@ -73,7 +71,7 @@ struct PremiumPathIcon: View {
                         startPoint: .top,
                         endPoint: .bottom
                     ),
-                    style: FillStyle(eoFill: true) // <--- DŮLEŽITÉ: Umožní díry v ikonách
+                    style: FillStyle(eoFill: true)
                 )
                 .frame(width: size * 0.55, height: size * 0.55)
                 // Vnitřní stín
@@ -83,10 +81,9 @@ struct PremiumPathIcon: View {
                         .blur(radius: 0.5)
                         .offset(x: 1, y: 1)
                         .mask(
-                            shape.fill(style: FillStyle(eoFill: true)) // I tady musí být eoFill
+                            shape.fill(style: FillStyle(eoFill: true))
                         )
                 )
-                // Horní lesk
                 .overlay(
                     shape
                         .fill(.white.opacity(0.3), style: FillStyle(eoFill: true))
@@ -96,7 +93,6 @@ struct PremiumPathIcon: View {
                 )
                 .shadow(color: color.opacity(0.4), radius: 4, x: 0, y: 3)
             
-            // C. ODLESK NA POZADÍ
             RoundedRectangle(cornerRadius: size * 0.22)
                 .fill(
                     LinearGradient(

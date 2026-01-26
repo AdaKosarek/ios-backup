@@ -11,11 +11,9 @@ struct CardListView: View {
     
     var body: some View {
         ZStack {
-            // 1. VRSTVA: Animované pozadí
             BackgroundBlob()
                 .ignoresSafeArea()
             
-            // 2. VRSTVA: Obsah
             ScrollView {
                 // Vyčleněný obsah
                 listContent
@@ -59,7 +57,6 @@ struct CardListView: View {
         }
     }
     
-    // Samostatná funkce pro řádek karty
     private func cardRow(for card: StudyCard) -> some View {
         Button(action: {
             let generator = UIImpactFeedbackGenerator(style: .light)
@@ -67,11 +64,9 @@ struct CardListView: View {
         }) {
             StudyCardRowView(card: card)
         }
-        //.simple3D() // Aplikace 3D efektu a stylu
         
         .contextMenu {
             Button(role: .destructive) {
-                // Voláme přímo ViewModel
                 viewModel.deleteCard(card)
             } label: {
                 Label("Smazat kartu", systemImage: "trash")

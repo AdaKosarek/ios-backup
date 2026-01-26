@@ -13,6 +13,14 @@ enum StatsRange: String, CaseIterable {
     case week = "Týden"
     case month = "Měsíc"
     case year = "Rok"
+    
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .week: return "range_week"
+        case .month: return "range_month"
+        case .year: return "range_year"
+        }
+    }
 }
 
 @Observable

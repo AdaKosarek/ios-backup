@@ -38,16 +38,16 @@ struct HomeView: View {
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
                             
                             StatCard(
-                                                        title: "Série",
+                                                        title: "stat_series",
                                                         value: "\(viewModel.streak)",
-                                                        unit: "dní",
+                                                        unit: "stat_days",
                                                         iconType: .flame,
                                                         color: .orange
                             ).simple3D()
                                                     
                                                     // 2. Zkušenosti -> HVĚZDA
                                                     StatCard(
-                                                        title: "Zkušenosti",
+                                                        title: "stat_ex",
                                                         value: "\(viewModel.totalXP)",
                                                         unit: "XP",
                                                         iconType: .star,
@@ -58,16 +58,16 @@ struct HomeView: View {
                                                     StatCard(
                                                         title: "Další studium",
                                                         value: "2",
-                                                        unit: "hod",
+                                                        unit: "h",
                                                         iconType: .chart,
                                                         color: .purple
                                                     ).simple3D()
                                                     
                                                     // 4. Dnes hotovo -> TERČ (Symbolizuje splněný cíl)
                                                     StatCard(
-                                                        title: "Dnes hotovo",
+                                                        title: "today_done",
                                                         value: "\(viewModel.cardsStudiedToday)",
-                                                        unit: "karet",
+                                                        unit: "stat_cards",
                                                         iconType: .target,
                                                         color: .green
                                                     ).simple3D()
@@ -80,7 +80,7 @@ struct HomeView: View {
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
             }
-            .navigationTitle("Dnes")
+            .navigationTitle("today")
             .onAppear {
                 viewModel.loadData()
             }

@@ -9,10 +9,7 @@ struct PackagesListView: View {
     @State var viewModel: PackagesListViewModel
     @EnvironmentObject var diContainer: DIContainer
     
-    // Stav pro vytvoření nového balíčku
     @State private var showingAddSheet = false
-    
-    // Stav pro editaci existujícího balíčku
     @State private var packageToEdit: StudyPackage?
     
     @AppStorage("selectedTheme") private var selectedTheme: AppTheme = .blue
@@ -20,11 +17,9 @@ struct PackagesListView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // Pozadí
                 BackgroundBlob().ignoresSafeArea()
                 
                 ScrollView {
-                    // Obsah seznamu
                     listContent
                         .padding()
                 }
@@ -41,16 +36,12 @@ struct PackagesListView: View {
                     .accessibilityIdentifier("addPackageButton")
                 }
             }
-            
-            // 1. SHEET: Přidání nového balíčku
-            // OPRAVA 1: onDismiss zajistí načtení dat po zavření okna
             .sheet(isPresented: $showingAddSheet, onDismiss: {
                 viewModel.loadPackages()
             }) {
                 EditPackageView(
                     viewModel: diContainer.makeEditPackageViewModel(package: nil)
                 )
-                // OPRAVA 2: Okno bude jen do poloviny obrazovky
                 .presentationDetents([.medium])
             }
             .sheet(item: $packageToEdit, onDismiss: {
@@ -59,7 +50,6 @@ struct PackagesListView: View {
                 EditPackageView(
                     viewModel: diContainer.makeEditPackageViewModel(package: package)
                 )
-                // OPRAVA 2: Okno bude jen do poloviny obrazovky
                 .presentationDetents([.medium])
             }
             .onAppear {
@@ -69,27 +59,27 @@ struct PackagesListView: View {
         .tint(selectedTheme.mainColor)
     }
     
-    // MARK: - Subviews
     
     @ViewBuilder
     private var listContent: some View {
         LazyVStack(spacing: 16) {
             if viewModel.packages.isEmpty {
                 ContentUnavailableView("Žádné balíčky", systemImage: "tray.fill")
+                    .accessibilityIdentifier("packagesEmptyState")
                     .padding(.top, 50)
             } else {
                 ForEach(viewModel.packages) { package in
                     packageRow(for: package)
                 }
             }
-        }
+        }.accessibilityIdentifier("packagesList")
     }
     
     private func packageRow(for package: StudyPackage) -> some View {
         NavigationLink(destination: PackageDetailView(viewModel: diContainer.makePackageDetailViewModel(package: package))) {
             PackageCardView(package: package)
         }
-        
+        .accessibilityIdentifier("packageRow_\(package.id.uuidString)") 
         .contextMenu {
             Button {
                 packageToEdit = package

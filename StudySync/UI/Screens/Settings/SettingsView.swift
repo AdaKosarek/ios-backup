@@ -40,7 +40,9 @@ struct SettingsView: View {
                         
                         // MARK: - Sekce Vzhled
                         VStack(alignment: .leading, spacing: 12) {
-                            SectionLabel(title: "VZHLED APLIKACE")
+                            SectionLabel(title: "app_appearance")
+
+
                             
                             // Karta vzhledu
                             VStack(spacing: 0) {
@@ -83,7 +85,7 @@ struct SettingsView: View {
 
                         // MARK: - Sekce Obecné
                         VStack(alignment: .leading, spacing: 12) {
-                            SectionLabel(title: "OBECNÉ")
+                            SectionLabel(title: "basic")
                             
                             VStack(spacing: 0) {
                                 // Jazyk
@@ -107,9 +109,9 @@ struct SettingsView: View {
                                 SettingsRowView(
                                     iconType: .bolt, // Jako symbol akce/notifikace
                                     color: .orange,
-                                    title: "Notifikace"
+                                    title: "notification"
                                 ) {
-                                    Text("Zapnuto")
+                                    Text("on")
                                         .foregroundStyle(.secondary)
                                         .font(.subheadline)
                                 }
@@ -122,13 +124,13 @@ struct SettingsView: View {
                         
                         // MARK: - Sekce O Aplikaci
                         VStack(alignment: .leading, spacing: 12) {
-                            SectionLabel(title: "O APLIKACI")
+                            SectionLabel(title: "aboutApp")
                             
                             VStack(spacing: 0) {
                                 SettingsRowView(
                                     iconType: .home,
                                     color: .purple,
-                                    title: "Verze"
+                                    title: "version"
                                 ) {
                                     Text("1.0.0 (Beta)")
                                         .foregroundStyle(.secondary)
@@ -150,8 +152,8 @@ struct SettingsView: View {
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
             }
-            .navigationTitle("Nastavení")
-            .navigationBarHidden(true) // Skryjeme systémovou navigaci, máme vlastní hlavičku
+            .navigationTitle("settings_title")
+            .navigationBarHidden(true)
         }
     }
 }
@@ -159,7 +161,7 @@ struct SettingsView: View {
 // MARK: - Pomocné Komponenty
 
 struct SectionLabel: View {
-    let title: String
+    let title: LocalizedStringKey
     var body: some View {
         Text(title)
             .font(.caption)
@@ -173,7 +175,7 @@ struct SectionLabel: View {
 struct SettingsRowView<Content: View>: View {
     let iconType: CustomIconType
     let color: Color
-    let title: String
+    let title: LocalizedStringKey
     let trailingContent: () -> Content
     
     var body: some View {

@@ -27,10 +27,10 @@ extension View {
             .background(
                 LinearGradient(
                     colors: [
-                        Color(red: 0/255, green: 0/255, blue: 8/255),
-                        Color(red: 10/255, green: 20/255, blue: 45/255),
-                        Color(red: 10/255, green: 20/255, blue: 45/255),
-                        Color(red: 0/255, green: 0/255, blue: 8/255)
+                        Color(red: 0/255, green: 0/255, blue: 6/255),
+                        Color(red: 10/255, green: 20/255, blue: 47/255),
+                        Color(red: 10/255, green: 20/255, blue: 47/255),
+                        Color(red: 0/255, green: 0/255, blue: 6/255)
                     ],
                     startPoint: .bottomLeading,
                     endPoint: .topTrailing
