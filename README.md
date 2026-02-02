@@ -1,4 +1,4 @@
-# FinanceManager – Personal Finance Tracker (iOS)
+# FinanceManager – Personal Finance Tracker for iOS
 
 FinanceManager is an iOS application for tracking personal and family expenses.  
 It helps users record transactions, organize them into categories, and analyze spending through clear statistics and visualizations.
