@@ -5,30 +5,18 @@
 //  Created by Miroslav Musil on 18.12.2025.
 //
 
-//
-//  SessionView.swift
-//  StudySync
-//
-//  Created by Miroslav Musil on 18.12.2025.
-//
-
 import SwiftUI
 
 struct SessionView: View {
     @State var viewModel: SessionViewModel
     @Environment(\.dismiss) var dismiss
     
-    // Stav pro alert při pokusu o ukončení
     @State private var showExitAlert = false
     
     var body: some View {
-        // 1. ZMĚNA: Použijeme ZStack jako hlavní kontejner, abychom mohli vrstvit konfety přes obsah
         ZStack {
-            
-            // --- HLAVNÍ OBSAH (VStack) ---
             VStack {
                 if viewModel.isFinished {
-                    // --- VÝSLEDKOVÁ OBRAZOVKA ---
                     VStack(spacing: 20) {
                         Image(systemName: "trophy.fill")
                             .font(.system(size: 80))
@@ -63,9 +51,7 @@ struct SessionView: View {
                         .padding()
                     }
                 } else if let card = viewModel.currentCard {
-                    // --- PROBÍHAJÍCÍ STUDIUM ---
                     VStack {
-                        // Progress bar
                         ProgressView(value: viewModel.progress)
                             .padding()
                         
@@ -75,7 +61,6 @@ struct SessionView: View {
                         
                         Spacer()
                         
-                        // Animovaná karta (FlipCardView)
                         FlipCardView(
                             question: card.question,
                             answer: card.answer,
@@ -89,7 +74,6 @@ struct SessionView: View {
                         
                         Spacer()
                         
-                        // Tlačítka Hodnocení
                         HStack(spacing: 40) {
                             Button(action: { withAnimation { viewModel.markIncorrect() } }) {
                                 VStack {
@@ -144,11 +128,9 @@ struct SessionView: View {
                 Text("Váš aktuální postup v této lekci nebude uložen.")
             }
             
-            // 2. ZMĚNA: Přidání konfet "nad" obsah
-            // Zobrazí se pouze, pokud je lekce dokončena
             if viewModel.isFinished {
                 ConfettiView()
-                    .ignoresSafeArea() // Aby padaly přes celou obrazovku
+                    .ignoresSafeArea()
             }
         }
     }

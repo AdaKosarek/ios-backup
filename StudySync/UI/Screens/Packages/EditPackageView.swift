@@ -12,7 +12,6 @@ struct EditPackageView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        //bindable verze pro TextFieldy
         @Bindable var vm = viewModel
         
         NavigationStack {

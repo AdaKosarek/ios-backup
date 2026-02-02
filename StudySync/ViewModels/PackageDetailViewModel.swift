@@ -19,13 +19,11 @@ class PackageDetailViewModel {
         self.dataService = dataService
     }
     
-    // --- PŘIDÁNÍ SKUPINY ---
     func addGroup(name: String) {
         guard !name.isEmpty else { return }
         dataService.addGroup(to: package, name: name)
     }
     
-    // --- SMAZÁNÍ (Swipe gesto) ---
     func deleteGroup(at offsets: IndexSet) {
         for index in offsets {
             let group = package.groups[index]
@@ -33,12 +31,10 @@ class PackageDetailViewModel {
         }
     }
     
-    // --- SMAZÁNÍ (Konkrétní objekt - pro kontextové menu) ---
     func deleteGroup(_ group: StudyGroup) {
         dataService.deleteGroup(group)
     }
     
-    // --- POMOCNÉ ---
     var allCards: [StudyCard] {
         package.groups.flatMap { $0.cards }
     }

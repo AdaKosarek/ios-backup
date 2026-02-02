@@ -27,91 +27,83 @@ struct WatchSessionView: View {
     }
     
     var body: some View {
-        VStack(spacing: 2) { // Minimální mezery mezi prvky
+        VStack(spacing: 2) {
             
             if let card = currentCard {
-                // --- 1. PROGRESS BAR (Tenčí) ---
                 ProgressView(
                     value: Double(currentIndex + 1),
                     total: Double(sessionCards.count)
                 )
                     .tint(.blue)
-                    .scaleEffect(y: 0.3) // Zmenšená tloušťka linky
+                    .scaleEffect(y: 0.3)
                     .padding(.horizontal)
                     .padding(.top, 4)
                 
-                // --- 2. LABELS (Malé) ---
                 Text(isAnswerRevealed ? "Odpověď" : "Otázka")
-                    .font(.caption2) // Velmi malé písmo pro nadpis
+                    .font(.caption2)
                     .foregroundStyle(isAnswerRevealed ? .orange : .gray)
                     .padding(.top, 2)
                 
-                // --- 3. HLAVNÍ TEXT (Více místa) ---
                 ScrollView {
                     Text(textToShow(for: card))
-                        .font(.body)               // Změna z .title3 na .body (menší, vejde se víc)
+                        .font(.body)
                         .fontWeight(.medium)
                         .multilineTextAlignment(.center)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 4)
                         .frame(maxWidth: .infinity)
                 }
-                .frame(maxHeight: .infinity) // Zabere veškeré volné místo
+                .frame(maxHeight: .infinity)
                 
-                // --- 4. TLAČÍTKA (Kompaktní) ---
                 if !isAnswerRevealed {
                     Button(action: {
                         isAnswerRevealed = true
                     }) {
                         Text("Ukázat odpověď")
-                            .font(.footnote) // Menší písmo v tlačítku
+                            .font(.footnote)
                             .fontWeight(.bold)
                     }
                     .tint(.blue)
                     .buttonStyle(.borderedProminent)
-                    .controlSize(.small) // DŮLEŽITÉ: Zmenší fyzickou velikost tlačítka
+                    .controlSize(.small)
                     .clipShape(Capsule())
                     .padding(.bottom, 2)
                     
                 } else {
                     HStack(spacing: 12) {
-                        // Tlačítko ŠPATNĚ
                         Button(action: {
                             incorrectCount += 1
                             nextCard()
                         }) {
                             Image(systemName: "xmark")
-                                .font(.headline) // Menší ikonka
+                                .font(.headline)
                         }
                         .tint(.red)
                         .buttonStyle(.borderedProminent)
                         .clipShape(Circle())
-                        .frame(width: 40, height: 40) // Menší kolečko (bylo 50)
+                        .frame(width: 40, height: 40)
                         
-                        // Tlačítko DOBŘE
                         Button(action: {
                             correctCount += 1
                             nextCard()
                         }) {
                             Image(systemName: "checkmark")
-                                .font(.headline) // Menší ikonka
+                                .font(.headline)
                         }
                         .tint(.green)
                         .buttonStyle(.borderedProminent)
                         .clipShape(Circle())
-                        .frame(width: 40, height: 40) // Menší kolečko (bylo 50)
+                        .frame(width: 40, height: 40)
                     }
                     .padding(.bottom, 4)
                 }
                 
-                // --- 5. POČÍTADLO (Miniaturní) ---
                 Text("\(currentIndex + 1) / \(sessionCards.count)")
                     .font(.system(size: 9))
                     .foregroundStyle(.gray)
                     .padding(.bottom, 2)
                 
             } else {
-                // --- KONEC ---
                 VStack(spacing: 8) {
                     Image(systemName: "trophy.fill")
                         .font(.title)

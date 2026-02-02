@@ -18,7 +18,7 @@ struct GlowingProgressView: View {
                 .foregroundStyle(
                     AngularGradient(gradient: Gradient(colors: [.blue, .purple, .blue]), center: .center)
                 )
-                .rotationEffect(Angle(degrees: 270.0)) // Začátek nahoře
+                .rotationEffect(Angle(degrees: 270.0))
                 .animation(.spring(response: 0.6, dampingFraction: 0.7), value: progress)
             
             // 3. Záře (Shadow)
@@ -35,7 +35,7 @@ struct GlowingProgressView: View {
                 Text("\(Int(progress * 100))%")
                     .font(.largeTitle)
                     .bold()
-                    .contentTransition(.numericText()) // Pěkná animace čísel
+                    .contentTransition(.numericText())
                 Text("Hotovo")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -48,5 +48,5 @@ struct GlowingProgressView: View {
 #Preview {
     GlowingProgressView(progress: 0.65)
         .frame(width: 200, height: 200)
-        .preferredColorScheme(.dark) // Vynikne ve tmě
+        .preferredColorScheme(.dark)
 }

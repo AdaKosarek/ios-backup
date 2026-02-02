@@ -19,7 +19,6 @@ struct WatchSettingsView: View {
                 Text("Nastavení")
                     .font(.headline)
                 
-                // 1. Karta Synchronizace (Interaktivní)
                 HStack {
                     VStack(alignment: .leading) {
                         HStack {
@@ -40,10 +39,8 @@ struct WatchSettingsView: View {
                 .background(isSynced ? Color.green.opacity(0.15) : Color.orange.opacity(0.15))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
                 
-                // Tlačítko Smazat data (Pro testování Empty State)
                 Button(action: {
                     withAnimation {
-                        // Vymaže data, aby sis mohl znovu zkusit "Nahrát Demo Data"
                         connector.receivedPackages.removeAll()
                         connector.receivedStats = nil
                     }

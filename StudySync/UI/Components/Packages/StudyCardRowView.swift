@@ -29,7 +29,6 @@ struct StudyCardRowView: View {
                 Divider()
                     .background(Color.orange.opacity(0.2))
                 
-                // Odpověď (Jemnější, kurzíva)
                 Text(card.answer)
                     .font(.subheadline)
                     .foregroundStyle(.black)
@@ -46,7 +45,6 @@ struct StudyCardRowView: View {
             RoundedRectangle(cornerRadius: 18)
                 .strokeBorder(Color.primary.opacity(0.08), lineWidth: 1)
         )
-        // Jemný stín, aby to "plavalo"
         .shadow(color: .black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 }

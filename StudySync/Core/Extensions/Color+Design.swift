@@ -8,7 +8,6 @@
 import SwiftUI
 
 extension Color {
-    // Inicializátor, který mapuje stringové názvy barev z modelu na SwiftUI Color objekty
     init(hex: String) {
         switch hex.lowercased() {
         case "red": self = .red
@@ -23,7 +22,7 @@ extension Color {
         }
     }
 }
-// 1. Definice barev (Témat)
+// 1. Definice barev
 enum AppTheme: String, CaseIterable, Identifiable {
     case blue = "Blue"
     case green = "Green"
@@ -33,7 +32,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
     
     var id: String { rawValue }
     
-    // Skutečná barva pro SwiftUI
     var mainColor: Color {
         switch self {
         case .blue: return .blue
@@ -44,7 +42,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
         }
     }
     
-    // Název pro zobrazení v UI
     var localizedName: String {
         switch self {
         case .blue: return "Modrá"
@@ -56,7 +53,6 @@ enum AppTheme: String, CaseIterable, Identifiable {
     }
 }
 
-// 2. Definice jazyků
 enum AppLanguage: String, CaseIterable, Identifiable {
     case czech = "cs"
     case english = "en"

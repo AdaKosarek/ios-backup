@@ -15,7 +15,6 @@ struct CardListView: View {
                 .ignoresSafeArea()
             
             ScrollView {
-                // Vyčleněný obsah
                 listContent
                     .padding()
             }
@@ -37,7 +36,6 @@ struct CardListView: View {
         }
     }
     
-    // MARK: - Subviews (Rozdělení pro kompilátor)
     
     @ViewBuilder
     private var listContent: some View {

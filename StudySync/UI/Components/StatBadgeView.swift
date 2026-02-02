@@ -10,22 +10,18 @@ struct StatCard: View {
     let value: String
     let unit: LocalizedStringKey
     
-    // ZMĚNA: Místo String používáme náš Enum
     let iconType: CustomIconType
     let color: Color
     
     var body: some View {
         ZStack {
-            // 1. Pozadí
             RoundedRectangle(cornerRadius: 24)
                 .fill(Color(UIColor.secondarySystemGroupedBackground))
             
             RoundedRectangle(cornerRadius: 24)
                 .fill(color.opacity(0.08))
             
-            // 2. Obsah
             VStack(alignment: .leading) {
-                // ZDE JE ZMĚNA: Voláme naši novou ikonu
                 HStack {
                     PremiumPathIcon(type: iconType, color: color, size: 48)
                     Spacer()
@@ -33,7 +29,6 @@ struct StatCard: View {
                 
                 Spacer(minLength: 12)
                 
-                // Texty
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(alignment: .firstTextBaseline, spacing: 3) {
                         Text(value)

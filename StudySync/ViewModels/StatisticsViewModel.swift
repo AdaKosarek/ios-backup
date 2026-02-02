@@ -29,24 +29,19 @@ class StatisticsViewModel {
     
     var sessions: [StudySession] = []
     
-    // UI State
     var selectedRange: StatsRange = .week {
         didSet { recalculateAll() }
     }
     
     var chartData: [ChartPoint] = []
     
-    // Statistiky
     var overallAccuracy: Double = 0
     var totalXP: Int = 0
     var totalCardsStudied: Int = 0
     var streakDays: Int = 0
     
-    // Nové metriky
-    var consistency: Double = 0       // Pravidelnost v %
-    var trendPercentage: Double = 0   // Změna oproti minulu v %
-    
-    // Denní cíl (pro přerušovanou čáru v grafu)
+    var consistency: Double = 0
+    var trendPercentage: Double = 0
     var dailyGoal: Int = 20
     
     struct ChartPoint: Identifiable, Equatable {
@@ -72,12 +67,9 @@ class StatisticsViewModel {
         }
     }
     
-    // Helper pro interaktivitu grafu
     func findChartItem(for date: Date) -> ChartPoint? {
         return chartData.min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) })
     }
-    
-    // MARK: - Hlavní výpočty
     
     private func recalculateAll() {
         calculateAggregatedStats()
@@ -86,25 +78,17 @@ class StatisticsViewModel {
     }
     
     private func calculateAggregatedStats() {
-        // 1. Streak (počítá se globálně k dnešnímu dni)
         streakDays = calculateStreak()
-        
-        // 2. Filtrace dat pro aktuální období
         let filteredSessions = getSessionsForSelectedRange()
-        
-        // 3. Základní součty
         totalCardsStudied = filteredSessions.reduce(0) { $0 + $1.totalCards }
         let totalCorrect = filteredSessions.reduce(0) { $0 + $1.correctCount }
         
         overallAccuracy = totalCardsStudied > 0 ? (Double(totalCorrect) / Double(totalCardsStudied)) * 100 : 0
         totalXP = totalCorrect * 10
         
-        // 4. Výpočet Pravidelnosti (Consistency)
         let calendar = Calendar.current
-        // Počet unikátních dní, kdy se uživatel učil
         let uniqueDaysStudied = Set(filteredSessions.map { calendar.startOfDay(for: $0.date) }).count
         
-        // Celkový počet dní v období
         let totalDaysInRange: Int
         switch selectedRange {
         case .week: totalDaysInRange = 7
@@ -119,7 +103,6 @@ class StatisticsViewModel {
         let calendar = Calendar.current
         let today = Date()
         
-        // 1. Definice intervalů (Tento vs Minulý)
         let currentStartDate: Date?
         let previousStartDate: Date?
         let previousEndDate: Date?
@@ -146,11 +129,9 @@ class StatisticsViewModel {
             return
         }
         
-        // 2. Data pro období
         let currentCards = sessions.filter { $0.date >= currentStart }.reduce(0) { $0 + $1.totalCards }
         let previousCards = sessions.filter { $0.date >= prevStart && $0.date < prevEnd }.reduce(0) { $0 + $1.totalCards }
         
-        // 3. Výpočet procentuální změny
         if previousCards == 0 {
             trendPercentage = currentCards > 0 ? 100 : 0
         } else {
@@ -159,7 +140,6 @@ class StatisticsViewModel {
         }
     }
     
-    // MARK: - Graf a Data
     
     private func calculateChartData() {
         let calendar = Calendar.current
@@ -179,7 +159,6 @@ class StatisticsViewModel {
         self.chartData = points
     }
     
-    // Helpery
     private func getSessionsForSelectedRange() -> [StudySession] {
         let calendar = Calendar.current
         let today = Date()
@@ -222,7 +201,6 @@ class StatisticsViewModel {
         return streak
     }
     
-    // MARK: - Mock Data Generátor
     func generateMockData() {
         let calendar = Calendar.current
         let today = Date()

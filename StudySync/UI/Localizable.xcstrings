@@ -565,6 +565,23 @@
         }
       }
     },
+    "import_package" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importovat balíček"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import package"
+          }
+        }
+      }
+    },
     "Jazyk" : {
       "localizations" : {
         "cs" : {
@@ -1086,6 +1103,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Customize the app your way"
+          }
+        }
+      }
+    },
+    "QR" : {
+
+    },
+    "qr_info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naskenujte QR kod pro import balíčku."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scan QR code for import package."
           }
         }
       }

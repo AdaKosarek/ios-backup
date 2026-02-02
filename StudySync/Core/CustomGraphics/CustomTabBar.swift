@@ -9,7 +9,6 @@
 
 import SwiftUI
 
-// Definice záložek
 enum Tab: String, CaseIterable {
     case home
     case packages
@@ -51,7 +50,6 @@ struct CustomTabBar: View {
     @Binding var selectedTab: Tab
     var activeColor: Color = .blue
     
-    // Pro animaci pozadí
     @Namespace private var animationNamespace
     
     var body: some View {
@@ -65,27 +63,24 @@ struct CustomTabBar: View {
                     generator.impactOccurred()
                 } label: {
                     VStack(spacing: 4) {
-                        // IKONA
                         ZStack {
                             if selectedTab == tab {
-                                // Záře pod vybranou ikonou
                                 IconShapeWrapper(type: tab.iconType)
                                     .fill(activeColor.opacity(0.2))
-                                    .frame(width: 38, height: 38) // Větší záře
+                                    .frame(width: 38, height: 38)
                                     .blur(radius: 8)
                                     .matchedGeometryEffect(id: "bg", in: animationNamespace)
                             }
                             
-                            // Samotná ikona
+
                             IconShapeWrapper(type: tab.iconType)
                                 .fill(selectedTab == tab ? activeColor.gradient : Color.gray.opacity(0.4).gradient)
                                 .frame(width: 24, height: 24)
                                 .scaleEffect(selectedTab == tab ? 1.2 : 1.0)
-                                .offset(y: selectedTab == tab ? -2 : 0) // Jemný posun nahoru při výběru
+                                .offset(y: selectedTab == tab ? -2 : 0)
                         }
                         .frame(height: 30)
                         
-                        // TEXT (Zobrazíme jen u vybraného nebo u všech, podle preference)
                         Text(tab.titleKey)
                             .font(.system(size: 10, weight: selectedTab == tab ? .bold : .regular))
                             .foregroundStyle(
@@ -102,27 +97,22 @@ struct CustomTabBar: View {
                 }.accessibilityIdentifier("tab_\(tab.nameForUITest)")
             }
         }
-        .padding(.vertical, 14) // Vnitřní výška baru
-        .padding(.horizontal, 8) // Vnitřní odsazení
+        .padding(.vertical, 14)
+        .padding(.horizontal, 8)
         .background {
-            // POZADÍ - PLOVOUCÍ KAPLE
             ZStack {
-                // 1. Skleněný materiál
-                Capsule() // Nebo RoundedRectangle(cornerRadius: 35)
+                Capsule()
                     .fill(.ultraThinMaterial)
-                
-                // 2. Bílý podklad (pro lepší kontrast)
+            
                 Capsule()
                     .fill(Color(UIColor.systemBackground).opacity(0.5))
             }
-            .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 8) // Hluboký stín
+            .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 8)
         }
-        // Rámeček
         .overlay(
             Capsule()
                 .strokeBorder(.white.opacity(0.2), lineWidth: 1)
         )
-        // ODSAZENÍ OD KRAJŮ (To, co jste chtěl)
         .padding(.horizontal, 24)
         .padding(.bottom, 10)
     }

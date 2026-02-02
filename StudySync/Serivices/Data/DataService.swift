@@ -16,7 +16,6 @@ class SwiftDataService: DataServiceProtocol {
         self.modelContext = modelContext
     }
     
-    // --- Packages ---
     func fetchPackages() throws -> [StudyPackage] {
         let descriptor = FetchDescriptor<StudyPackage>(sortBy: [SortDescriptor(\.dateCreated, order: .reverse)])
         return try modelContext.fetch(descriptor)
@@ -32,11 +31,10 @@ class SwiftDataService: DataServiceProtocol {
         try? modelContext.save()
     }
     
-    // --- Groups ---
+
     func addGroup(to package: StudyPackage, name: String) {
         let group = StudyGroup(name: name)
         package.groups.append(group)
-        // SwiftData automaticky uloží relaci, ale pro jistotu:
         try? modelContext.save()
     }
     
@@ -45,7 +43,7 @@ class SwiftDataService: DataServiceProtocol {
         try? modelContext.save()
     }
     
-    // --- Cards ---
+    //cards
     func addCard(to group: StudyGroup, question: String, answer: String) {
         let card = StudyCard(question: question, answer: answer)
         group.cards.append(card)
@@ -57,7 +55,7 @@ class SwiftDataService: DataServiceProtocol {
         try? modelContext.save()
     }
     
-    // --- Sessions ---
+    //sess
     func saveSession(_ session: StudySession) {
         modelContext.insert(session)
         try? modelContext.save()

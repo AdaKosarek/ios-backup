@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-// MARK: - Barvy a Gradienty
+
 extension Color {
-    static let brandPurple = Color(red: 0.4, green: 0.2, blue: 0.8) // Příklad fialové
-    static let brandBlue = Color(red: 0.2, green: 0.4, blue: 1.0) // Příklad modré
-    static let brandDarkBg = Color(red: 0.1, green: 0.1, blue: 0.15) // Tmavé pozadí
+    static let brandPurple = Color(red: 0.4, green: 0.2, blue: 0.8) //fialové
+    static let brandBlue = Color(red: 0.2, green: 0.4, blue: 1.0) //modré
+    static let brandDarkBg = Color(red: 0.1, green: 0.1, blue: 0.15) //Tmavé pozadí
     
     static let mainGradient = LinearGradient(
         colors: [brandBlue, brandPurple],

@@ -16,7 +16,6 @@ struct StudySyncApp: App {
     @State private var showSplashScreen = true
     @Environment(\.scenePhase) private var scenePhase
     
-    // Definice SwiftData kontejneru
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             StudyPackage.self,
@@ -78,11 +77,10 @@ struct StudySyncApp: App {
                 // B) SPLASH SCREEN (Je nahoře, dokud neskončí)
                 if showSplashScreen {
                     SplashScreenView(isFinished: $showSplashScreen)
-                        .transition(.opacity) // Plynulé zmizení
-                        .zIndex(1) // Zajistí, že je vždy nahoře
+                        .transition(.opacity)
+                        .zIndex(1)
                 }
             }
-            // Animace přepnutí mezi Splashem a Aplikací
             .animation(.easeInOut(duration: 0.5), value: showSplashScreen)
         }
         .modelContainer(sharedModelContainer)

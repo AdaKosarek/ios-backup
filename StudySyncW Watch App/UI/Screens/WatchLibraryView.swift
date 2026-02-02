@@ -25,7 +25,6 @@ struct DecksLibraryView: View {
                         .foregroundStyle(.gray)
                         .padding(.top)
                     
-                    // 1. HEADER (Summary)
                     HStack {
                         VStack(alignment: .leading) {
                             HStack {
@@ -49,7 +48,6 @@ struct DecksLibraryView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .padding(.horizontal)
                     
-                    // 2. SUCCESS STATS
                     HStack(spacing: 15) {
                         // Correct
                         HStack {
@@ -95,7 +93,6 @@ struct DecksLibraryView: View {
                     }
                     .padding(.horizontal)
                     
-                    // 3. ACTIVE DECKS LIST
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Active Decks")
                             .font(.caption)
@@ -103,13 +100,11 @@ struct DecksLibraryView: View {
                             .padding(.leading)
                         
                         if packages.isEmpty {
-                            // Placeholder pokud není DB naplněná
                             DeckRow(name: "Matematika", isActive: true)
                             DeckRow(name: "Angličtina", isActive: true)
                             DeckRow(name: "Biologie", isActive: false)
                             DeckRow(name: "Historie", isActive: false)
                         } else {
-                            // Reálná data
                             ForEach(packages) { package in
                                 DeckRowData(package: package)
                             }
@@ -124,10 +119,9 @@ struct DecksLibraryView: View {
     }
 }
 
-// Row component pro statická data (pro ukázku, když je DB prázdná)
 struct DeckRow: View {
     let name: String
-    @State var isActive: Bool // Změněno na @State, aby to šlo klikat
+    @State var isActive: Bool
     
     var body: some View {
         HStack {
@@ -158,11 +152,8 @@ struct DeckRow: View {
     }
 }
 
-// Row component propojená s databází
 struct DeckRowData: View {
     let package: StudyPackage
-    
-    // OPRAVA: Místo čtení z databáze si stav držíme jen tady v pohledu
     @State private var isSelected: Bool = true
     
     var body: some View {
@@ -184,7 +175,6 @@ struct DeckRowData: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .onTapGesture {
             withAnimation {
-                // Přepínáme jen lokální proměnnou, nezasahujeme do databáze
                 isSelected.toggle()
             }
         }

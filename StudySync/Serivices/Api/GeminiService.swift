@@ -10,9 +10,8 @@ import Foundation
 class GeminiService {
     
     private var apiKey: String {
-            // Hledáme klíč "GeminiAPIKey" v Info.plist
             guard let key = Bundle.main.object(forInfoDictionaryKey: "GeminiAPIKey") as? String else {
-                print("⚠️ CHYBA: Klíč 'GeminiAPIKey' nebyl nalezen v Info.plist")
+                print("CHYBA: Klíč 'GeminiAPIKey' nebyl nalezen v Info.plist")
                 return ""
             }
             return key
@@ -20,10 +19,9 @@ class GeminiService {
     
     private let urlString = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
     
-    // Hlavní funkce pro generování
     func generateAnswer(for question: String) async throws -> String {
         guard !apiKey.isEmpty else {
-            print("❌ CHYBA: Chybí API klíč")
+            print("CHYBA: Chybí API klíč")
             throw URLError(.userAuthenticationRequired)
         }
         
@@ -51,8 +49,7 @@ class GeminiService {
         // --- DIAGNOSTIKA CHYBY 404 ---
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 404 {
-                print("⚠️ Model nenalezen. Spouštím diagnostiku dostupných modelů...")
-                // Pokud model neexistuje, zavoláme funkci, která zjistí, jaké modely MÁME k dispozici
+                print("Model nenalezen. Spouštím diagnostiku dostupných modelů...")
                 await listAvailableModels()
                 
                 throw URLError(.badServerResponse)
@@ -60,13 +57,12 @@ class GeminiService {
             
             if httpResponse.statusCode != 200 {
                 if let errorText = String(data: data, encoding: .utf8) {
-                    print("❌ CHYBA OD SERVERU (Kód \(httpResponse.statusCode)): \(errorText)")
+                    print("CHYBA OD SERVERU (Kód \(httpResponse.statusCode)): \(errorText)")
                 }
                 throw URLError(.badServerResponse)
             }
         }
         
-        // Parsování odpovědi
         if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
            let candidates = json["candidates"] as? [[String: Any]],
            let content = candidates.first?["content"] as? [String: Any],
@@ -78,7 +74,6 @@ class GeminiService {
         throw URLError(.cannotParseResponse)
     }
     
-    // --- NOVÁ FUNKCE: Vypíše seznam dostupných modelů ---
     func listAvailableModels() async {
         print("🔍 Zjišťuji dostupné modely pro tvůj API klíč...")
         
@@ -88,15 +83,14 @@ class GeminiService {
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             
-            // Vypíšeme surový JSON seznamu modelů
             if let jsonString = String(data: data, encoding: .utf8) {
-                print("📋 SEZNAM MODELŮ OD GOOGLE:\n\(jsonString)")
+                print("SEZNAM MODELŮ OD GOOGLE:\n\(jsonString)")
             }
             
             // Zkusíme najít názvy pro snadnější čtení
             if let json = try JSONSerialization.jsonObject(with: data) as? [String: Any],
                let models = json["models"] as? [[String: Any]] {
-                print("✅ NALEZENÉ MODELY (zkopíruj jeden z těchto názvů):")
+                print("NALEZENÉ MODELY (zkopíruj jeden z těchto názvů):")
                 for model in models {
                     if let name = model["name"] as? String,
                        let methods = model["supportedGenerationMethods"] as? [String],
@@ -106,7 +100,7 @@ class GeminiService {
                 }
             }
         } catch {
-            print("❌ Nepodařilo se načíst seznam modelů: \(error)")
+            print("Nepodařilo se načíst seznam modelů: \(error)")
         }
     }
     

@@ -19,7 +19,6 @@ class StudyCard {
     var failedAttempts: Int = 0
     var lastReviewed: Date?
     
-    // Karta ví, do které skupiny patří
     var group: StudyGroup?
     
     init(question: String, answer: String) {

@@ -29,7 +29,6 @@ struct PackagesListView: View {
             .navigationTitle("Moje Balíčky")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    // Tlačítko pro přidání nového balíčku
                     Button(action: { showingAddSheet = true }) {
                         Image(systemName: "plus.circle.fill").font(.title2)
                     }

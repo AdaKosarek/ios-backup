@@ -15,7 +15,6 @@ class StudySession {
     var correctCount: Int
     var incorrectCount: Int
     
-    // Počítaný atribut (není v DB, počítá se za běhu)
     var totalCards: Int {
         correctCount + incorrectCount
     }
@@ -27,7 +26,7 @@ class StudySession {
     
     init(correctCount: Int, incorrectCount: Int) {
         self.id = UUID()
-        self.date = Date() // Uloží aktuální čas
+        self.date = Date()
         self.correctCount = correctCount
         self.incorrectCount = incorrectCount
     }

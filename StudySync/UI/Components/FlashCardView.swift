@@ -10,11 +10,10 @@ import SwiftUI
 struct FlashCardView: View {
     let question: String
     let answer: String
-    let isFlipped: Bool // Řídí rodič (SessionView)
+    let isFlipped: Bool
     
     var body: some View {
         ZStack {
-            // ZADNÍ STRANA (Odpověď)
             RoundedRectangle(cornerRadius: 20)
                 .fill(Color.white)
                 .shadow(radius: 5)
@@ -37,15 +36,14 @@ struct FlashCardView: View {
                         Spacer()
                     }
                 }
-                .opacity(isFlipped ? 1 : 0) // Viditelná jen když je otočeno
+                .opacity(isFlipped ? 1 : 0)
                 .rotation3DEffect(
-                    .degrees(180), // Text na zadní straně musíme otočit, aby nebyl zrcadlově
+                    .degrees(180),
                     axis: (x: 0.0, y: 1.0, z: 0.0)
                 )
             
-            // PŘEDNÍ STRANA (Otázka)
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.blue.gradient) // Barva z Figmy
+                .fill(Color.blue.gradient)
                 .shadow(radius: 5)
                 .overlay {
                     VStack {
@@ -71,14 +69,12 @@ struct FlashCardView: View {
                         Spacer()
                     }
                 }
-                .opacity(isFlipped ? 0 : 1) // Skryje se, když je otočeno
+                .opacity(isFlipped ? 0 : 1)
         }
-        // Samotná 3D rotace celé karty
         .rotation3DEffect(
             .degrees(isFlipped ? 180 : 0),
             axis: (x: 0.0, y: 1.0, z: 0.0)
         )
-        // Animace
         .animation(.spring(duration: 0.6, bounce: 0.2), value: isFlipped)
     }
 }

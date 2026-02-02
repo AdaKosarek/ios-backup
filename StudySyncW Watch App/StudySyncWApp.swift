@@ -19,8 +19,8 @@ struct StudySyncW_Watch_AppApp: App {
         }
         .modelContainer(for: [
             StudyPackage.self,
-            StudyGroup.self,  // Přidáno
-            StudyCard.self,   // Přidáno
+            StudyGroup.self,
+            StudyCard.self,
             StudySession.self,
             
         ])

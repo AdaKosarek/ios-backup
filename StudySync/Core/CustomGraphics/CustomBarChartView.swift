@@ -15,7 +15,7 @@ struct DailyStat: Identifiable {
 
 struct CustomBarChartView: View {
     let data: [DailyStat]
-    let maxCount: Int = 20 // Měřítko
+    let maxCount: Int = 20
     
     var body: some View {
         HStack(alignment: .bottom, spacing: 12) {
@@ -25,10 +25,9 @@ struct CustomBarChartView: View {
                         .font(.caption2)
                         .foregroundColor(.gray)
                     
-                    // VLASTNÍ TVAR - Sloupec
                     RoundedRectangle(cornerRadius: 6)
                         .fill(Color.blue.gradient)
-                        .frame(width: 30, height: CGFloat(item.count) / CGFloat(maxCount) * 150) // Výpočet výšky
+                        .frame(width: 30, height: CGFloat(item.count) / CGFloat(maxCount) * 150)
                     
                     Text(item.day)
                         .font(.caption)

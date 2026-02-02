@@ -40,17 +40,32 @@ class HomeViewModel {
     }
     
     private func calculateStats() {
-        // Logika přesunuta z View sem
         let todaySessions = sessions.filter { Calendar.current.isDateInToday($0.date) }
         cardsStudiedToday = todaySessions.reduce(0) { $0 + $1.totalCards }
         
         let totalCorrect = sessions.reduce(0) { $0 + $1.correctCount }
         totalXP = totalCorrect * 10
         
-        if sessions.contains(where: { Calendar.current.isDateInToday($0.date) }) {
-            streak = 1 // Zjednodušená logika streaku
-        } else {
-            streak = 0
-        }
+        streak = calculateStreak()
     }
+    
+    private func calculateStreak() -> Int {
+        var streak = 0
+        let calendar = Calendar.current
+        var checkDate = Date()
+        if getCardsCount(for: checkDate, granularity: .day) == 0 { checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate)! }
+        while getCardsCount(for: checkDate, granularity: .day) > 0 {
+            streak += 1
+            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate)!
+        }
+        return streak
+    }
+    
+    private func getCardsCount(for date: Date, granularity: Calendar.Component) -> Int {
+        let calendar = Calendar.current
+        return sessions.filter {
+            calendar.isDate($0.date, equalTo: date, toGranularity: granularity)
+        }.reduce(0) { $0 + $1.totalCards }
+    }
+    
 }

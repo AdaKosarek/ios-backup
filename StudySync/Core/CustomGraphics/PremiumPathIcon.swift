@@ -31,13 +31,6 @@ struct IconShapeWrapper: Shape {
 }
 
 
-//
-//  PremiumPathIcon.swift
-//  StudySync
-//
-
-import SwiftUI
-
 struct PremiumPathIcon: View {
     let type: CustomIconType
     let color: Color
@@ -74,7 +67,6 @@ struct PremiumPathIcon: View {
                     style: FillStyle(eoFill: true)
                 )
                 .frame(width: size * 0.55, height: size * 0.55)
-                // Vnitřní stín
                 .overlay(
                     shape
                         .stroke(.black.opacity(0.1), lineWidth: 1)

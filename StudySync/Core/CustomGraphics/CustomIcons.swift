@@ -19,7 +19,6 @@ enum CustomIconType {
 
 
 
-// --- 1. DOMEČEK (Vylepšený s komínem a dveřmi) ---
 struct HomeShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -27,7 +26,6 @@ struct HomeShape: Shape {
         let h = rect.height
         let roofH = h * 0.4
 
-        // Tělo a střecha
         path.move(to: CGPoint(x: w * 0.15, y: h))
         path.addLine(to: CGPoint(x: w * 0.15, y: roofH))
         path.addLine(to: CGPoint(x: w * 0.5, y: 0))
@@ -35,27 +33,22 @@ struct HomeShape: Shape {
         path.addLine(to: CGPoint(x: w * 0.85, y: h))
         path.closeSubpath()
 
-        // Komín
         path.addRect(CGRect(x: w * 0.68, y: h * 0.12, width: w * 0.1, height: h * 0.18))
 
-        // Dveře
         path.addRoundedRect(in: CGRect(x: w*0.42, y: h*0.65, width: w*0.16, height: h*0.35), cornerSize: CGSize(width: 2, height: 2))
 
         return path
     }
 }
 
-// --- 2. OZUBENÉ KOLO (Settings) ---
 struct GearShape: Shape {
     func path(in rect: CGRect) -> Path {
         let c = CGPoint(x: rect.midX, y: rect.midY)
         let r = min(rect.width, rect.height) / 2
         var path = Path()
 
-        // Hlavní kruh
         path.addEllipse(in: CGRect(x: c.x - r*0.7, y: c.y - r*0.7, width: r*1.4, height: r*1.4))
 
-        // Zuby
         for i in 0..<8 {
             let angle = Angle.degrees(Double(i) * 45.0)
             let toothW = r * 0.25
@@ -69,14 +62,12 @@ struct GearShape: Shape {
             path.addPath(tooth)
         }
         
-        // Středový kruh (díra)
         path.addEllipse(in: CGRect(x: c.x - r*0.25, y: c.y - r*0.25, width: r*0.5, height: r*0.5))
 
         return path
     }
 }
 
-// --- 3. SLOŽKA (Packages) ---
 struct FolderShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -92,7 +83,6 @@ struct FolderShape: Shape {
     }
 }
 
-// --- 4. GRAF (Stats) ---
 struct ChartBarsShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -104,7 +94,6 @@ struct ChartBarsShape: Shape {
     }
 }
 
-// --- 5. OHEŇ (Streak) ---
 struct FlameShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -118,7 +107,6 @@ struct FlameShape: Shape {
     }
 }
 
-// --- 6. BLESK (Energy) ---
 struct BoltShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -128,7 +116,6 @@ struct BoltShape: Shape {
     }
 }
 
-// --- 7. TERČ (Target) ---
 struct BullseyeShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -139,7 +126,6 @@ struct BullseyeShape: Shape {
     }
 }
 
-// --- 8. HVĚZDA (Star) ---
 struct StarShape: Shape {
     func path(in rect: CGRect) -> Path {
         let c = CGPoint(x: rect.width/2, y: rect.height/2); let r = rect.width/2
@@ -154,7 +140,6 @@ struct StarShape: Shape {
     }
 }
 
-// --- 9. VRSTVY (Layers) ---
 struct LayersShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -166,7 +151,6 @@ struct LayersShape: Shape {
     }
 }
 
-// --- 10. DOKUMENT (Doc) ---
 struct DocShape: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
@@ -186,23 +170,19 @@ struct BookShape: Shape {
         let w = rect.width
         let h = rect.height
         
-        // Středový hřbet (mírně prohnutý)
         path.move(to: CGPoint(x: w/2, y: h*0.15))
         path.addQuadCurve(to: CGPoint(x: w/2, y: h*0.85), control: CGPoint(x: w/2 - w*0.02, y: h*0.5))
         
-        // Levá stránka
         path.move(to: CGPoint(x: w/2, y: h*0.15))
         path.addQuadCurve(to: CGPoint(x: w*0.05, y: h*0.25), control: CGPoint(x: w*0.25, y: h*0.05))
         path.addLine(to: CGPoint(x: w*0.05, y: h*0.85))
         path.addQuadCurve(to: CGPoint(x: w/2, y: h*0.85), control: CGPoint(x: w*0.25, y: h*0.65))
         
-        // Pravá stránka (zrcadlově)
         path.move(to: CGPoint(x: w/2, y: h*0.15))
         path.addQuadCurve(to: CGPoint(x: w*0.95, y: h*0.25), control: CGPoint(x: w*0.75, y: h*0.05))
         path.addLine(to: CGPoint(x: w*0.95, y: h*0.85))
         path.addQuadCurve(to: CGPoint(x: w/2, y: h*0.85), control: CGPoint(x: w*0.75, y: h*0.65))
         
-        // Spodní tloušťka stránek
         path.move(to: CGPoint(x: w*0.05, y: h*0.85))
         path.addQuadCurve(to: CGPoint(x: w*0.1, y: h*0.95), control: CGPoint(x: w*0.05, y: h*0.95))
         path.addQuadCurve(to: CGPoint(x: w/2, y: h*0.9), control: CGPoint(x: w*0.3, y: h*0.75))

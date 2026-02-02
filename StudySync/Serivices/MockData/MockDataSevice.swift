@@ -14,7 +14,6 @@ class MockDataService: DataServiceProtocol {
     var packages: [StudyPackage] = []
     var sessions: [StudySession] = []
     
-    // 1. Packages (Musí mít 'throws'!)
     func fetchPackages() throws -> [StudyPackage] {
         return packages
     }
@@ -27,7 +26,6 @@ class MockDataService: DataServiceProtocol {
         packages.removeAll { $0.id == package.id }
     }
     
-    // 2. Groups
     func addGroup(to package: StudyPackage, name: String) {
         let group = StudyGroup(name: name)
         package.groups.append(group)
@@ -41,7 +39,6 @@ class MockDataService: DataServiceProtocol {
         }
     }
     
-    // 3. Cards
     func addCard(to group: StudyGroup, question: String, answer: String) {
         let card = StudyCard(question: question, answer: answer)
         group.cards.append(card)

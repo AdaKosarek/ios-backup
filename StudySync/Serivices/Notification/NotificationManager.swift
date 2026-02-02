@@ -14,7 +14,6 @@ class NotificationManager {
     
     private init() {}
     
-    // 1. Žádost o povolení notifikací
     func requestPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
             if granted {
@@ -26,7 +25,7 @@ class NotificationManager {
         }
     }
     
-    // 2. Ranní notifikace (Každý den v 9:00)
+    //Ranní notifikace (Každý den v 9:00)
     func scheduleMorningNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Dobré ráno! ☀️"
@@ -43,7 +42,7 @@ class NotificationManager {
         UNUserNotificationCenter.current().add(request)
     }
     
-    // 3. Večerní notifikace (Jen pro dnešek v 20:00)
+    //Večerní notifikace (Jen pro dnešek v 20:00)
     func scheduleEveningNotification(ifNotStudied context: ModelContext) {
         // Nejprve zkontrolujeme, zda už dnes studoval
         if hasStudiedToday(context: context) {
@@ -76,13 +75,11 @@ class NotificationManager {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["evening_reminder"])
     }
     
-    // Pomocná metoda pro kontrolu SwiftData
     private func hasStudiedToday(context: ModelContext) -> Bool {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: Date())
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         
-        // FetchDescriptor pro dnešní sessions
         let descriptor = FetchDescriptor<StudySession>(
             predicate: #Predicate { session in
                 session.date >= startOfDay && session.date < endOfDay

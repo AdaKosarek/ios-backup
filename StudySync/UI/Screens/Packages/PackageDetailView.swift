@@ -9,36 +9,34 @@ struct PackageDetailView: View {
     @State var viewModel: PackageDetailViewModel
     @EnvironmentObject var diContainer: DIContainer
     
-    // Stavy pro modální okna
     @State private var showingStudySession = false
     @State private var showingAddGroupAlert = false
     @State private var newGroupName = ""
+    @State private var showingQR = false
+
     
     var body: some View {
         ZStack {
-            // 1. VRSTVA: Animované pozadí
             BackgroundBlob()
                 .ignoresSafeArea()
             
-            // 2. VRSTVA: Obsah
             ScrollView {
                 LazyVStack(spacing: 16) {
-                    
-                    // 1. Sekce: Hlavička a Akce
                     headerSection
-                    
-                    // 2. Sekce: Seznam Skupin
                     groupsListSection
                 }
                 .padding(.bottom, 20)
             }
-            // Zprůhlednění ScrollView
             .scrollContentBackground(.hidden)
             .background(Color.clear)
         }
-        // Nastavení navigace
         .navigationTitle(viewModel.package.name)
         .toolbar {
+            Button {
+                showingQR = true
+            } label: {
+                Image(systemName: "qrcode")
+            }
             Button(action: { showingAddGroupAlert = true }) {
                 Image(systemName: "plus")
             }
@@ -59,11 +57,16 @@ struct PackageDetailView: View {
                 SessionView(viewModel: diContainer.makeSessionViewModel(cards: viewModel.allCards))
             }
         }
+        .sheet(isPresented: $showingQR) {
+            PackageQRExportView(
+                package: viewModel.package,
+                exportService: diContainer.makePackageExportService()
+            )
+            .presentationDetents([.medium])
+        }
+
     }
-    
-    // MARK: - Subviews (Rozdělení kódu)
-    
-    // Sekce s počtem karet a tlačítkem Play
+
     @ViewBuilder
     private var headerSection: some View {
         if !viewModel.allCards.isEmpty {
@@ -98,8 +101,7 @@ struct PackageDetailView: View {
             .padding(.top, 10)
         }
     }
-    
-    // Sekce se seznamem skupin
+
         @ViewBuilder
         private var groupsListSection: some View {
             VStack(alignment: .leading, spacing: 10) {
@@ -126,17 +128,13 @@ struct PackageDetailView: View {
             }
         }
     
-    // Samostatný řádek skupiny
     private func groupRow(for group: StudyGroup) -> some View {
         NavigationLink(destination: CardListView(viewModel: diContainer.makeCardListViewModel(group: group))) {
             GroupCardView(group: group, themeColorHex: viewModel.package.colorHex)
         }
-        // Aplikace 3D efektu
-        //.simple3D()
         
         .contextMenu {
             Button(role: .destructive) {
-                // Voláme ViewModel přímo
                 viewModel.deleteGroup(group)
             } label: {
                 Label("Smazat skupinu", systemImage: "trash")

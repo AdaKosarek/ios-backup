@@ -12,17 +12,19 @@ import Combine
 
 class DIContainer: ObservableObject {
     
-    // Zde držíme náš Service jako protokol -> klíč k testovatelnosti
     let dataService: DataServiceProtocol
     
     init(dataService: DataServiceProtocol) {
         self.dataService = dataService
     }
     
-    // Factory metody pro ViewModely
-    // View si řekne kontejneru: "Vyrob mi ViewModel" a kontejner mu ho dá i se závislostmi.
+    @MainActor
+    func makePackageImportService() -> PackageImportService {
+        PackageImportService(dataService: dataService)
+    }
+
     
-    @MainActor // Můžeme přidat sem, pokud factory metody vytvářejí UI objekty
+    @MainActor
     func makeHomeViewModel() -> HomeViewModel {
         return HomeViewModel(dataService: dataService)
     }
@@ -51,5 +53,10 @@ class DIContainer: ObservableObject {
     }
     func makeEditPackageViewModel(package: StudyPackage?) -> EditPackageViewModel {
         return EditPackageViewModel(package: package, dataService: self.dataService)
+    }
+    
+    @MainActor
+    func makePackageExportService() -> PackageExportService {
+        PackageExportService()
     }
 }

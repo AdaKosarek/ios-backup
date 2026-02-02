@@ -13,11 +13,8 @@ class StudyGroup: Identifiable {
     var id: UUID
     var name: String
     var dateCreated: Date
-    
-    // Zpětná vazba: Skupina ví, do kterého balíčku patří
     var package: StudyPackage?
     
-    // TOTO TI TAM CHYBĚLO: Seznam karet v této skupině
     @Relationship(deleteRule: .cascade) var cards: [StudyCard] = []
     
     init(name: String) {

@@ -8,21 +8,19 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("selectedLanguage") private var selectedLanguage: AppLanguage = .czech
     @AppStorage("selectedTheme") private var selectedTheme: AppTheme = .blue
+    @EnvironmentObject var diContainer: DIContainer
+    @State private var showScanner = false
+
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // 1. VRSTVA: Animace pozadí
                 BackgroundBlob()
                     .ignoresSafeArea()
                 
-                // 2. VRSTVA: Obsah
                 ScrollView {
                     VStack(spacing: 24) {
-                        
-                        // MARK: - Hlavička (Nová 3D ikona)
                         VStack(spacing: 16) {
-                            // Použijeme naši novou ikonu "Settings" (Posuvníky)
                             PremiumPathIcon(type: .settings, color: selectedTheme.mainColor, size: 80)
                             
                             VStack(spacing: 4) {
@@ -38,15 +36,10 @@ struct SettingsView: View {
                         }
                         .padding(.top, 20)
                         
-                        // MARK: - Sekce Vzhled
                         VStack(alignment: .leading, spacing: 12) {
                             SectionLabel(title: "app_appearance")
 
-
-                            
-                            // Karta vzhledu
                             VStack(spacing: 0) {
-                                // Výběr barvy
                                 VStack(alignment: .leading, spacing: 16) {
                                     HStack {
                                         Text("Akcentní barva")
@@ -58,7 +51,6 @@ struct SettingsView: View {
                                             .fontWeight(.bold)
                                     }
                                     
-                                    // Kuličky pro výběr
                                     ScrollView(.horizontal, showsIndicators: false) {
                                         HStack(spacing: 16) {
                                             ForEach(AppTheme.allCases) { theme in
@@ -72,7 +64,7 @@ struct SettingsView: View {
                                                     }
                                             }
                                         }
-                                        .padding(.vertical, 4) // Místo pro stíny
+                                        .padding(.vertical, 4)
                                     }
                                 }
                                 .padding(20)
@@ -83,14 +75,13 @@ struct SettingsView: View {
                         }
                         .padding(.horizontal)
 
-                        // MARK: - Sekce Obecné
                         VStack(alignment: .leading, spacing: 12) {
                             SectionLabel(title: "basic")
                             
                             VStack(spacing: 0) {
                                 // Jazyk
                                 SettingsRowView(
-                                    iconType: .doc, // Jako symbol textu/jazyka
+                                    iconType: .doc,
                                     color: .blue,
                                     title: "Jazyk"
                                 ) {
@@ -104,10 +95,37 @@ struct SettingsView: View {
                                 }
                                 
                                 Divider().padding(.leading, 60)
-                                
-                                // Notifikace
                                 SettingsRowView(
-                                    iconType: .bolt, // Jako symbol akce/notifikace
+                                    iconType: .layers,
+                                    color: .green,
+                                    title: "import_package"
+                                ) {
+                                    Button("QR") {
+                                        showScanner = true
+                                    }.foregroundStyle(.black.opacity(0.55))
+                                }
+                                .sheet(isPresented: $showScanner) {
+                                    QRScannerView(
+                                        onScan: { payload in
+                                            showScanner = false
+
+                                            do {
+                                                let importer = diContainer.makePackageImportService()
+                                                try importer.importFromQR(payload)
+                                            } catch {
+                                                print("Import balíčku selhal:", error)
+                                            }
+                                        },
+                                        onCancel: {
+                                            showScanner = false
+                                        }
+                                    )
+                                }
+
+                                Divider().padding(.leading, 60)
+                                
+                                SettingsRowView(
+                                    iconType: .bolt,
                                     color: .orange,
                                     title: "notification"
                                 ) {
@@ -122,7 +140,6 @@ struct SettingsView: View {
                         }
                         .padding(.horizontal)
                         
-                        // MARK: - Sekce O Aplikaci
                         VStack(alignment: .leading, spacing: 12) {
                             SectionLabel(title: "aboutApp")
                             
@@ -158,8 +175,6 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Pomocné Komponenty
-
 struct SectionLabel: View {
     let title: LocalizedStringKey
     var body: some View {
@@ -171,7 +186,6 @@ struct SectionLabel: View {
     }
 }
 
-// Univerzální řádek nastavení s Premium ikonou
 struct SettingsRowView<Content: View>: View {
     let iconType: CustomIconType
     let color: Color
@@ -180,7 +194,6 @@ struct SettingsRowView<Content: View>: View {
     
     var body: some View {
         HStack(spacing: 16) {
-            // Zmenšená verze naší 3D ikony
             PremiumPathIcon(type: iconType, color: color, size: 40)
             
             Text(title)

@@ -22,7 +22,6 @@ struct WatchStatsView: View {
                 Text("Přehled")
                     .font(.headline)
                 
-                // 1. Kruh Přesnosti (Zatím statický, dokud nebudeme ukládat historii)
                 CircularProgressView(
                     progress: viewModel.accuracyProgress,
                     title: viewModel.accuracyText,
@@ -31,8 +30,7 @@ struct WatchStatsView: View {
                 )
                 .frame(height: 110)
                 
-                // 2. Bento Grid - Napojený na Connector
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                     
                     BentoStatCard(
                         title: "Balíčků",

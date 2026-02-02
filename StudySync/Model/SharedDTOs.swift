@@ -27,7 +27,6 @@ struct CardDTO: Codable, Identifiable {
     let answer: String
 }
 
-// Struktura pro odeslání výsledku z hodinek zpět do telefonu
 struct SessionResultDTO: Codable {
     let correct: Int
     let incorrect: Int
@@ -39,5 +38,5 @@ struct WatchStatsDTO: Codable {
     let xpAll: Int
     let streakDays: Int
     let accuracy: Double
-    let weeklyCards: [Int]   // 7 hodnot (Po–Ne)
+    let weeklyCards: [Int]   //(Po–Ne)
 }

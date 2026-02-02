@@ -16,7 +16,6 @@ class StudyPackage: Identifiable {
     var icon: String
     var dateCreated: Date
     
-    // Relace na skupiny (musí existovat třída StudyGroup)
     @Relationship(deleteRule: .cascade) var groups: [StudyGroup] = []
     
     init(name: String, colorHex: String = "blue", icon: String = "book.fill") {

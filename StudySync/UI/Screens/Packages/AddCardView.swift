@@ -19,7 +19,6 @@ struct AddCardView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // ZMĚNA: Vlastní pozadí pro Sheet
                 BackgroundBlob()
                     .ignoresSafeArea()
                     .opacity(0.3)
@@ -60,7 +59,7 @@ struct AddCardView: View {
                         }
                     }
                 }
-                .scrollContentBackground(.hidden) // ZMĚNA: Průhledný formulář
+                .scrollContentBackground(.hidden)
             }
             .navigationTitle("new_card")
             .navigationBarTitleDisplayMode(.inline)

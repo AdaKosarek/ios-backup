@@ -9,7 +9,7 @@ import SwiftUI
 
 
 struct CircularProgressView: View {
-    let progress: Double // 0.0 až 1.0
+    let progress: Double
     let title: String
     let subtitle: String
     var color: Color = .brandBlue

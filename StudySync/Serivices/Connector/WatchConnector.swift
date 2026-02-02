@@ -78,7 +78,7 @@ class WatchConnector: NSObject, WCSessionDelegate {
 
     func sendDataToWatch(packages: [PackageDTO]) {
         /*guard WCSession.isSupported() else {
-            print("❌ WCSession not supported")
+            print(" WCSession not supported")
             return
         }*/
 
@@ -89,10 +89,10 @@ class WatchConnector: NSObject, WCSessionDelegate {
                 "packages": data
             ])
 
-            print("✅ Sync uložen (\(packages.count) balíčků)")
+            print("Sync uložen (\(packages.count) balíčků)")
 
         } catch {
-            print("❌ Chyba syncu: \(error)")
+            print("Chyba syncu: \(error)")
         }
     }
 
@@ -120,7 +120,7 @@ class WatchConnector: NSObject, WCSessionDelegate {
                     ["sessionResult": data],
                     replyHandler: nil,
                     errorHandler: { error in
-                        print("❌ sendMessage error: \(error)")
+                        print("sendMessage error: \(error)")
                     }
                 )
                 print("watch, SessionResult sent via sendMessage: \(result.correct)/\(result.incorrect)")
@@ -133,7 +133,7 @@ class WatchConnector: NSObject, WCSessionDelegate {
             }
 
         } catch {
-            print("❌ Failed to encode SessionResult: \(error)")
+            print("Failed to encode SessionResult: \(error)")
         }
     }
 
@@ -157,7 +157,7 @@ class WatchConnector: NSObject, WCSessionDelegate {
             let data = userInfo["sessionResult"] as? Data,
             let result = try? JSONDecoder().decode(SessionResultDTO.self, from: data)
         else {
-            print("❌ Invalid sessionResult payload")
+            print("Invalid sessionResult payload")
             return
         }
 

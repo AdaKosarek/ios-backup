@@ -20,7 +20,7 @@ class SessionViewModel {
     var isFinished: Bool = false
     
     init(cards: [StudyCard], dataService: DataServiceProtocol) {
-        self.cards = cards.shuffled() // Zamíchat karty
+        self.cards = cards.shuffled()
         self.dataService = dataService
     }
     

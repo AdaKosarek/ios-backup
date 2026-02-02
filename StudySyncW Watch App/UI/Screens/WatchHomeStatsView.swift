@@ -11,7 +11,6 @@ struct WatchDashboardView: View {
     @State private var connector = WatchConnector.shared
     @State private var viewModel = WatchStatsViewModel()
     
-    // Spočítáme skutečný počet karet
     var totalCardsCount: Int {
         connector.receivedPackages.reduce(0) { pkgResult, pkg in
             pkgResult + pkg.groups.reduce(0) { grpResult, grp in
@@ -20,7 +19,6 @@ struct WatchDashboardView: View {
         }
     }
     
-    // Helper: Všechny karty v jednom poli
     var allCards: [CardDTO] {
         connector.receivedPackages.flatMap { $0.groups.flatMap { $0.cards } }
     }
@@ -32,17 +30,14 @@ struct WatchDashboardView: View {
         NavigationStack {
             VStack(spacing: 16) {
                 
-                // STAV 1: ÚPLNĚ BEZ DAT (Žádné balíčky)
                 if connector.receivedPackages.isEmpty {
                     emptyStateView
                 }
                 
-                // STAV 2: MÁME BALÍČKY, ALE JSOU PRÁZNÉ (0 karet)
                 else if totalCardsCount == 0 {
                     packagesButNoCardsView
                 }
                 
-                // STAV 3: MÁME KARTY -> MŮŽEME SE UČIT
                 else {
                     dashboardContent
                 }
@@ -51,12 +46,8 @@ struct WatchDashboardView: View {
         }
     }
     
-    // MARK: - Subviews
-    
-    // 1. Obsah Dashboardu (když je vše OK)
     var dashboardContent: some View {
         VStack(spacing: 16) {
-            // Kruh
             CircularProgressView(
                 progress: 0.05,
                 title: "\(totalCardsCount)",
@@ -66,7 +57,6 @@ struct WatchDashboardView: View {
             .frame(height: 120)
             .contentTransition(.numericText())
             
-            // Statistiky
             HStack(spacing: 20) {
                 HStack {
                     Image(systemName: "star.fill").foregroundStyle(.yellow)
@@ -80,7 +70,6 @@ struct WatchDashboardView: View {
             
             Spacer()
             
-            // TLAČÍTKO START - Tady posíláme karty!
             NavigationLink(destination: WatchSessionView(cards: allCards)) {
                 Text("Spustit učení >")
                     .font(.headline)
@@ -96,7 +85,6 @@ struct WatchDashboardView: View {
         }
     }
     
-    // 2. Úplně prázdno
     var emptyStateView: some View {
         VStack {
             Spacer()
@@ -123,7 +111,6 @@ struct WatchDashboardView: View {
         }
     }
     
-    // 3. Balíčky jsou, ale karty ne
     var packagesButNoCardsView: some View {
         VStack {
             Spacer()
@@ -140,7 +127,6 @@ struct WatchDashboardView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             
-            // I tady nabídneme Demo data, abys to mohl otestovat
             Button(action: { withAnimation { connector.generateMockData() } }) {
                 Text("Přidat Demo Karty")
                     .fontWeight(.bold)
