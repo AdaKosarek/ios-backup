@@ -58,8 +58,6 @@ struct DetailView: View {
                     visibleStars = viewModel.state.entry.rating
                 }
 
-                
-                //zkouska pro barevny typ
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Type indicator")
                         .font(.caption)
