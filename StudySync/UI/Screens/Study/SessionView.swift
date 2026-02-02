@@ -2,7 +2,7 @@
 //  SessionView.swift
 //  StudySync
 //
-//  Created by Miroslav Musil on 18.12.2025.
+//  Created by mp on 18.12.2025.
 //
 
 import SwiftUI

@@ -2,7 +2,7 @@
 //  EditViewModel.swift
 //  StudySync
 //
-//  Created by Martin Reich on 21.01.2026.
+//  Created by mp on 21.01.2026.
 //
 
 import Foundation

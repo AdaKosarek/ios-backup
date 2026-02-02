@@ -2,7 +2,7 @@
 //  CardListViewModelTests.swift
 //  StudySync
 //
-//  Created by Martin Reich on 16.01.2026.
+//  Created by mp on 16.01.2026.
 //
 
 import XCTest
